@@ -6,17 +6,16 @@ using UnityEngine.Serialization;
 public class PlayerShooting : MonoBehaviour
 {
 
-   [SerializeField]
+    [SerializeField]
     private GameObject laserPrefab;
 
     [SerializeField]
     private Vector3 laserOffset = new Vector3(0f, 0.8f, 0f);
     
-    [SerializeField]
-    private float cooldownTimer;
+    private float _cooldownTimer;
 
     [SerializeField]
-    private float fireRate = 0.15f;
+    private float fireRate = 0.5f;
 
 
     void Update()
@@ -26,9 +25,9 @@ public class PlayerShooting : MonoBehaviour
 
     private void ShootInput()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > cooldownTimer)
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _cooldownTimer)
         {
-            cooldownTimer = Time.time + fireRate;
+            _cooldownTimer = Time.time + fireRate;
             Instantiate(laserPrefab, transform.position + laserOffset, Quaternion.identity);
         }   
     }
