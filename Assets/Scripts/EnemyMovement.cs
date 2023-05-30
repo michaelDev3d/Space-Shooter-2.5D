@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 
 public class EnemyMovement : MonoBehaviour
 {
-    [FormerlySerializedAs("_movementSpeed")] [SerializeField]
+    [SerializeField]
     private float movementSpeed = 5f;
     
     
@@ -20,7 +20,7 @@ public class EnemyMovement : MonoBehaviour
     {
         transform.Translate(Vector3.down * (movementSpeed * Time.deltaTime));
 
-        if (transform.position.y <= -4)
+        if (transform.position.y <= -6)
         {
             Debug.Log("Spawn above");
             
@@ -34,6 +34,13 @@ public class EnemyMovement : MonoBehaviour
         Debug.Log("Hit "+other.transform.name);
         if (other.CompareTag("Player"))
         {
+            PlayerData playerData = other.transform.GetComponent<PlayerData>();
+
+            if (playerData != null)
+            {
+                playerData.ReceiveDamage();
+            }
+            
             Destroy(this.gameObject);
             
         }

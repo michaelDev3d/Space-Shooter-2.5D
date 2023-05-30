@@ -5,13 +5,17 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     //Variable to adjust how fast the player move
-    public float movementSpeed = 5f;
+    [SerializeField]
+    private float movementSpeed = 5f;
     
     //Variables that will be used for out inputs
     //horizontal = left and right
     //vertical = up and down
-    public float horizontal;
-    public float vertical;
+    [SerializeField]
+    private float horizontal;
+    
+    [SerializeField]
+    private float vertical;
 
     private const float PlayerBoundsXMax = 11.27f;
     private const float PlayerBoundsXMin = -11.27f;
@@ -22,7 +26,6 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
         transform.position = new Vector3(0,-2, 0);
     }
 
@@ -31,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
     {
         HandleMovement();
         
-        #region movement uncleaned
+        #region movement uncleaned Unused
         /*
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
