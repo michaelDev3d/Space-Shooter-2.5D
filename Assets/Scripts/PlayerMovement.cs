@@ -1,13 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerMovement : MonoBehaviour
 {
-    //Variable to adjust how fast the player move
-    [SerializeField]
-    private float movementSpeed = 5f;
-    
+    [Header("Input Data")]
     //Variables that will be used for out inputs
     //horizontal = left and right
     //vertical = up and down
@@ -16,77 +14,81 @@ public class PlayerMovement : MonoBehaviour
     
     [SerializeField]
     private float vertical;
+    
+    //Variable to adjust how fast the player move
+    private float _movementSpeed = 5f;
+    
+    [Header("Screen Bounds")]
+    [SerializeField]
+    private float playerBoundsXMax = 11.27f;
+    
+    [SerializeField]
+    private float playerBoundsXMin = -11.27f;
 
-    private const float PlayerBoundsXMax = 11.27f;
-    private const float PlayerBoundsXMin = -11.27f;
+    [SerializeField]
+    private float playerBoundsYMax = 0f;
+    
+    [SerializeField]
+    private float playerBoundsYMin = -4f;
 
-    private const float PlayerBoundsYMax = 0f;
-    private const float PlayerBoundsYMin = -4f;
+    [SerializeField] 
+    private Animator playerAnimator;
 
-    // Start is called before the first frame update
+    private static readonly int Horizontal = Animator.StringToHash("Horizontal");
+    private static readonly int Idle = Animator.StringToHash("Idle");
+    
     void Start()
     {
-        transform.position = new Vector3(0,-2, 0);
+        playerAnimator = GetComponent<Animator>();
+        transform.position = new Vector3(0,-0.45f, 0);
     }
 
-    // Update is called once per frame
     void Update()
     {
         HandleMovement();
-        
-        #region movement uncleaned Unused
-        /*
-        horizontal = Input.GetAxis("Horizontal");
-        vertical = Input.GetAxis("Vertical");
-        
-        transform.Translate(new Vector3(horizontal,vertical,0) * (movementSpeed * Time.deltaTime));
-
-        #region movement uncleaned
-
-        if (transform.position.y >= PlayerBoundsYMax)
-        {
-            transform.position = new Vector3(transform.position.x,PlayerBoundsYMax, 0);
-        }
-        
-        if (transform.position.y <= PlayerBoundsYMin)
-        {
-            transform.position = new Vector3(transform.position.x,PlayerBoundsYMin, 0);
-        }
-
-        if (transform.position.x < PlayerBoundsXMin)
-        {
-            transform.position = new Vector3(PlayerBoundsXMax,transform.position.y, 0);
-        }
-        
-        if (transform.position.x > PlayerBoundsXMax)
-        {
-            transform.position = new Vector3(PlayerBoundsXMin,transform.position.y, 0);
-        }
-        #endregion
-        */
-        #endregion
     }
 
     private void HandleMovement()
     {
+        //Getting input data.
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
+
+        //Set animator value to input
+        playerAnimator.SetFloat(Horizontal, horizontal);
         
+        //If inputs are not pressed/transition from left to right
+        //Set the animation to idle.
+        if (Horizontal == 0)
+        {
+            playerAnimator.SetBool(Idle, true);
+        }
+        
+        //Combine inputs into vector3 for clean code
         Vector3 direction = new Vector3(horizontal, vertical, 0);
        
-        transform.Translate(direction * (movementSpeed * Time.deltaTime));
+        //Moves the player based on inputs pressed
+        transform.Translate(direction * (_movementSpeed * Time.deltaTime));
         
+        //Locking Player position inbetween min and max height using a clamp.
         transform.position = new Vector3(transform.position.x,
-            Mathf.Clamp(transform.position.y, PlayerBoundsYMin, PlayerBoundsYMax), 0);
+            Mathf.Clamp(transform.position.y, playerBoundsYMin, playerBoundsYMax), 0);
         
-        if (transform.position.x < PlayerBoundsXMin)
+        //Screen wrapping on left
+        if (transform.position.x < playerBoundsXMin)
         {
-            transform.position = new Vector3(PlayerBoundsXMax,transform.position.y, 0);
+            transform.position = new Vector3(playerBoundsXMax,transform.position.y, 0);
         }
         
-        if (transform.position.x > PlayerBoundsXMax)
+        //Screen wrapping on Right
+        if (transform.position.x > playerBoundsXMax)
         {
-            transform.position = new Vector3(PlayerBoundsXMin,transform.position.y, 0);
+            transform.position = new Vector3(playerBoundsXMin,transform.position.y, 0);
         }
+    }
+
+    public void SetMovementSpeed(float speed)
+    {
+        this._movementSpeed = speed;
     }
 }

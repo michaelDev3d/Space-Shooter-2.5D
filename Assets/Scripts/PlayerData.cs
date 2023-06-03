@@ -7,16 +7,28 @@ public class PlayerData : MonoBehaviour
 {
     [SerializeField]
     private int playerLives = 3;
+    
+    [SerializeField]
+    private float fireRate = 0.5f;
+    
+    [SerializeField]
+    private float movementSpeed = 5f;
 
-
-    [SerializeField] 
-    private SpawnManager spawnManager;
+    private SpawnManager _spawnManager;
+    
+    private PlayerMovement _playerMovement;
+    private PlayerShooting _playerShooting;
 
     private void Start()
     {
-        spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
+        _spawnManager = GameObject.Find("Spawn Manager").GetComponent<SpawnManager>();
+        _playerMovement = GetComponent<PlayerMovement>();
+        _playerShooting = GetComponent<PlayerShooting>();
+        
+        _playerMovement.SetMovementSpeed(movementSpeed);
+        _playerShooting.SetFireRate(fireRate);
 
-        if (spawnManager == null)
+        if (_spawnManager == null)
         {
             Debug.LogError("Spawn Manager is NULL");
         }
@@ -27,7 +39,7 @@ public class PlayerData : MonoBehaviour
         playerLives--;
         if (playerLives < 1)
         {
-            spawnManager.OnPlayerDeath();
+            _spawnManager.OnPlayerDeath();
             Destroy(this.gameObject);
         }
     }
