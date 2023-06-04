@@ -14,8 +14,8 @@ public class PlayerData : MonoBehaviour
     [SerializeField]
     private float movementSpeed = 5f;
 
+    //Custom Script Components
     private SpawnManager _spawnManager;
-    
     private PlayerMovement _playerMovement;
     private PlayerShooting _playerShooting;
 

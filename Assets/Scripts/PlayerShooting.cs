@@ -17,7 +17,6 @@ public class PlayerShooting : MonoBehaviour
     private Vector3 laserOffset = new Vector3(0f, 0.8f, 0f);
     
     private float _cooldownTimer;
-    
     private float _fireRate;
 
     void Update()

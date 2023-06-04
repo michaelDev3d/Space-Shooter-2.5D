@@ -34,12 +34,7 @@ public class SpawnManager : MonoBehaviour
         StartCoroutine(SpawnRoutine(spawnRateInSeconds));
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // ReSharper disable Unity.PerformanceAnalysis
     IEnumerator SpawnRoutine(float seconds)
     {
         while (!stopSpawning)

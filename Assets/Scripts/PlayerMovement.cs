@@ -34,12 +34,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] 
     private Animator playerAnimator;
 
+    //Used for animator parameters
     private static readonly int Horizontal = Animator.StringToHash("Horizontal");
     private static readonly int Idle = Animator.StringToHash("Idle");
     
     void Start()
     {
         playerAnimator = GetComponent<Animator>();
+        
         transform.position = new Vector3(0,-0.45f, 0);
     }
 

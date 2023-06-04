@@ -18,7 +18,6 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] 
     private SpriteRenderer sprite;
     
-    [SerializeField] 
     private BoxCollider2D _collider2D;
 
     [SerializeField] 
@@ -46,8 +45,6 @@ public class EnemyMovement : MonoBehaviour
 
         if (transform.position.y <= -6 )
         {
-            Debug.Log("Spawn above");
-            
             float randomX = Random.Range(-9, 9);
             transform.position = new Vector3(randomX, 8, 0);
         }
@@ -102,6 +99,4 @@ public class EnemyMovement : MonoBehaviour
         
         Destroy(this.gameObject);
     }
-    
-    
 }
