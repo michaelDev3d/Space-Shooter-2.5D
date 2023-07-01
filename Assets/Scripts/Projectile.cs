@@ -6,16 +6,19 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField]
-    private float projectileSpeed = 8f;
+    private float _projectileSpeed = 8f;
     
     [SerializeField]
-    private float screenHeight = 8f;
+    private float _screenHeight = 8f;
 
-    private void Start()
-    {
-        screenHeight = 8f;
-    }
-    
+    [SerializeField] 
+    private bool _isEnemyLaser;
+
+    [SerializeField] 
+    private float _enemyProjectileSpeed = 6f;
+
+    private static readonly int _EnemyLaserAnimBool = Animator.StringToHash("EnemyLaser");
+
     void Update()
     {
         MoveProjectile();
@@ -23,20 +26,44 @@ public class Projectile : MonoBehaviour
     
     private void MoveProjectile()
     {
-        transform.Translate(Vector3.up * (Time.deltaTime * projectileSpeed));
+        if (!_isEnemyLaser)
+        {
+            transform.Translate(Vector3.up * (Time.deltaTime * _projectileSpeed));
 
-        if (transform.position.y > screenHeight)
-        { 
-            Destroy(this.gameObject); 
+            if (transform.position.y > _screenHeight )
+            {
+                if (transform.parent != null)
+                {
+                    Destroy(transform.parent.gameObject);
+                }
+
+                Destroy(this.gameObject);
+            }
+        }
+
+        if (_isEnemyLaser)
+        {
+            Animator animator = GetComponent<Animator>();
+            
+            if(animator != null)
+                animator.SetBool(_EnemyLaserAnimBool, true);
+            
+            transform.Translate(Vector3.down * (Time.deltaTime * _enemyProjectileSpeed));
+            
+            if (transform.position.y < -_screenHeight )
+            {
+                Destroy(this.gameObject);
+            }
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    public bool isEnemyLaser()
     {
-        Debug.Log("Hit "+other.transform.name);
-        if (other.CompareTag("Enemy"))
-        {
-            Destroy(other.gameObject);
-        }
+        return _isEnemyLaser;
+    }
+
+    public void SetEnemyLaser(bool isEnemyLaser)
+    {
+        _isEnemyLaser = isEnemyLaser;
     }
 }
