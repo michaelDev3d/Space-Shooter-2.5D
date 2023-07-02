@@ -413,7 +413,7 @@ public class SpacePlayer : MonoBehaviour
 
             if (projectile != null)
             {
-                if (projectile.isEnemyLaser())
+                if (projectile.IsEnemyLaser())
                 {
                     _audioSource.clip = _explosionSFX;
                     _audioSource.Play();

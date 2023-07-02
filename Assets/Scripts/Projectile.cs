@@ -57,7 +57,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    public bool isEnemyLaser()
+    public bool IsEnemyLaser()
     {
         return _isEnemyLaser;
     }
