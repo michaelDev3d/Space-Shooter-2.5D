@@ -21,7 +21,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] 
     private Button _QuitButton;
     private GameManager _gameManager;
+    
+    [SerializeField] 
+    private TextMeshProUGUI _ammoCountText;
 
+    
     [Header("Health Bar Management")] 
     [SerializeField] 
     private GameObject _healthBarGameObject;
@@ -166,7 +170,27 @@ public class UIManager : MonoBehaviour
         
         return displayUI;
     }
-    
+
+    public void UpdateAmmoCountUI(int AmmoCount)
+    {
+        _ammoCountText.text = "Ammo: " + AmmoCount;
+    }
+
+    public void BlinkAmmoCountText()
+    {
+        StartCoroutine(BlinkAmmoRoutine(0.5f));
+    }
+
+    IEnumerator BlinkAmmoRoutine(float seconds)
+    {
+        while (true)
+        {
+            _ammoCountText.transform.gameObject.SetActive(true);
+            yield return new WaitForSeconds(seconds);
+            _ammoCountText.transform.gameObject.SetActive(false);
+            yield return new WaitForSeconds(seconds);
+        }
+    }
 
     private void ShowPauseUI()
     {
@@ -177,4 +201,6 @@ public class UIManager : MonoBehaviour
     {
         Application.Quit();
     }
+    
+    
 }

@@ -54,6 +54,11 @@ public class SpacePlayer : MonoBehaviour
     private bool _isShieldPowerUpActive;
     private Renderer _renderer;
     private Material _material;
+    
+    [SerializeField] 
+    public int _ammoCount = 15;
+    
+    
         
     [Header("Effects")]
     [SerializeField] 
@@ -226,31 +231,46 @@ public class SpacePlayer : MonoBehaviour
     
     private void ShootInput()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _cooldownTimer)
+        if (_ammoCount > 0)
         {
-            _cooldownTimer = Time.time + _fireRate;
-
-            if (_isTripleShotPowerUpActive)
+            //Shooting Input and logic.
+            if (Input.GetKeyDown(KeyCode.Space) && Time.time > _cooldownTimer)
             {
-                Instantiate(_tripleLaserPrefab, transform.position + _laserOffset, Quaternion.identity);
+                #region Shooting Logic
+                _cooldownTimer = Time.time + _fireRate;
 
-                if (_tripleShotSFX != null)
+                if (_isTripleShotPowerUpActive)
                 {
-                    _audioSource.clip = _tripleShotSFX;
-                    _audioSource.Play();
+                    Instantiate(_tripleLaserPrefab, transform.position + _laserOffset, Quaternion.identity);
+
+                    if (_tripleShotSFX != null)
+                    {
+                        _audioSource.clip = _tripleShotSFX;
+                        _audioSource.Play();
+                    }
+                }
+                else
+                {
+                    Instantiate(_laserPrefab, transform.position + _laserOffset, Quaternion.identity);
+
+                    if (_laserSFX != null)
+                    {
+                        _audioSource.clip = _laserSFX;
+                        _audioSource.Play();
+                    }
+                }
+                #endregion
+                
+                _ammoCount--;
+                
+                if (_ammoCount == 0)
+                {
+                    _uiManager.BlinkAmmoCountText();
                 }
             }
-            else
-            {
-                Instantiate(_laserPrefab, transform.position + _laserOffset, Quaternion.identity);
-
-                if (_laserSFX != null)
-                {
-                    _audioSource.clip = _laserSFX;
-                    _audioSource.Play();
-                }
-            }
-        }   
+            
+            _uiManager.UpdateAmmoCountUI(_ammoCount);
+        }
     }
 
     public void ReceiveDamage()
@@ -397,7 +417,7 @@ public class SpacePlayer : MonoBehaviour
     {
         return _score;
     }
-
+    
     public void AddScore(int score)
     {
         _score += score;
@@ -433,5 +453,34 @@ public class SpacePlayer : MonoBehaviour
             gameObjectMaterial.SetColor(materialColorID, color);
             gameObjectMaterial.SetInt(materialVisibleID, active);
         }
+    }
+
+    private bool HandleDashEffect()
+    {
+        //Getting input data.
+        _horizontal = Input.GetAxis("Horizontal");
+        _vertical = Input.GetAxis("Vertical");
+        
+        Vector3 direction = new Vector3(_horizontal, _vertical, 0);
+        
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            Debug.Log("Use Thruster");
+            
+            StartCoroutine(DashEffectRoutine(0.1f, direction, 0.5f,3,10f));
+            return true;
+            
+        }
+        return false;
+    }
+
+    IEnumerator DashEffectRoutine(float seconds, Vector3 direction, float distance, int dashAmount, float cooldown)
+    {
+        for (int i = 0; i < dashAmount; i++)
+        {
+            yield return new WaitForSeconds(seconds);
+            transform.Translate(direction * distance);
+        }
+        yield return new WaitForSeconds(cooldown);
     }
 }
