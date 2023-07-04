@@ -41,9 +41,9 @@ public class UIManager : MonoBehaviour
     private Image frontHealthBar;
     [SerializeField]
     private Image backHealthBar;
-    
-    
-    
+
+    [SerializeField] 
+    private bool _isUpdatingUI;
     
     // Start is called before the first frame update
     void Start()
@@ -73,11 +73,88 @@ public class UIManager : MonoBehaviour
             Debug.LogError("Health Bar is null");
 
         _CurrentPlayerLives = _maxPlayerLives;
+        
     }
 
     private void Update()
     {
         UpdateHealthUi();
+    }
+
+
+    IEnumerator UpdateHealthAnim(bool turnOn, float seconds)
+    {
+        UpdateHealthAnimBool(turnOn);
+        UpdateHealthUi();
+        yield return new WaitForSeconds(seconds);
+        _isUpdatingUI = false;
+    }
+    
+    private void UpdateHealthUi()
+    {
+        if (_isUpdatingUI)
+        {
+            _CurrentPlayerLives = Mathf.Clamp(_CurrentPlayerLives, 0, _maxPlayerLives);
+            float frontHealthBarFillAmount = frontHealthBar.fillAmount;
+            float backHealthBarFillAmount = backHealthBar.fillAmount;
+            float healthPercentage = _CurrentPlayerLives / _maxPlayerLives;
+
+            if (backHealthBarFillAmount > healthPercentage)
+            {
+                frontHealthBar.fillAmount = healthPercentage;
+                Color loseHealthColor = new Vector4(0.882353f, 0.7529413f, 0.6039216f, 1);
+                backHealthBar.color = loseHealthColor;
+                _timer += Time.deltaTime;
+
+
+                float loseHealthEffectPercentageToComplete = _timer / _drainHealthUiSpeed;
+                loseHealthEffectPercentageToComplete *= loseHealthEffectPercentageToComplete;
+                backHealthBar.fillAmount = Mathf.Lerp(backHealthBarFillAmount, healthPercentage,
+                    loseHealthEffectPercentageToComplete);
+            }
+
+            if (frontHealthBarFillAmount < healthPercentage)
+            {
+                backHealthBar.color = Color.green;
+                backHealthBar.fillAmount = healthPercentage;
+                _timer += Time.deltaTime;
+
+
+                float loseHealthEffectPercentageToComplete = _timer / _drainHealthUiSpeed;
+                loseHealthEffectPercentageToComplete *= loseHealthEffectPercentageToComplete;
+                frontHealthBar.fillAmount = Mathf.Lerp(frontHealthBarFillAmount, backHealthBar.fillAmount,
+                    loseHealthEffectPercentageToComplete);
+            }
+
+            
+            
+        }
+    }
+    
+    private void UpdateHealthAnimBool(bool turnOn)
+    {
+        _isUpdatingUI = turnOn;
+    }
+
+    
+    public void RemoveHealthFromBar(int playerLives, float damage, bool turnOn)
+    {
+        _CurrentPlayerLives = playerLives;
+        _CurrentPlayerLives-= damage;
+        _timer = 0f;
+        
+        
+        StartCoroutine(UpdateHealthAnim(turnOn, _drainHealthUiSpeed));
+    }
+
+    
+    public void AddHealthToBar(int playerLives, float healAmount, bool turnOn)
+    {
+        _CurrentPlayerLives = playerLives;
+        _CurrentPlayerLives += healAmount;
+        _timer = 0f;
+        
+        StartCoroutine(UpdateHealthAnim(turnOn, _drainHealthUiSpeed));
     }
     
     public void UpdateScore(int playerScore)
@@ -113,35 +190,6 @@ public class UIManager : MonoBehaviour
     public void UpdateHealthOnDeath()
     {
         GameOverSequence();
-    }
-    
-    private void UpdateHealthUi()
-    {
-        
-        _CurrentPlayerLives = Mathf.Clamp(_CurrentPlayerLives, 0, _maxPlayerLives);
-        float backHealthBarFillAmount = backHealthBar.fillAmount;
-        float healthPercentage = _CurrentPlayerLives / _maxPlayerLives;
-
-        if (backHealthBarFillAmount > healthPercentage)
-        {
-            frontHealthBar.fillAmount = healthPercentage;
-            Color loseHealthColor = new Vector4(0.882353f,0.7529413f,0.6039216f,1);
-            backHealthBar.color = loseHealthColor;
-           
-            _timer += Time.deltaTime;
-            float loseHealthEffectPercentageToComplete = _timer / _drainHealthUiSpeed;
-            loseHealthEffectPercentageToComplete *= loseHealthEffectPercentageToComplete;
-            backHealthBar.fillAmount = Mathf.Lerp(backHealthBarFillAmount, healthPercentage, loseHealthEffectPercentageToComplete);
-        }
-    }
-    
-    public void RemoveHealthFromBar(int playerLives, float damage)
-    {
-        _CurrentPlayerLives = playerLives;
-        _CurrentPlayerLives-= damage;
-        _timer = 0f;
-        
-        UpdateHealthUi();
     }
 
     public bool DisplayUI(bool displayUI)

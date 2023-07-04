@@ -42,6 +42,12 @@ public class PowerUp : MonoBehaviour
                     case 2:
                         player.ActivateShield();
                         break;
+                    case 3:
+                        player.HealPlayer();
+                        break;
+                    case 4:
+                        player.AmmoPickUp();
+                        break;
                     default:
                         Debug.Log("Default Power Up");
                         break;

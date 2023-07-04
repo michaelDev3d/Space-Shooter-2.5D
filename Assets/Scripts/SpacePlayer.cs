@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Timers;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -91,7 +92,7 @@ public class SpacePlayer : MonoBehaviour
     private static readonly int _playerMaterialTurnOnOutline = Shader.PropertyToID("TurnOnOutline");
     private static readonly int _playerMaterialTurnOnColorMask = Shader.PropertyToID("_TurnOnMask");
     private static readonly int _playerMaterialColorMaskColor = Shader.PropertyToID("_ColorMaskColor");
-
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -293,9 +294,10 @@ public class SpacePlayer : MonoBehaviour
             
             return;
         }
-
-        _uiManager.RemoveHealthFromBar(_playerLives,1f);
         
+        
+        _uiManager.RemoveHealthFromBar(_playerLives,1f, true);
+
         _playerLives--;
         
         _material.SetInt(_playerMaterialTurnOnColorMask, 1);
@@ -357,6 +359,19 @@ public class SpacePlayer : MonoBehaviour
        
        //Debug.Log("Shield is active");
     }
+
+    public void HealPlayer()
+    {
+        if(_playerLives < 3)
+           _uiManager.AddHealthToBar(_playerLives,1f, true);
+    }
+    
+    public void AmmoPickUp()
+    {
+        if (_ammoCount < 15)
+            _ammoCount++;
+    }
+
 
     private void FlickerEffect(float flickerDelay, float seconds)
     {

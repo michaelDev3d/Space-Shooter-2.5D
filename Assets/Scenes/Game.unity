@@ -167,8 +167,10 @@ MonoBehaviour:
   _startSpawningShips: 0
   powerUps:
   - {fileID: 6886991530304394152, guid: daeaeb4b958a51a4aad5d1aadde88df6, type: 3}
-  - {fileID: 6886991530304394152, guid: ae82cba80a03f504e8e7236ad6d0c564, type: 3}
+  - {fileID: 6886991530304394152, guid: cb19884b8f54db948a7c0f7bc3c61114, type: 3}
   - {fileID: 870486937116323291, guid: 8476c3bce18cda44b9a1b2ad39999bc3, type: 3}
+  - {fileID: 870486937116323291, guid: 1086bd8c6817c9e40aeb0c25342ffdc9, type: 3}
+  - {fileID: 870486937116323291, guid: c964f974c8b55fe4f8362ae7314fd49e, type: 3}
 --- !u!4 &29308854
 Transform:
   m_ObjectHideFlags: 0
@@ -184,6 +186,64 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &51030444
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4331277261693052, guid: c964f974c8b55fe4f8362ae7314fd49e, type: 3}
+      propertyPath: m_RootOrder
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4331277261693052, guid: c964f974c8b55fe4f8362ae7314fd49e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.34
+      objectReference: {fileID: 0}
+    - target: {fileID: 4331277261693052, guid: c964f974c8b55fe4f8362ae7314fd49e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 21.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 4331277261693052, guid: c964f974c8b55fe4f8362ae7314fd49e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4331277261693052, guid: c964f974c8b55fe4f8362ae7314fd49e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4331277261693052, guid: c964f974c8b55fe4f8362ae7314fd49e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4331277261693052, guid: c964f974c8b55fe4f8362ae7314fd49e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4331277261693052, guid: c964f974c8b55fe4f8362ae7314fd49e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4331277261693052, guid: c964f974c8b55fe4f8362ae7314fd49e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4331277261693052, guid: c964f974c8b55fe4f8362ae7314fd49e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4331277261693052, guid: c964f974c8b55fe4f8362ae7314fd49e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 870486937116323291, guid: c964f974c8b55fe4f8362ae7314fd49e,
+        type: 3}
+      propertyPath: m_Name
+      value: 'Ammo_PowerUp '
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c964f974c8b55fe4f8362ae7314fd49e, type: 3}
 --- !u!1 &59362435
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,6 +603,7 @@ MonoBehaviour:
   _drainHealthUiSpeed: 2
   frontHealthBar: {fileID: 1379222007}
   backHealthBar: {fileID: 394152601}
+  _isUpdatingUI: 0
 --- !u!4 &331759410
 Transform:
   m_ObjectHideFlags: 0
@@ -1533,7 +1594,7 @@ PrefabInstance:
     - target: {fileID: 8165881637659539270, guid: 2a99f18cdc1feba4893dca7cd333cf0a,
         type: 3}
       propertyPath: m_RootOrder
-      value: 16
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 8165881637659539270, guid: 2a99f18cdc1feba4893dca7cd333cf0a,
         type: 3}
@@ -2809,10 +2870,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1500938065, guid: 3c30ec74f4ef4bc4e9c0d872110dd858, type: 3}
-      propertyPath: ammoCount
-      value: 15
-      objectReference: {fileID: 0}
     - target: {fileID: 6052571874733059492, guid: 3c30ec74f4ef4bc4e9c0d872110dd858,
         type: 3}
       propertyPath: m_RootOrder

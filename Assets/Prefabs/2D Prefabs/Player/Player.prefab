@@ -161,7 +161,7 @@ MonoBehaviour:
   _isTripleShotPowerUpActive: 0
   _speedBoostMultiplier: 2
   _isShieldPowerUpActive: 0
-  ammoCount: 10
+  _ammoCount: 15
   _flickerEffectOn: 0
   _flickerShieldEffectOn: 0
   _audioSource: {fileID: 0}
@@ -172,6 +172,8 @@ MonoBehaviour:
   _uiManager: {fileID: 0}
   _mainMenuPlayer: 0
   _gameManager: {fileID: 0}
+  testTimer: 0
+  testTimer2: 0
 --- !u!82 &4234033134181287023
 AudioSource:
   m_ObjectHideFlags: 0
