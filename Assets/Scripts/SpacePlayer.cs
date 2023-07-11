@@ -15,6 +15,8 @@ public class SpacePlayer : MonoBehaviour
     [SerializeField]
     private float _movementSpeed = 5f;
     [SerializeField]
+    private float _thrusterMultiplier = 1.2f;
+    [SerializeField]
     private SpawnManager _spawnManager;
 
     [Header("Player Movement Data")]
@@ -92,10 +94,19 @@ public class SpacePlayer : MonoBehaviour
     private static readonly int _playerMaterialTurnOnOutline = Shader.PropertyToID("TurnOnOutline");
     private static readonly int _playerMaterialTurnOnColorMask = Shader.PropertyToID("_TurnOnMask");
     private static readonly int _playerMaterialColorMaskColor = Shader.PropertyToID("_ColorMaskColor");
+
+    private CameraEffects _cameraEffects;
+
+    [SerializeField]
+    private bool _playerThrusterActive;
+    //[SerializeField]
+   // private bool _thrusterActive;
     
     // Start is called before the first frame update
     void Start()
     {
+        
+        
         CreatePlayer();
         
         transform.position = new Vector3(0,-0.45f, 0);
@@ -104,24 +115,6 @@ public class SpacePlayer : MonoBehaviour
         if (_mainMenuPlayer)
         {
             transform.position = new Vector3(0,-2.15f, 0);
-        }
-    }
-
-    void Update()
-    {
-        HandleMovement();
-
-        if (_mainMenuPlayer)
-        {
-            ShootInput();
-        }
-
-        if (_gameManager != null)
-        {
-            if (!_gameManager.GetGameIsPaused())
-            {
-                ShootInput();
-            }
         }
     }
     
@@ -186,8 +179,48 @@ public class SpacePlayer : MonoBehaviour
             else
                 Debug.LogError("Game Manager component is null");
         }
+
+        _cameraEffects = GameObject.Find("Effect_Manager").GetComponent<CameraEffects>();
     }
 
+
+    void Update()
+    {
+        HandleMovement();
+
+        if (_mainMenuPlayer)
+        {
+            ShootInput();
+        }
+
+        if (_gameManager != null)
+        {
+            if (!_gameManager.GetGameIsPaused())
+            {
+                ShootInput();
+            }
+        }
+         
+        HandleThruster();
+    }
+
+
+    private void HandleThruster()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+            _playerThrusterActive = true;                                                  //_movementSpeed = _movementSpeed + 6; 
+        if(Input.GetKeyUp(KeyCode.LeftShift))
+            _playerThrusterActive = false;                                                 //_movementSpeed = _movementSpeed - 6;
+    }
+
+    /*
+    IEnumerator ThrusterRoutine()
+    {
+        _movementSpeed = _movementSpeed + 3;
+        yield return new WaitForSeconds(5);
+        _movementSpeed = _movementSpeed - 3;
+    }*/
+    
     private void HandleMovement()
     {
         //Getting input data.
@@ -228,6 +261,8 @@ public class SpacePlayer : MonoBehaviour
         {
             transform.position = new Vector3(_playerBoundsXMin,transform.position.y, 0);
         }
+
+        
     }
     
     private void ShootInput()
@@ -276,6 +311,8 @@ public class SpacePlayer : MonoBehaviour
 
     public void ReceiveDamage()
     {
+        _cameraEffects.ShakeCamera();
+        
         if (_flickerShieldEffectOn || _flickerEffectOn)
         {
             return;
@@ -294,7 +331,8 @@ public class SpacePlayer : MonoBehaviour
             
             return;
         }
-        
+
+       
         
         _uiManager.RemoveHealthFromBar(_playerLives,1f, true);
 
@@ -470,6 +508,8 @@ public class SpacePlayer : MonoBehaviour
         }
     }
 
+    #region DashRegionWIP
+
     private bool HandleDashEffect()
     {
         //Getting input data.
@@ -498,4 +538,5 @@ public class SpacePlayer : MonoBehaviour
         }
         yield return new WaitForSeconds(cooldown);
     }
+    #endregion
 }
