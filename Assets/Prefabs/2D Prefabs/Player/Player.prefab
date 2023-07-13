@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6052571874733059492}
   - component: {fileID: 6052571874733059495}
-  - component: {fileID: 6052571874733059493}
+  - component: {fileID: 2295543644343730795}
   - component: {fileID: 1600583045}
   - component: {fileID: 1500938065}
   - component: {fileID: 4234033134181287023}
@@ -85,8 +85,8 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &6052571874733059493
-BoxCollider2D:
+--- !u!60 &2295543644343730795
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -108,9 +108,13 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.36, y: 0.36}
-  m_EdgeRadius: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.17403464, y: -0.111164}
+      - {x: 0.07950586, y: 0.017086089}
+      - {x: -0.00085273385, y: 0.163562}
+      - {x: -0.07511208, y: 0.016951114}
+      - {x: -0.17340805, y: -0.11816098}
 --- !u!95 &1600583045
 Animator:
   serializedVersion: 3
@@ -157,10 +161,13 @@ MonoBehaviour:
     type: 3}
   _tripleLaserPrefab: {fileID: 8128309471363637927, guid: 3fdc76c789210a947a275cffa80ea6fb,
     type: 3}
+  _OrbitalLaserPrefab: {fileID: 8128309471363637927, guid: e775b3592b69a2a43924206f8e46bfbc,
+    type: 3}
   _laserOffset: {x: 0, y: 0.8, z: 0}
   _isTripleShotPowerUpActive: 0
   _speedBoostMultiplier: 2
   _isShieldPowerUpActive: 0
+  _isOrbitalShotPowerUpActive: 0
   _ammoCount: 15
   _flickerEffectOn: 0
   _flickerShieldEffectOn: 0
@@ -172,6 +179,7 @@ MonoBehaviour:
   _uiManager: {fileID: 0}
   _mainMenuPlayer: 0
   _gameManager: {fileID: 0}
+  _playerThrusterActive: 0
 --- !u!82 &4234033134181287023
 AudioSource:
   m_ObjectHideFlags: 0

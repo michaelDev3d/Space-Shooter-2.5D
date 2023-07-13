@@ -136,7 +136,6 @@ public class UIManager : MonoBehaviour
         _isUpdatingUI = turnOn;
     }
 
-    
     public void RemoveHealthFromBar(int playerLives, float damage, bool turnOn)
     {
         _CurrentPlayerLives = playerLives;
@@ -167,6 +166,7 @@ public class UIManager : MonoBehaviour
         _gameManager.GameOver();
         _gameOverText.gameObject.SetActive(true);
         _restartGameText.gameObject.SetActive(true);
+        _ammoCountText.gameObject.SetActive(false);
         StartCoroutine(GameOverFlicker(0.5f));
     }
 
@@ -206,7 +206,8 @@ public class UIManager : MonoBehaviour
             
             _QuitButton.gameObject.SetActive(false);
             _scoreText.gameObject.SetActive(displayUI);
-            _startGameText.gameObject.SetActive(displayUI);
+            _startGameText.gameObject.SetActive(displayUI); 
+            _ammoCountText.gameObject.SetActive(displayUI);
             frontHealthBar.transform.parent.gameObject.SetActive(displayUI);
 
             if (!displayUI)

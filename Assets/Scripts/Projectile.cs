@@ -16,6 +16,9 @@ public class Projectile : MonoBehaviour
 
     [SerializeField] 
     private float _enemyProjectileSpeed = 6f;
+    
+    [SerializeField] 
+    private bool _isOrbitalLaser;
 
     private static readonly int _EnemyLaserAnimBool = Animator.StringToHash("EnemyLaser");
 
@@ -26,7 +29,7 @@ public class Projectile : MonoBehaviour
     
     private void MoveProjectile()
     {
-        if (!_isEnemyLaser)
+        if (!_isEnemyLaser && !_isOrbitalLaser)
         {
             transform.Translate(Vector3.up * (Time.deltaTime * _projectileSpeed));
 
@@ -41,7 +44,7 @@ public class Projectile : MonoBehaviour
             }
         }
 
-        if (_isEnemyLaser)
+        if (_isEnemyLaser  && !_isOrbitalLaser)
         {
             Animator animator = GetComponent<Animator>();
             
@@ -54,6 +57,13 @@ public class Projectile : MonoBehaviour
             {
                 Destroy(this.gameObject);
             }
+        }
+
+        if (_isOrbitalLaser)
+        {
+            Transform orbitalContainer = gameObject.transform.parent;
+            
+            orbitalContainer.transform.Rotate(Vector3.forward, 1, Space.Self);
         }
     }
 

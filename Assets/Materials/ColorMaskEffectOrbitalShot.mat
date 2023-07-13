@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-3193982388628701318
+--- !u!114 &-3790806041535244309
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: OutlineEffect
+  m_Name: ColorMaskEffectOrbitalShot
   m_Shader: {fileID: -6465566751694194690, guid: 2e6c3b1dc79dfe343bf9cb470f0a8324,
     type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
@@ -49,19 +49,11 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _MainTexture:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OutlineEffect1:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -71,10 +63,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - CORNERS: 0
-    - TurnOnMask: 1
-    - TurnOnOutline: 1
-    - TurnOnOutline2: 1
-    - TurnOnSecondOutline: 1
+    - TurnOnOutline: 0
+    - TurnOnSecondOutline: 0
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -87,7 +77,7 @@ Material:
     - _GlossyReflections: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
-    - _OutlineThickness: 1
+    - _OutlineThickness: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
@@ -95,16 +85,14 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
-    - _TurnOnMask: 0
-    - _TurnOnOutline: 1
+    - _TurnOnMask: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorMaskColor: {r: 0.1462264, g: 0.50384635, b: 1, a: 0}
+    - _ColorMaskColor: {r: 1, g: 0, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _OutlineColor: {r: 0.23113209, g: 0.9635025, b: 1, a: 0}
-    - _OutlineColor2: {r: 1, g: 0.08050728, b: 0, a: 0}
-    - _SecondOutlineColor: {r: 0.4528302, g: 0.21101594, b: 0, a: 1}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 0}
+    - _SecondOutlineColor: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
