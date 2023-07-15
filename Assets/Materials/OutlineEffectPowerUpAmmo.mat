@@ -50,7 +50,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - CORNERS: 0
-    - TurnOnOutline: 1
+    - TurnOnOutline: 0
     - TurnOnSecondOutline: 0
     - _AlphaClip: 0
     - _Blend: 0
@@ -78,7 +78,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorMaskColor: {r: 0.7735849, g: 0.13501246, b: 0.13501246, a: 0}
+    - _ColorMaskColor: {r: 0.5471698, g: 0.13163047, b: 0.22355667, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineColor: {r: 1, g: 0.976601, b: 0, a: 0}
     - _SecondOutlineColor: {r: 0, g: 0, b: 0, a: 0}

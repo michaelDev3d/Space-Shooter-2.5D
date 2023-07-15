@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,7 +19,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] 
     private bool _isOrbitalLaser;
 
-    private static readonly int _EnemyLaserAnimBool = Animator.StringToHash("EnemyLaser");
+    private static readonly int _enemyLaserAnimBool = Animator.StringToHash("EnemyLaser");
 
     void Update()
     {
@@ -49,7 +48,7 @@ public class Projectile : MonoBehaviour
             Animator animator = GetComponent<Animator>();
             
             if(animator != null)
-                animator.SetBool(_EnemyLaserAnimBool, true);
+                animator.SetBool(_enemyLaserAnimBool, true);
             
             transform.Translate(Vector3.down * (Time.deltaTime * _enemyProjectileSpeed));
             

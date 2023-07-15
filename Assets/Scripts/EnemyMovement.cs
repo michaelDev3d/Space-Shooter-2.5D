@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Serialization;
-using Debug = UnityEngine.Debug;
-using Random = UnityEngine.Random;
 
 public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] 
-    private int _EnemyTypeID;
+    private int _enemyTypeID;
     
     [Header("Movement Data")]
     [SerializeField]
@@ -31,8 +27,6 @@ public class EnemyMovement : MonoBehaviour
     private GameObject _spriteGameObject;
 
     [Header("Enemy Components")]
-    [SerializeField] 
-    private SpriteRenderer _sprite;
     [SerializeField]
     private BoxCollider2D _collider2D;
     [SerializeField] 
@@ -63,7 +57,7 @@ public class EnemyMovement : MonoBehaviour
     
     void Start()
     {
-        CreateEnemy(_EnemyTypeID);
+        CreateEnemy(_enemyTypeID);
     }
 
     void Update()
@@ -91,14 +85,9 @@ public class EnemyMovement : MonoBehaviour
         //Finding and Null Checking for Sprite GameObject, Renderer, and animator.
         if (transform.childCount > 0)
         {
+            //Rendering Gameobject
             _spriteGameObject= transform.GetChild(0).gameObject;
-            
-            //Renderer
-            if (_spriteGameObject.TryGetComponent(out SpriteRenderer spriteRenderer))
-                _sprite = spriteRenderer;
-            else
-                Debug.LogError("Sprite component for "+ gameObject.name +" is null");
-            
+
             //Animator
             if (_spriteGameObject.TryGetComponent(out Animator animator))
                 _animator = animator;
@@ -135,7 +124,6 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
-
     private void CalculateMovement()
     {
         //if the enemy is not a mainMenuEnemy or StartGameEnemy enable movement
@@ -151,7 +139,7 @@ public class EnemyMovement : MonoBehaviour
         }
         
         //Adding spinning to a meteor enemy
-        if (_EnemyTypeID == 0)
+        if (_enemyTypeID == 0)
         {
             _spriteGameObject.transform.Rotate(Vector3.forward * _spinSpeed);
         }
@@ -232,25 +220,26 @@ public class EnemyMovement : MonoBehaviour
         //Initiating the game once this enemy is defeated.
         if (_startGameEnemy)
         {
-            AudioSource _backgroundAudioSource = GameObject.Find("Audio_Manager").GetComponentInChildren<AudioSource>();
+            AudioSource backgroundAudioSource = GameObject.Find("Audio_Manager").GetComponentInChildren<AudioSource>();
             
-            if (_backgroundAudioSource != null)
-                _backgroundAudioSource.Play();
+            if (backgroundAudioSource != null)
+                backgroundAudioSource.Play();
             else
-                Debug.LogError("Background Audio Source component is null");
+                Debug.LogError("Background Audio Source component is NULL in "+gameObject.name);
             
-            SpawnManager _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+            SpawnManager spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
             
-            if (_spawnManager != null)
-                _spawnManager.StartSpawning();
+            if (spawnManager != null)
+                spawnManager.StartSpawning();
             else
-                Debug.LogError("Spawn Manager component is null");
+                Debug.LogError("Spawn Manager component is n NULL in "+gameObject.name);
 
-            UIManager _uiManager = GameObject.Find("UI_Manager").GetComponent<UIManager>();
-            if (_uiManager != null)
-                _uiManager.TurnOffStartGameText();
+            UIManager uiManager = GameObject.Find("UI_Manager").GetComponent<UIManager>();
+            
+            if (uiManager != null)
+                uiManager.TurnOffStartGameText();
             else
-                Debug.LogError("UI Manager component is null");
+                Debug.LogError("UI Manager component is NULL in "+gameObject.name);
         }
     }
 
@@ -275,7 +264,7 @@ public class EnemyMovement : MonoBehaviour
                 }
             }
             else
-                Debug.LogError("Game manager component is null");
+                Debug.LogError("Game manager component is NULL in "+gameObject.name);
         }
     }
 }

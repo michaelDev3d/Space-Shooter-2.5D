@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -50,11 +49,11 @@ public class GameManager : MonoBehaviour
         else
             Debug.LogError("Spawn Manager gameObject is NULL");
         
-        GameObject _uiManagerGameObject = GameObject.Find("UI_Manager");
+        GameObject uiManagerGameObject = GameObject.Find("UI_Manager");
 
-        if (_uiManagerGameObject != null)
+        if (uiManagerGameObject != null)
         {
-            if (_uiManagerGameObject.TryGetComponent(out UIManager uiManager))
+            if (uiManagerGameObject.TryGetComponent(out UIManager uiManager))
                 _uiManager = uiManager;
             else
                 Debug.LogError("Spawn Manager component is NULL on Spawn Manager gameObject");

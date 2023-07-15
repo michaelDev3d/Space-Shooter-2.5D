@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = System.Random;
 
 public class CameraEffects : MonoBehaviour
 {
@@ -11,7 +9,17 @@ public class CameraEffects : MonoBehaviour
 
     private void Start()
     {
-        _cameraAnimator = GameObject.FindWithTag("MainCamera").GetComponent<Animator>();  
+        GameObject cameraGameObject = GameObject.FindWithTag("MainCamera");
+
+        if (cameraGameObject != null)
+        {
+            if (cameraGameObject.TryGetComponent(out Animator animator))
+                _cameraAnimator = animator;
+            else
+            {
+                Debug.Log("Camera Animator is NULL in CameraEffects component");
+            }
+        }
     } 
     public void ShakeCamera()
     {

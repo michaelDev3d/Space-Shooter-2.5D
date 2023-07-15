@@ -52,7 +52,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: bb04be4e610f2eb4ba97592b63f9d3f0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -96,10 +96,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3e78adeaecf14b4db6e9a28da4dbf5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _movementSpeed: 1.5
   _powerUpID: 1
+  _movementSpeed: 1.5
   _audioClip: {fileID: 8300000, guid: 1fa3bc5eb41feeb4ea2c542735f8f047, type: 3}
-  _audioSource: {fileID: 0}
 --- !u!50 &6886991530304394165
 Rigidbody2D:
   serializedVersion: 4

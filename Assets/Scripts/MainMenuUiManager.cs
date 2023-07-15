@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -43,5 +41,10 @@ public class MainMenuUiManager : MonoBehaviour
     public void LoadMainStage(bool loadStage)
     {
         _LoadMainStageBool = loadStage;
+    }
+
+    public void LoadMainLevelButton()
+    {
+        SceneManager.LoadScene("Game");
     }
 }

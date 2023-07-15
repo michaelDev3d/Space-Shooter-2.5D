@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Timers;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -68,7 +66,6 @@ public class SpacePlayer : MonoBehaviour
     public int _ammoCount = 15;
     
     
-        
     [Header("Effects")]
     [SerializeField] 
     private bool _flickerEffectOn;
@@ -105,14 +102,11 @@ public class SpacePlayer : MonoBehaviour
 
     [SerializeField]
     private bool _playerThrusterActive;
-    //[SerializeField]
-    //private bool _thrusterActive;
+    
     
     // Start is called before the first frame update
     void Start()
     {
-        
-        
         CreatePlayer();
         
         transform.position = new Vector3(0,-0.45f, 0);
@@ -148,24 +142,26 @@ public class SpacePlayer : MonoBehaviour
             Debug.LogError("Animator Component not found on player");
 
 
-        if (_mainMenuPlayer)
+        switch (_mainMenuPlayer)
         {
-            return;
-        }
-
-        if (!_mainMenuPlayer)
-        {
-            GameObject uiManagerGameObject = GameObject.Find("UI_Manager");
-
-            if (uiManagerGameObject != null)
+            case true:
+                return;
+            case false:
             {
-                if (uiManagerGameObject.TryGetComponent(out UIManager uiManager))
-                    _uiManager = uiManager;
-                else
-                    Debug.LogError("UI Manager component is null");
+                GameObject uiManagerGameObject = GameObject.Find("UI_Manager");
+
+                if (uiManagerGameObject != null)
+                {
+                    if (uiManagerGameObject.TryGetComponent(out UIManager uiManager))
+                        _uiManager = uiManager;
+                    else
+                        Debug.LogError("UI Manager component is null");
+                }
+
+                break;
             }
         }
-        
+
         GameObject spawnManagerGameObject = GameObject.Find("Spawn_Manager");
 
         if (spawnManagerGameObject != null)
@@ -271,7 +267,6 @@ public class SpacePlayer : MonoBehaviour
 
         private void ShootInput()
         {
-
             if (_ammoCount > 0)
             {
                 //Shooting Input and logic.
@@ -417,7 +412,6 @@ public class SpacePlayer : MonoBehaviour
             AdjustMaterialAppearance(_material, _playerMaterialOutlineColor, Color.cyan, _playerMaterialTurnOnOutline, 1);
             AdjustMaterialAppearance(_material, _playerMaterialColorMaskColor, Color.blue, _playerMaterialTurnOnColorMask, 1);
            
-            //Debug.Log("Shield is active");
         }
         
         public void AmmoPickUp()
@@ -457,6 +451,7 @@ public class SpacePlayer : MonoBehaviour
     #region Player Hit Effects
 
         #region Player Hit Flicker (Lose health)
+            
             private void FlickerPlayerEffect(float flickerDelay, float seconds)
             {
                 StartCoroutine(PlayerHitFlicker(flickerDelay));
@@ -537,8 +532,7 @@ public class SpacePlayer : MonoBehaviour
             IEnumerator PlayerShieldOutlineFlicker(float flickerDelay)
             {
                 _flickerShieldEffectOn = true;
-                
-                
+
                 while (_flickerShieldEffectOn)
                 {
                     _material.SetColor(_playerMaterialOutlineColor, Color.cyan );
@@ -554,39 +548,38 @@ public class SpacePlayer : MonoBehaviour
                 _flickerShieldEffectOn = false;
             }
 
-    #endregion
+        #endregion
 
         #region Player Hit Flicker (With Shield and additional power up)
 
-        private void FlickerShieldOutlineEffectWithAdditionalPowerUp(float flickerDelay, float seconds, Color powerUpColor)
-        {
-            StartCoroutine(PlayerShieldOutlineFlickerWithAdditionalPowerUp(flickerDelay, powerUpColor));
-            StartCoroutine(DeactivateShieldOutlineFlickerEffectWithAdditionalPowerUp(seconds));
-        }
-
-        IEnumerator PlayerShieldOutlineFlickerWithAdditionalPowerUp(float flickerDelay, Color powerUpColor)
-        {
-            _flickerShieldEffectOn = true;
-                    
-                    
-            while (_flickerShieldEffectOn)
+            private void FlickerShieldOutlineEffectWithAdditionalPowerUp(float flickerDelay, float seconds, Color powerUpColor)
             {
-                _material.SetColor(_playerMaterialOutlineColor, Color.cyan );
-                yield return new WaitForSeconds(flickerDelay);
-                _material.SetColor(_playerMaterialOutlineColor, Color.clear );
-                yield return new WaitForSeconds(flickerDelay);
+                StartCoroutine(PlayerShieldOutlineFlickerWithAdditionalPowerUp(flickerDelay, powerUpColor));
+                StartCoroutine(DeactivateShieldOutlineFlickerEffectWithAdditionalPowerUp(seconds));
             }
-            
-            _material.SetColor(_playerMaterialOutlineColor, powerUpColor );
-        }
-                
-        IEnumerator DeactivateShieldOutlineFlickerEffectWithAdditionalPowerUp(float seconds)
-        {
-            yield return new WaitForSeconds(seconds);
-            _flickerShieldEffectOn = false;
-        }
 
-    #endregion
+            IEnumerator PlayerShieldOutlineFlickerWithAdditionalPowerUp(float flickerDelay, Color powerUpColor)
+            {
+                _flickerShieldEffectOn = true;
+
+                while (_flickerShieldEffectOn)
+                {
+                    _material.SetColor(_playerMaterialOutlineColor, Color.cyan );
+                    yield return new WaitForSeconds(flickerDelay);
+                    _material.SetColor(_playerMaterialOutlineColor, Color.clear );
+                    yield return new WaitForSeconds(flickerDelay);
+                }
+                
+                _material.SetColor(_playerMaterialOutlineColor, powerUpColor );
+            }
+                    
+            IEnumerator DeactivateShieldOutlineFlickerEffectWithAdditionalPowerUp(float seconds)
+            {
+                yield return new WaitForSeconds(seconds);
+                _flickerShieldEffectOn = false;
+            }
+
+        #endregion
 
         //Method to turn on/off or change the color of our outline or color mask shader.
         private void AdjustMaterialAppearance(Material gameObjectMaterial, int materialColorID, Color color,int materialVisibleID, int active)

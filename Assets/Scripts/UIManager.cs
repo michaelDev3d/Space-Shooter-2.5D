@@ -78,19 +78,19 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
-        UpdateHealthUi();
+        UpdateHealthUiOnlyOnChange();
     }
 
 
     IEnumerator UpdateHealthAnim(bool turnOn, float seconds)
     {
         UpdateHealthAnimBool(turnOn);
-        UpdateHealthUi();
+        UpdateHealthUiOnlyOnChange();
         yield return new WaitForSeconds(seconds);
         _isUpdatingUI = false;
     }
     
-    private void UpdateHealthUi()
+    private void UpdateHealthUiOnlyOnChange()
     {
         if (_isUpdatingUI)
         {
