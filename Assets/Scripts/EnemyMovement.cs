@@ -167,11 +167,11 @@ public class EnemyMovement : MonoBehaviour
         {
             Projectile projectile = other.GetComponent<Projectile>();
 
-            if (!projectile.IsEnemyLaser())
+            if (!projectile.CheckIfIsEnemyLaser())
             {
                 _animator.SetBool(_explosionAnimBool, true);
                 
-                if (_player != null && !_player.GetMainMenuPlayer() && !projectile.IsEnemyLaser())
+                if (_player != null && !_player.GetMainMenuPlayer() && !projectile.CheckIfIsEnemyLaser())
                     _player.AddScore(_scorePerKill);
 
                 StartCoroutine(DestroySequence(1));

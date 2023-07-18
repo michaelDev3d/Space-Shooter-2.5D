@@ -1,8 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class SpacePlayer : MonoBehaviour
 {
@@ -13,6 +10,9 @@ public class SpacePlayer : MonoBehaviour
     private float _playerStamina = 100;
     [SerializeField]
     private float _fireRate = 0.5f;
+    [SerializeField] 
+    public int _ammoCount = 15;
+
     
     
     private float _defaultSpeed = 5f;
@@ -22,17 +22,20 @@ public class SpacePlayer : MonoBehaviour
     private float _thrusterSpeed = 5f;
     
 
+    [Header("Thruster Data")]
+    [SerializeField]
+    private bool _thrusterActivated;
     [SerializeField] 
     private float _staminaDecayRate = 0.8f;
     [SerializeField]
     private bool _thrusterRegenActivated; 
-    [SerializeField]
-    private bool _thrusterActivated;
-
     [SerializeField] 
     private bool _thrusterOnCooldown;
-    [SerializeField]
-    private SpawnManager _spawnManager;
+    [SerializeField] 
+    private GameObject _thrusterEnergyBar;
+    private SpriteRenderer _thrusterBarRenderer;
+    private Material _thrusterBarMaterial;
+    
 
     [Header("Player Movement Data")]
     [SerializeField]
@@ -46,7 +49,7 @@ public class SpacePlayer : MonoBehaviour
     [SerializeField]
     private float _playerBoundsXMin = -11.27f;
     [SerializeField]
-    private float _playerBoundsYMax = 0f;
+    private float _playerBoundsYMax;
     [SerializeField]
     private float _playerBoundsYMin = -4f;
     [SerializeField] 
@@ -65,22 +68,23 @@ public class SpacePlayer : MonoBehaviour
     private GameObject _OrbitalLaserPrefab;
     [SerializeField]
     private Vector3 _laserOffset = new Vector3(0f, 0.8f, 0f);
-    private float _cooldownTimer;
+    private float _cooldownTimer; 
+    
+    [Header("Power Up Data")]
     [SerializeField] 
     private bool _isTripleShotPowerUpActive;
     [SerializeField] 
-    private float _speedBoostMultiplier = 2f;
-    [SerializeField] 
     private bool _isShieldPowerUpActive;
+    [SerializeField]
+    private bool _speedBoostActive;
+    [SerializeField] 
+    private float _speedBoostMultiplier = 2f;
     
     [SerializeField] 
     private bool _isOrbitalShotPowerUpActive;
     
     private Renderer _renderer;
     private Material _material;
-    
-    [SerializeField] 
-    public int _ammoCount = 15;
     
     
     [Header("Effects")]
@@ -101,12 +105,13 @@ public class SpacePlayer : MonoBehaviour
         
     [Header("Level Data")]
     [SerializeField] 
+    private bool _mainMenuPlayer;
+    [SerializeField] 
     private int _score;
     [SerializeField] 
     private UIManager _uiManager;
-    [SerializeField] 
-    private bool _mainMenuPlayer;
-
+    [SerializeField]
+    private SpawnManager _spawnManager;
     [SerializeField] 
     private GameManager _gameManager;
 
@@ -115,12 +120,12 @@ public class SpacePlayer : MonoBehaviour
     private static readonly int _playerMaterialTurnOnColorMask = Shader.PropertyToID("_TurnOnMask");
     private static readonly int _playerMaterialColorMaskColor = Shader.PropertyToID("_ColorMaskColor");
 
+    [SerializeField]
     private CameraEffects _cameraEffects;
 
-    [SerializeField] 
-    private GameObject _thrusterEnergyBar;
-    
 
+    private int _shieldCount;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -157,8 +162,7 @@ public class SpacePlayer : MonoBehaviour
             _playerAnimator = playerAnimator;
         else
             Debug.LogError("Animator Component not found on player");
-
-
+        
         switch (_mainMenuPlayer)
         {
             case true:
@@ -172,7 +176,7 @@ public class SpacePlayer : MonoBehaviour
                     if (uiManagerGameObject.TryGetComponent(out UIManager uiManager))
                         _uiManager = uiManager;
                     else
-                        Debug.LogError("UI Manager component is null");
+                        Debug.LogError("UI Manager component  is NULL in Player");
                 }
 
                 break;
@@ -186,7 +190,7 @@ public class SpacePlayer : MonoBehaviour
             if (spawnManagerGameObject.TryGetComponent(out SpawnManager spawnManager))
                 _spawnManager = spawnManager;
             else
-                Debug.LogError("Spawn Manager component is null");
+                Debug.LogError("Spawn Manager component is NULL in Player");
         }
 
         GameObject gameManager = GameObject.Find("Game_Manager");
@@ -196,15 +200,45 @@ public class SpacePlayer : MonoBehaviour
             if (gameManager.TryGetComponent(out GameManager gameManagerIsPresent))
                 _gameManager = gameManagerIsPresent;
             else
-                Debug.LogError("Game Manager component is null");
+                Debug.LogError("Game Manager component is NULL in Player");
         }
 
-        _cameraEffects = GameObject.Find("Effect_Manager").GetComponent<CameraEffects>();
+        GameObject cameraEffectsGameObject = GameObject.Find("Effect_Manager");
+
+        if (cameraEffectsGameObject != null)
+        {
+            if (cameraEffectsGameObject.TryGetComponent(out CameraEffects cameraEffects))
+            {
+                _cameraEffects = cameraEffects; 
+            }else
+                Debug.LogError("Camera Effects component is NULL in Player");
+        }
+
+        _thrusterEnergyBar = gameObject.transform.GetChild(0).gameObject;
+
+        if (_thrusterEnergyBar != null)
+        {
+            if (_thrusterEnergyBar.TryGetComponent(out SpriteRenderer energyBarSpriteRenderer))
+            {
+                _thrusterBarRenderer = energyBarSpriteRenderer;
+                _thrusterBarMaterial = _thrusterBarRenderer.material;
+            }
+            else
+                Debug.LogError("Renderer/Material not found on Player Energy Bar");
+            
+            if (!_mainMenuPlayer)
+            {
+                _thrusterEnergyBar.gameObject.SetActive(true);
+            }
+        }
+        
+
     }
     
     void Update()
     {
-        _thrusterEnergyBar.transform.localScale = new Vector3(_playerStamina / 75, 1, 1);
+        if (!_mainMenuPlayer && _thrusterEnergyBar != null)
+            _thrusterEnergyBar.transform.localScale = new Vector3(_playerStamina / 75, 1, 1);
         
         HandleMovement();
 
@@ -222,14 +256,16 @@ public class SpacePlayer : MonoBehaviour
             }
         }
          
-        HandleThruster();
+        if(!_mainMenuPlayer)
+            HandleThruster();
+        
         CheckOrbitalShotDeactivation();
     }
 
     #region Movement
         private void HandleThruster()
         {
-            Material barMaterial = _thrusterEnergyBar.GetComponent<SpriteRenderer>().material;
+          
             if (Input.GetKey(KeyCode.LeftShift) && _playerStamina >= 0 && !_thrusterOnCooldown )
                 _thrusterActivated = true;
             else
@@ -248,22 +284,26 @@ public class SpacePlayer : MonoBehaviour
                     _movementSpeed = _defaultSpeed;
                     _playerStamina = 0;
                     _thrusterActivated = false;
+                    if (_speedBoostActive)
+                    {
+                        _movementSpeed *= _speedBoostMultiplier;
+                    }
                 }
             }
             else
                 _movementSpeed = _defaultSpeed; 
             
-
             if (_playerStamina <= 100 && !_thrusterActivated)
             {
                 _thrusterRegenActivated = true;
-                StartCoroutine(StaminaRegenRoutine(1,0));
             }
+            
+            if(_thrusterRegenActivated)
+                StartCoroutine(StaminaRegenRoutine(1));
         }
 
-        IEnumerator StaminaRegenRoutine(float regenDelay,float seconds)
+        private IEnumerator StaminaRegenRoutine(float regenDelay)
         {
-            Material barMaterial = _thrusterEnergyBar.GetComponent<SpriteRenderer>().material;
             _thrusterRegenActivated = false;
             _thrusterOnCooldown = true;
 
@@ -271,22 +311,21 @@ public class SpacePlayer : MonoBehaviour
 
             if (_playerStamina < 100)
             {
-                barMaterial.SetInt("_TurnOnMask", 1);
-                barMaterial.SetColor("_ColorMaskColor", Color.red);
+                _thrusterBarMaterial.SetInt("_TurnOnMask", 1);
+                _thrusterBarMaterial.SetColor("_ColorMaskColor", Color.red);
                 _playerStamina += _staminaDecayRate / 2;
             }
             else if (_playerStamina >= 100)
             {
                 
-                barMaterial.SetInt("_TurnOnMask", 1);
-                barMaterial.SetColor("_ColorMaskColor", Color.green);
+                _thrusterBarMaterial.SetInt("_TurnOnMask", 1);
+                _thrusterBarMaterial.SetColor("_ColorMaskColor", Color.green);
                 _thrusterOnCooldown = false;
             }
         }
 
         private void HandleMovement()
         {
-            
             //Getting input data.
             _horizontal = Input.GetAxis("Horizontal");
             _vertical = Input.GetAxis("Vertical");
@@ -335,45 +374,90 @@ public class SpacePlayer : MonoBehaviour
 
         private void ShootInput()
         {
-            if (_ammoCount > 0)
+            if (_mainMenuPlayer)
             {
-                //Shooting Input and logic.
                 if (Input.GetKeyDown(KeyCode.Space) && Time.time > _cooldownTimer)
                 {
                     #region Shooting Logic
-                    _cooldownTimer = Time.time + _fireRate;
 
-                    if (_isTripleShotPowerUpActive)
-                    {
-                        Instantiate(_tripleLaserPrefab, transform.position + _laserOffset, Quaternion.identity);
+                        _cooldownTimer = Time.time + _fireRate;
 
-                        if (_tripleShotSFX != null)
+                        if (_isTripleShotPowerUpActive)
                         {
-                            _audioSource.clip = _tripleShotSFX;
-                            _audioSource.Play();
-                        }
-                    }
-                    else
-                    {
-                        Instantiate(_laserPrefab, transform.position + _laserOffset, Quaternion.identity);
+                            Instantiate(_tripleLaserPrefab, transform.position + _laserOffset, Quaternion.identity);
 
-                        if (_laserSFX != null)
-                        {
-                            _audioSource.clip = _laserSFX;
-                            _audioSource.Play();
+                            if (_tripleShotSFX != null)
+                            {
+                                _audioSource.clip = _tripleShotSFX;
+                                _audioSource.Play();
+                            }
                         }
-                    }
+                        else
+                        {
+                            Instantiate(_laserPrefab, transform.position + _laserOffset, Quaternion.identity);
+
+                            if (_laserSFX != null)
+                            {
+                                _audioSource.clip = _laserSFX;
+                                _audioSource.Play();
+                            }
+                        }
+
                     #endregion
-                    
+
                     _ammoCount--;
-                    
+
                     if (_ammoCount == 0)
                     {
                         _uiManager.BlinkAmmoCountText();
                     }
                 }
-                
-                _uiManager.UpdateAmmoCountUI(_ammoCount);
+            }
+            
+            if (!_mainMenuPlayer)
+            {
+                if (_ammoCount > 0)
+                {
+                    //Shooting Input and logic.
+                    if (Input.GetKeyDown(KeyCode.Space) && Time.time > _cooldownTimer)
+                    {
+                        #region Shooting Logic
+
+                        _cooldownTimer = Time.time + _fireRate;
+
+                        if (_isTripleShotPowerUpActive)
+                        {
+                            Instantiate(_tripleLaserPrefab, transform.position + _laserOffset, Quaternion.identity);
+
+                            if (_tripleShotSFX != null)
+                            {
+                                _audioSource.clip = _tripleShotSFX;
+                                _audioSource.Play();
+                            }
+                        }
+                        else
+                        {
+                            Instantiate(_laserPrefab, transform.position + _laserOffset, Quaternion.identity);
+
+                            if (_laserSFX != null)
+                            {
+                                _audioSource.clip = _laserSFX;
+                                _audioSource.Play();
+                            }
+                        }
+
+                        #endregion
+
+                        _ammoCount--;
+
+                        if (_ammoCount == 0)
+                        {
+                            _uiManager.BlinkAmmoCountText();
+                        }
+                    }
+
+                    _uiManager.UpdateAmmoCountUI(_ammoCount);
+                }
             }
         }
 
@@ -388,10 +472,13 @@ public class SpacePlayer : MonoBehaviour
 
             if (_isShieldPowerUpActive)
             {
+                _uiManager.SetShieldCount(1);
                 if (CheckIfPlayerHasShieldBoostColorMask())
                 {
                     if (_material.GetColor(_playerMaterialOutlineColor) == Color.clear)
                     {
+                        _uiManager.SetShieldCount(0);
+                        _uiManager.BlinkShieldCountText();
                         _isShieldPowerUpActive = false;
                         _material.SetInt(_playerMaterialTurnOnColorMask, 0);
                         FlickerShieldColorMaskEffect(0.15f, 2f);
@@ -459,6 +546,7 @@ public class SpacePlayer : MonoBehaviour
         
         public void ActivateSpeedBoost()
         {
+            _speedBoostActive = true;
             _movementSpeed *= _speedBoostMultiplier;
             AdjustMaterialAppearance(_material, _playerMaterialOutlineColor, Color.red, _playerMaterialTurnOnOutline, 1);
             
@@ -472,11 +560,14 @@ public class SpacePlayer : MonoBehaviour
             AdjustMaterialAppearance(_material, _playerMaterialOutlineColor, Color.clear, _playerMaterialTurnOnOutline, 0);
             
             _movementSpeed /= _speedBoostMultiplier;
+            _speedBoostActive = false;
         }
         
         public void ActivateShield()
         {
             _isShieldPowerUpActive= true;
+            _uiManager.SetShieldCount(2);
+            _uiManager.ShowShieldCount();
             AdjustMaterialAppearance(_material, _playerMaterialOutlineColor, Color.cyan, _playerMaterialTurnOnOutline, 1);
             AdjustMaterialAppearance(_material, _playerMaterialColorMaskColor, Color.blue, _playerMaterialTurnOnColorMask, 1);
            
@@ -485,6 +576,8 @@ public class SpacePlayer : MonoBehaviour
         public void AmmoPickUp()
         {
             if (_ammoCount < 15)
+                _ammoCount++;
+            if (_ammoCount < 14)
                 _ammoCount++;
         }
         
@@ -553,11 +646,11 @@ public class SpacePlayer : MonoBehaviour
             {
                 if (_material.GetColor(_playerMaterialColorMaskColor) == Color.blue)
                 {
-                    Debug.Log("Player still has shield");
+                    //Debug.Log("Player still has shield");
                     return true;
                 }
                 
-                Debug.Log("Player does not have shield");
+                //Debug.Log("Player does not have shield");
                 return false;
             }
 
@@ -690,7 +783,7 @@ public class SpacePlayer : MonoBehaviour
 
             if (projectile != null)
             {
-                if (projectile.IsEnemyLaser())
+                if (projectile.CheckIfIsEnemyLaser())
                 {
                     _audioSource.clip = _explosionSFX;
                     _audioSource.Play();

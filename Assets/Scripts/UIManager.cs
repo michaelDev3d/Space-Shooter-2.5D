@@ -19,6 +19,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] 
     private TextMeshProUGUI _pauseGameText;
     [SerializeField] 
+    private TextMeshProUGUI _ShieldCountText;
+    [SerializeField] 
     private Button _QuitButton;
     private GameManager _gameManager;
     
@@ -44,6 +46,9 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] 
     private bool _isUpdatingUI;
+
+
+    private bool _hideShieldAfterBlinking = false;
     
     // Start is called before the first frame update
     void Start()
@@ -56,6 +61,9 @@ public class UIManager : MonoBehaviour
         
         if(_restartGameText != null)
             _restartGameText.gameObject.SetActive(false);
+        
+        if(_ShieldCountText != null)
+            _ShieldCountText.gameObject.SetActive(false);
         
         GameObject _gameManagerGameObject = GameObject.Find("Game_Manager");
 
@@ -125,9 +133,6 @@ public class UIManager : MonoBehaviour
                 frontHealthBar.fillAmount = Mathf.Lerp(frontHealthBarFillAmount, backHealthBar.fillAmount,
                     loseHealthEffectPercentageToComplete);
             }
-
-            
-            
         }
     }
     
@@ -220,6 +225,61 @@ public class UIManager : MonoBehaviour
         return displayUI;
     }
 
+    public void ShowShieldCount()
+    {
+        _hideShieldAfterBlinking = false;
+        _ShieldCountText.gameObject.SetActive(true);
+    }
+
+    private void HideShieldCount()
+    {
+        _ShieldCountText.gameObject.SetActive(false);
+    }
+
+    public void SetShieldCount(int count)
+    {
+        _ShieldCountText.text = "Shield: " + count;
+    }
+    
+    public void BlinkShieldCountText()
+    {
+        //Start Blinking after ammo runs out
+        StartCoroutine(BlinkShieldTextRoutine(0.5f, _hideShieldAfterBlinking));
+        
+        //Stop Blinking and hide text after X seconds.
+        StartCoroutine(HideBlinkingShieldText(3));
+    }
+    
+    IEnumerator BlinkShieldTextRoutine(float BlinkRateInSeconds, bool hideShieldUI)
+    {
+        while (!hideShieldUI)
+        {
+            //Blink while hideShieldUI is false
+            _ShieldCountText.transform.gameObject.SetActive(true);
+            yield return new WaitForSeconds(BlinkRateInSeconds);
+            HideShieldCount();
+            yield return new WaitForSeconds(BlinkRateInSeconds);
+            
+            //Check if hideShieldUI is true
+            hideShieldUI = GetHideBlinkingShieldBool();
+        }
+        
+        //Hide shield after blinking ends.
+        HideShieldCount();
+    }
+
+    IEnumerator HideBlinkingShieldText(float seconds)
+    {
+        //Set hideShieldUI to true after X amount of seconds
+        yield return new WaitForSeconds(seconds);
+        _hideShieldAfterBlinking = true;
+    }
+
+    private bool GetHideBlinkingShieldBool()
+    {
+        return _hideShieldAfterBlinking;
+    }
+    
     public void UpdateAmmoCountUI(int AmmoCount)
     {
         _ammoCountText.text = "Ammo: " + AmmoCount;
@@ -245,6 +305,7 @@ public class UIManager : MonoBehaviour
     {
         _QuitButton.gameObject.SetActive(true);
     }
+    
 
     public void QuitGame()
     {

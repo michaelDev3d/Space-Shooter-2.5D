@@ -43,7 +43,7 @@ public class Projectile : MonoBehaviour
             }
         }
 
-        if (_isEnemyLaser  && !_isOrbitalLaser)
+        if (_isEnemyLaser && !_isOrbitalLaser)
         {
             Animator animator = GetComponent<Animator>();
             
@@ -66,7 +66,7 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    public bool IsEnemyLaser()
+    public bool CheckIfIsEnemyLaser()
     {
         return _isEnemyLaser;
     }
