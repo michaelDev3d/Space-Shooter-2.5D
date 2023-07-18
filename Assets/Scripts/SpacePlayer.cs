@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -9,11 +10,27 @@ public class SpacePlayer : MonoBehaviour
     [SerializeField]
     private int _playerLives = 3;
     [SerializeField]
+    private float _playerStamina = 100;
+    [SerializeField]
     private float _fireRate = 0.5f;
+    
+    
+    private float _defaultSpeed = 5f;
     [SerializeField]
     private float _movementSpeed = 5f;
-    //[SerializeField]
-    //private float _thrusterMultiplier = 1.2f;
+    [SerializeField]
+    private float _thrusterSpeed = 5f;
+    
+
+    [SerializeField] 
+    private float _staminaDecayRate = 0.8f;
+    [SerializeField]
+    private bool _thrusterRegenActivated; 
+    [SerializeField]
+    private bool _thrusterActivated;
+
+    [SerializeField] 
+    private bool _thrusterOnCooldown;
     [SerializeField]
     private SpawnManager _spawnManager;
 
@@ -100,10 +117,10 @@ public class SpacePlayer : MonoBehaviour
 
     private CameraEffects _cameraEffects;
 
-    [SerializeField]
-    private bool _playerThrusterActive;
+    [SerializeField] 
+    private GameObject _thrusterEnergyBar;
     
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -187,6 +204,8 @@ public class SpacePlayer : MonoBehaviour
     
     void Update()
     {
+        _thrusterEnergyBar.transform.localScale = new Vector3(_playerStamina / 75, 1, 1);
+        
         HandleMovement();
 
         if (_mainMenuPlayer)
@@ -210,10 +229,59 @@ public class SpacePlayer : MonoBehaviour
     #region Movement
         private void HandleThruster()
         {
-            if (Input.GetKeyDown(KeyCode.LeftShift))
-                _movementSpeed = _movementSpeed + 6; 
-            if(Input.GetKeyUp(KeyCode.LeftShift))
-                _movementSpeed = _movementSpeed - 6;
+            Material barMaterial = _thrusterEnergyBar.GetComponent<SpriteRenderer>().material;
+            if (Input.GetKey(KeyCode.LeftShift) && _playerStamina >= 0 && !_thrusterOnCooldown )
+                _thrusterActivated = true;
+            else
+                _thrusterActivated = false;
+
+            if (_thrusterActivated)
+            {
+                if (_horizontal != 0 || _vertical != 0)
+                {
+                    _movementSpeed = _thrusterSpeed;
+                    _playerStamina -= _staminaDecayRate;
+                }
+
+                if (_playerStamina <= 0)
+                {
+                    _movementSpeed = _defaultSpeed;
+                    _playerStamina = 0;
+                    _thrusterActivated = false;
+                }
+            }
+            else
+                _movementSpeed = _defaultSpeed; 
+            
+
+            if (_playerStamina <= 100 && !_thrusterActivated)
+            {
+                _thrusterRegenActivated = true;
+                StartCoroutine(StaminaRegenRoutine(1,0));
+            }
+        }
+
+        IEnumerator StaminaRegenRoutine(float regenDelay,float seconds)
+        {
+            Material barMaterial = _thrusterEnergyBar.GetComponent<SpriteRenderer>().material;
+            _thrusterRegenActivated = false;
+            _thrusterOnCooldown = true;
+
+            yield return new WaitForSeconds(regenDelay);
+
+            if (_playerStamina < 100)
+            {
+                barMaterial.SetInt("_TurnOnMask", 1);
+                barMaterial.SetColor("_ColorMaskColor", Color.red);
+                _playerStamina += _staminaDecayRate / 2;
+            }
+            else if (_playerStamina >= 100)
+            {
+                
+                barMaterial.SetInt("_TurnOnMask", 1);
+                barMaterial.SetColor("_ColorMaskColor", Color.green);
+                _thrusterOnCooldown = false;
+            }
         }
 
         private void HandleMovement()

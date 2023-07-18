@@ -170,13 +170,13 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8165881637659539264}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.0001
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
@@ -195,19 +195,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d6401c11817500429f1c21aa67f6e29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _movementSpeed: 0
+  _enemyTypeID: 0
+  _movementSpeed: 1
   _screenBoundsY: -6
   _screenBoundsX: 2.5
   _offScreenSpawnHeight: 8
+  _stopShooting: 0
   _spriteGameObject: {fileID: 0}
-  _sprite: {fileID: 0}
+  _collider2D: {fileID: 0}
   _animator: {fileID: 0}
   _audioSource: {fileID: 0}
   _player: {fileID: 0}
   _scorePerKill: 10
   _mainMenuEnemy: 0
   _startGameEnemy: 0
-  _EnemyTypeID: 1
   _explosionSFX: {fileID: 8300000, guid: 24eeb2834c7059b4c83faa3a5440e2ea, type: 3}
   _laserSFX: {fileID: 8300000, guid: 7929d58135c9bb140a65af878e1bd810, type: 3}
   _laserPrefab: {fileID: 5601087836192629208, guid: 583b62e84106a324db98534c227d87ab,
