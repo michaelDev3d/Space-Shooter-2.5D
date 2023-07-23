@@ -8,10 +8,13 @@ public class SpawnManager : MonoBehaviour
 {
     [Header("Enemy Prefab's")]
     [SerializeField]
-    private GameObject[] _enemyMeteorPrefabs;
+    private GameObject[] _commonEnemyPrefabs;
     
     [SerializeField]
-    private GameObject[] _enemyShipPrefabs;
+    private GameObject[] _uncommonEnemyPrefabs;
+
+    [SerializeField] 
+    private GameObject[] _rareEnemyPrefabs;
 
     [Header("Enemy Spawn Setting's")]
     [SerializeField]
@@ -35,41 +38,91 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] 
     private bool _startSpawningShips = false;
     
+    [SerializeField] 
+    private bool _startSpawningSwarmEnemy= false;
+    
     [SerializeField]
     private GameObject[] powerUps;
-    
-   
+
+    [SerializeField] 
+    private Vector3 _swarmSpawnPosition = new Vector3(5.92f, 0.5f,0);
+
+    [SerializeField] private bool _spawnCommonEnemy;
+    [SerializeField] private bool _spawnUncommonEnemy;
+    [SerializeField] private bool _spawnRareEnemy;
+
+    [SerializeField] private int _raritySelector;
     public void StartSpawning()
     {
-        StartCoroutine(SpawnMeteorRoutine(_spawnRateInSeconds));
+        StartCoroutine(SpawnEnemyRoutine(_spawnRateInSeconds));
         StartCoroutine(SpawnPowerUpRoutine());
     }
 
     // ReSharper disable Unity.PerformanceAnalysis
-    IEnumerator SpawnMeteorRoutine(float seconds)
+    IEnumerator SpawnEnemyRoutine(float seconds)
     {
         while (!_stopSpawning)
         {
-            //Select a random enemy from our enemy prefab array.
-            int randomEnemy = Random.Range(0, _enemyMeteorPrefabs.Length);
-            Vector3 spawnPosition = new Vector3(Random.Range(_spawnXRangeMin,_spawnXRangeMax), _spawnHeight, 0);
-            
-            GameObject newEnemy = Instantiate(_enemyMeteorPrefabs[randomEnemy],spawnPosition, Quaternion.identity, _enemyContainer.transform);
-            newEnemy.GetComponent<EnemyMovement>().SetSpeed(Random.Range(1,6));
-            newEnemy.transform.parent = _enemyContainer.transform;
+            _raritySelector = Random.Range(0, 100);
 
-            if (_startSpawningShips)
+            //Spawn Uncommon Enemy
+            if (_raritySelector < 50)
             {
-                int randomShipEnemy = Random.Range(0, _enemyShipPrefabs.Length);
-                Vector3 spawnShipPosition = new Vector3(Random.Range(_spawnXRangeMin,_spawnXRangeMax), _spawnHeight, 0);
-                
-                GameObject newShipEnemy = Instantiate(_enemyShipPrefabs[randomShipEnemy],spawnShipPosition, Quaternion.identity, _enemyContainer.transform);
-                newShipEnemy.GetComponent<EnemyMovement>().SetSpeed(Random.Range(1,5));
-                newShipEnemy.transform.parent = _enemyContainer.transform;
+                _spawnRateInSeconds = 1f;
+               SpawnCommonEnemyRoutine() ;
+            }
+
+            if (_startSpawningShips && _raritySelector > 50 && _raritySelector < 90)
+            {
+                _spawnRateInSeconds = 0.5f;
+               SpawnUncommonEnemyRoutine();
+            }
+            
+            if (_startSpawningSwarmEnemy && _raritySelector > 90)
+            {
+                _spawnRateInSeconds = 0.5f;
+                SpawnRareEnemyRoutine();
+                _startSpawningSwarmEnemy = true;
             }
 
             yield return new WaitForSeconds(seconds); 
         }
+    }
+
+
+    private void SpawnCommonEnemyRoutine()
+    {
+        //Select a random enemy from our enemy prefab array.
+        int randomEnemy = Random.Range(0, _commonEnemyPrefabs.Length);
+        Vector3 spawnPosition = new Vector3(Random.Range(_spawnXRangeMin,_spawnXRangeMax), _spawnHeight, 0);
+            
+        GameObject newEnemy = Instantiate(_commonEnemyPrefabs[randomEnemy],spawnPosition, Quaternion.identity, _enemyContainer.transform);
+        newEnemy.GetComponent<EnemyMovement>().SetSpeed(Random.Range(1,6));
+        newEnemy.transform.parent = _enemyContainer.transform;
+    }
+    
+    private void SpawnUncommonEnemyRoutine()
+    {
+        int randomShipEnemy = Random.Range(0, _uncommonEnemyPrefabs.Length);
+        Vector3 spawnShipPosition = new Vector3(Random.Range(_spawnXRangeMin,_spawnXRangeMax), _spawnHeight, 0);
+                
+        GameObject newShipEnemy = Instantiate(_uncommonEnemyPrefabs[randomShipEnemy],spawnShipPosition, Quaternion.identity, _enemyContainer.transform);
+        newShipEnemy.GetComponent<EnemyMovement>().SetSpeed(Random.Range(1,5));
+        newShipEnemy.transform.parent = _enemyContainer.transform;
+    }
+    
+    private void SpawnRareEnemyRoutine()
+    {
+        _startSpawningSwarmEnemy = false;
+        
+        Vector3 spawnShipPosition =_swarmSpawnPosition;
+        Instantiate(_rareEnemyPrefabs[0],spawnShipPosition, Quaternion.identity, _enemyContainer.transform);
+
+        float nextSpawn = Random.Range(30, 60);
+            
+        Debug.Log(nextSpawn);
+        
+        
     }
 
     IEnumerator SpawnPowerUpRoutine()
@@ -78,6 +131,8 @@ public class SpawnManager : MonoBehaviour
         {
             Vector3 spawnPosition = new Vector3(Random.Range(_spawnXRangeMin,_spawnXRangeMax), _spawnHeight, 0);
             Instantiate(powerUps[Random.Range(0,powerUps.Length)], spawnPosition, Quaternion.identity);
+            
+            
             yield return new WaitForSeconds(Random.Range(3f,9f)); 
         }
     }
@@ -96,4 +151,12 @@ public class SpawnManager : MonoBehaviour
     {
         _startSpawningShips = spawnShipsBool;
     }
+    
+    public void SetStartSpawningSwarmEnemy(bool spawnShipsBool)
+    {
+        _startSpawningSwarmEnemy = spawnShipsBool;
+    }
+    
+    
+    
 }

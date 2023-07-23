@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class EnemyMovement : MonoBehaviour
+public class EnemyMovement :  Rarity
 {
     [SerializeField] 
     private int _enemyTypeID;
@@ -54,6 +54,16 @@ public class EnemyMovement : MonoBehaviour
     private AudioClip _laserSFX;
     [SerializeField]
     private GameObject _laserPrefab;
+    
+    [Header("Swarm Enemy Data")]
+    [SerializeField] 
+    private float swarmRotationSpeed = 0.15f;
+    [SerializeField] 
+    private int _enemyCount;
+    [SerializeField] 
+    private GameObject _swarmEnemyPivotGameObject;
+    [SerializeField] 
+    private GameObject _swarmEnemyContainer;
     
     void Start()
     {
@@ -121,13 +131,17 @@ public class EnemyMovement : MonoBehaviour
                 SetSpeed(Random.Range(1,3));
                 StartCoroutine(EnemyShooting());
                 break;
+            case 2:
+                _enemyCount = SwarmEnemyCount();
+                StartCoroutine(EnemyShooting());
+                break;
         }
     }
 
     private void CalculateMovement()
     {
         //if the enemy is not a mainMenuEnemy or StartGameEnemy enable movement
-        if (!_mainMenuEnemy && !_startGameEnemy)
+        if (!_mainMenuEnemy && !_startGameEnemy && _enemyTypeID == 0 || _enemyTypeID == 1)
         {
             transform.Translate(Vector3.down * (_movementSpeed * Time.deltaTime));
 
@@ -143,6 +157,40 @@ public class EnemyMovement : MonoBehaviour
         {
             _spriteGameObject.transform.Rotate(Vector3.forward * _spinSpeed);
         }
+
+        if (_enemyTypeID == 2)
+        {
+            _enemyCount = SwarmEnemyCount();
+            
+            _swarmEnemyPivotGameObject.transform.Rotate(Vector3.forward, 0.15f/_enemyCount, Space.Self);
+            transform.Rotate(Vector3.forward, -swarmRotationSpeed, Space.World);
+
+            GameObject _spawnEnemyContainer = _swarmEnemyPivotGameObject.transform.parent.gameObject;
+            
+            _spawnEnemyContainer.transform.Translate(Vector3.right * (-_movementSpeed * Time.deltaTime));
+            
+            
+            if (_spawnEnemyContainer.transform.position.x < -_screenBoundsX)
+            {
+                Destroy(_spawnEnemyContainer);
+            }
+            
+        }
+    }
+
+    private int SwarmEnemyCount()
+    {
+        _swarmEnemyPivotGameObject = gameObject.transform.parent.gameObject;
+        _swarmEnemyContainer =   _swarmEnemyPivotGameObject.gameObject.transform.parent.gameObject;
+
+        if (_swarmEnemyPivotGameObject != null && _swarmEnemyContainer != null)
+        {
+            return _enemyCount = _swarmEnemyPivotGameObject.GetComponentsInChildren<EnemyMovement>().Length;
+        }
+        
+        Debug.LogError("Swarm container not found");
+        return 0;
+        
     }
     
     private void OnTriggerEnter2D(Collider2D other)
@@ -252,9 +300,9 @@ public class EnemyMovement : MonoBehaviour
             _audioSource.clip = _laserSFX;
             _audioSource.Play();
             
-            Projectile laser = Instantiate(_laserPrefab, transform.position, Quaternion.identity).GetComponent<Projectile>();
+            Projectile laser = Instantiate(_laserPrefab, transform.position, Quaternion.Euler(Vector3.down)).GetComponent<Projectile>();
             laser.SetEnemyLaser(true);
-            yield return new WaitForSeconds(Random.Range(3, 6));
+            yield return new WaitForSeconds(Random.Range(2, 4));
             
             if (gameManager != null)
             {

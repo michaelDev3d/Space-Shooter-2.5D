@@ -279,10 +279,11 @@ public class UIManager : MonoBehaviour
     {
         return _hideShieldAfterBlinking;
     }
-    
-    public void UpdateAmmoCountUI(int AmmoCount)
+
+
+    public void UpdateAmmoCountUI(int AmmoCount, int maxAmmoCount)
     {
-        _ammoCountText.text = "Ammo: " + AmmoCount;
+        _ammoCountText.text = "Ammo: " + AmmoCount + "/" + maxAmmoCount;
     }
 
     public void BlinkAmmoCountText()

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class SpacePlayer : MonoBehaviour
 {
@@ -11,7 +12,9 @@ public class SpacePlayer : MonoBehaviour
     [SerializeField]
     private float _fireRate = 0.5f;
     [SerializeField] 
-    public int _ammoCount = 15;
+    public int _currentAmmoCount = 15;
+    [SerializeField]
+    public int _maxAmmoCount = 15;
 
     
     
@@ -143,6 +146,8 @@ public class SpacePlayer : MonoBehaviour
     //Referencing components and null checking for them
     private void CreatePlayer()
     {
+       
+        
         if (TryGetComponent(out Renderer spriteRenderer))
         {
             _renderer = spriteRenderer;
@@ -177,6 +182,24 @@ public class SpacePlayer : MonoBehaviour
                         _uiManager = uiManager;
                     else
                         Debug.LogError("UI Manager component  is NULL in Player");
+                }
+                
+                _thrusterEnergyBar = gameObject.transform.GetChild(0).gameObject;
+
+                if (_thrusterEnergyBar != null)
+                {
+                    if (_thrusterEnergyBar.TryGetComponent(out SpriteRenderer energyBarSpriteRenderer))
+                    {
+                        _thrusterBarRenderer = energyBarSpriteRenderer;
+                        _thrusterBarMaterial = _thrusterBarRenderer.material;
+                    }
+                    else
+                        Debug.LogError("Renderer/Material not found on Player Energy Bar");
+            
+                    if (!_mainMenuPlayer)
+                    {
+                        _thrusterEnergyBar.gameObject.SetActive(true);
+                    }
                 }
 
                 break;
@@ -213,26 +236,6 @@ public class SpacePlayer : MonoBehaviour
             }else
                 Debug.LogError("Camera Effects component is NULL in Player");
         }
-
-        _thrusterEnergyBar = gameObject.transform.GetChild(0).gameObject;
-
-        if (_thrusterEnergyBar != null)
-        {
-            if (_thrusterEnergyBar.TryGetComponent(out SpriteRenderer energyBarSpriteRenderer))
-            {
-                _thrusterBarRenderer = energyBarSpriteRenderer;
-                _thrusterBarMaterial = _thrusterBarRenderer.material;
-            }
-            else
-                Debug.LogError("Renderer/Material not found on Player Energy Bar");
-            
-            if (!_mainMenuPlayer)
-            {
-                _thrusterEnergyBar.gameObject.SetActive(true);
-            }
-        }
-        
-
     }
     
     void Update()
@@ -405,9 +408,9 @@ public class SpacePlayer : MonoBehaviour
 
                     #endregion
 
-                    _ammoCount--;
+                    _currentAmmoCount--;
 
-                    if (_ammoCount == 0)
+                    if (_currentAmmoCount == 0)
                     {
                         _uiManager.BlinkAmmoCountText();
                     }
@@ -416,7 +419,7 @@ public class SpacePlayer : MonoBehaviour
             
             if (!_mainMenuPlayer)
             {
-                if (_ammoCount > 0)
+                if (_currentAmmoCount > 0)
                 {
                     //Shooting Input and logic.
                     if (Input.GetKeyDown(KeyCode.Space) && Time.time > _cooldownTimer)
@@ -448,15 +451,15 @@ public class SpacePlayer : MonoBehaviour
 
                         #endregion
 
-                        _ammoCount--;
+                        _currentAmmoCount--;
 
-                        if (_ammoCount == 0)
+                        if (_currentAmmoCount == 0)
                         {
                             _uiManager.BlinkAmmoCountText();
                         }
                     }
 
-                    _uiManager.UpdateAmmoCountUI(_ammoCount);
+                    _uiManager.UpdateAmmoCountUI(_currentAmmoCount, _maxAmmoCount);
                 }
             }
         }
@@ -522,6 +525,11 @@ public class SpacePlayer : MonoBehaviour
             }
         }
 
+        public int GetMaxAmmo()
+        {
+            return _maxAmmoCount;
+        }
+
     #endregion
 
     #region Power Ups
@@ -575,10 +583,10 @@ public class SpacePlayer : MonoBehaviour
         
         public void AmmoPickUp()
         {
-            if (_ammoCount < 15)
-                _ammoCount++;
-            if (_ammoCount < 14)
-                _ammoCount++;
+            if (_currentAmmoCount < _maxAmmoCount)
+                _currentAmmoCount++;
+            if (_currentAmmoCount < _maxAmmoCount - 1)
+                _currentAmmoCount++;
         }
         
         public void HealthPickup()

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8777565712448180068}
   - component: {fileID: 8078512137714533078}
   m_Layer: 0
-  m_Name: 'Heal_PowerUp '
+  m_Name: Heal_PowerUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -96,6 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3e78adeaecf14b4db6e9a28da4dbf5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rarity: 3
   _powerUpID: 3
   _movementSpeed: 1.5
   _audioClip: {fileID: 8300000, guid: ffa96af717384704c9c5a003564d4228, type: 3}

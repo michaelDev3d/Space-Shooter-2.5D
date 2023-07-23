@@ -195,14 +195,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d6401c11817500429f1c21aa67f6e29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _EnemyTypeID: 0
+  _rarity: 1
+  _enemyTypeID: 0
   _movementSpeed: 0
   _screenBoundsY: -6
   _screenBoundsX: 2.5
   _offScreenSpawnHeight: 8
   _stopShooting: 1
   _spriteGameObject: {fileID: 0}
-  _sprite: {fileID: 0}
+  _collider2D: {fileID: 0}
   _animator: {fileID: 0}
   _audioSource: {fileID: 0}
   _player: {fileID: 0}
@@ -213,6 +214,10 @@ MonoBehaviour:
   _laserSFX: {fileID: 0}
   _laserPrefab: {fileID: 5601087836192629208, guid: 583b62e84106a324db98534c227d87ab,
     type: 3}
+  swarmRotationSpeed: 0.15
+  _enemyCount: 0
+  _swarmEnemyPivotGameObject: {fileID: 0}
+  _swarmEnemyContainer: {fileID: 0}
 --- !u!82 &-1078920232082080069
 AudioSource:
   m_ObjectHideFlags: 0

@@ -150,14 +150,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf37992370414594c93ff918966b0cdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyMeteorPrefabs:
+  _commonEnemyPrefabs:
   - {fileID: 8165881637659539264, guid: aba8d7a1cf434da49b0627571360de59, type: 3}
   - {fileID: 8165881637659539264, guid: 87a1e2b58f438814fa06532fc0fad2a0, type: 3}
   - {fileID: 8165881637659539264, guid: 32c637107b75c084c9fe283a00038208, type: 3}
   - {fileID: 8165881637659539264, guid: 813e09707848cf743a873b5e444e536d, type: 3}
-  _enemyShipPrefabs:
+  _uncommonEnemyPrefabs:
   - {fileID: 8165881637659539264, guid: 2a99f18cdc1feba4893dca7cd333cf0a, type: 3}
-  - {fileID: 8165881637659539264, guid: 2a99f18cdc1feba4893dca7cd333cf0a, type: 3}
+  _rareEnemyPrefabs:
+  - {fileID: 2781147306103605540, guid: 7240e5a0d4ef1684c97ae7df98312379, type: 3}
   _enemyContainer: {fileID: 589223002}
   _spawnRateInSeconds: 2
   _spawnXRangeMax: -4
@@ -165,6 +166,7 @@ MonoBehaviour:
   _spawnHeight: 4
   _stopSpawning: 0
   _startSpawningShips: 0
+  _startSpawningSwarmEnemy: 0
   powerUps:
   - {fileID: 6886991530304394152, guid: daeaeb4b958a51a4aad5d1aadde88df6, type: 3}
   - {fileID: 6886991530304394152, guid: cb19884b8f54db948a7c0f7bc3c61114, type: 3}
@@ -173,6 +175,10 @@ MonoBehaviour:
   - {fileID: 870486937116323291, guid: c964f974c8b55fe4f8362ae7314fd49e, type: 3}
   - {fileID: 6886991530304394152, guid: 9bbbcde8fee569e43bba648760806214, type: 3}
   - {fileID: 870486937116323291, guid: c964f974c8b55fe4f8362ae7314fd49e, type: 3}
+  _swarmSpawnPosition: {x: 5.92, y: 0.5, z: 0}
+  _spawnCommonEnemy: 0
+  _spawnUncommonEnemy: 0
+  _spawnRareEnemy: 0
 --- !u!4 &29308854
 Transform:
   m_ObjectHideFlags: 0
@@ -181,7 +187,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 29308852}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.41, z: 0}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_Children:
   - {fileID: 589223003}
@@ -3664,6 +3670,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1500938065, guid: 3c30ec74f4ef4bc4e9c0d872110dd858, type: 3}
+      propertyPath: _score
+      value: 190
+      objectReference: {fileID: 0}
+    - target: {fileID: 1500938065, guid: 3c30ec74f4ef4bc4e9c0d872110dd858, type: 3}
       propertyPath: _ammoCount
       value: 16
       objectReference: {fileID: 0}
@@ -3733,3 +3743,97 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3c30ec74f4ef4bc4e9c0d872110dd858, type: 3}
+--- !u!1001 &8553978624542735751
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2781147306103605540, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: m_Name
+      value: EnemySwarm
+      objectReference: {fileID: 0}
+    - target: {fileID: 2781147306103605540, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3434232863158943681, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: _screenBoundsX
+      value: 5.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3989839986614562071, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: _screenBoundsX
+      value: 5.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5800166805004154238, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: _screenBoundsX
+      value: 5.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591844379218187277, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591844379218187277, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.92
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591844379218187277, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591844379218187277, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591844379218187277, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591844379218187277, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591844379218187277, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591844379218187277, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591844379218187277, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591844379218187277, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591844379218187277, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7739205400363001764, guid: 7240e5a0d4ef1684c97ae7df98312379,
+        type: 3}
+      propertyPath: _screenBoundsX
+      value: 5.9
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7240e5a0d4ef1684c97ae7df98312379, type: 3}

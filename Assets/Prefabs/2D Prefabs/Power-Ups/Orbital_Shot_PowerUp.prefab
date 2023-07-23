@@ -96,6 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3e78adeaecf14b4db6e9a28da4dbf5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rarity: 2
   _powerUpID: 5
   _movementSpeed: 1
   _audioClip: {fileID: 8300000, guid: facdef26ff121d54a86035b0c16da5a2, type: 3}

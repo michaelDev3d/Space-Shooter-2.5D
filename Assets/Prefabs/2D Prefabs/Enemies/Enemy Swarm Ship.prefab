@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2672735860683284113
+--- !u!1 &1171893709488984537
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8168842130590457336}
-  - component: {fileID: 1215850501906555543}
-  - component: {fileID: 8474892896833604514}
+  - component: {fileID: 8648630236683081448}
+  - component: {fileID: 1071730771465596231}
+  - component: {fileID: 5031404412919408532}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
@@ -18,13 +18,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8168842130590457336
+--- !u!4 &8648630236683081448
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2672735860683284113}
+  m_GameObject: {fileID: 1171893709488984537}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -32,13 +32,13 @@ Transform:
   m_Father: {fileID: 8165881637659539270}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &1215850501906555543
+--- !u!212 &1071730771465596231
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2672735860683284113}
+  m_GameObject: {fileID: 1171893709488984537}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -71,7 +71,7 @@ SpriteRenderer:
   m_SortingLayerID: 225693341
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300004, guid: 5b4fe00be9cbb254c8eb45016d9a8e3b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1895dd17543add449a86331236a0c13c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -82,14 +82,14 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &8474892896833604514
+--- !u!95 &5031404412919408532
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2672735860683284113}
+  m_GameObject: {fileID: 1171893709488984537}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 79ef21fbbe2cde444b652098e658733d, type: 2}
@@ -113,9 +113,9 @@ GameObject:
   - component: {fileID: 8165881637659539269}
   - component: {fileID: 8165881637659539268}
   - component: {fileID: 8165881637659539271}
-  - component: {fileID: 304116714136257820}
+  - component: {fileID: -1078920232082080069}
   m_Layer: 0
-  m_Name: Enemy Meteor 3
+  m_Name: Enemy Swarm Ship
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -130,9 +130,9 @@ Transform:
   m_GameObject: {fileID: 8165881637659539264}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
+  m_LocalScale: {x: 1.75, y: 1.75, z: 1}
   m_Children:
-  - {fileID: 8168842130590457336}
+  - {fileID: 8648630236683081448}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -149,18 +149,18 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.000538975, y: -0.0002667606}
+  m_Offset: {x: -0.00017572194, y: -0.0007401183}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.24, y: 0.23}
+    oldSize: {x: 0.15, y: 0.15}
     newSize: {x: 0.73, y: 0.67}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.24036956, y: 0.2358346}
+  m_Size: {x: 0.15469779, y: 0.15594299}
   m_EdgeRadius: 0
 --- !u!50 &8165881637659539268
 Rigidbody2D:
@@ -170,13 +170,13 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8165881637659539264}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.0001
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
@@ -195,13 +195,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d6401c11817500429f1c21aa67f6e29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rarity: 1
-  _enemyTypeID: 0
-  _movementSpeed: 0
+  _enemyTypeID: 2
+  _movementSpeed: 0.5
   _screenBoundsY: -6
-  _screenBoundsX: 2.5
+  _screenBoundsX: 5.9
   _offScreenSpawnHeight: 8
-  _stopShooting: 1
+  _stopShooting: 0
   _spriteGameObject: {fileID: 0}
   _collider2D: {fileID: 0}
   _animator: {fileID: 0}
@@ -211,14 +210,14 @@ MonoBehaviour:
   _mainMenuEnemy: 0
   _startGameEnemy: 0
   _explosionSFX: {fileID: 8300000, guid: 24eeb2834c7059b4c83faa3a5440e2ea, type: 3}
-  _laserSFX: {fileID: 0}
+  _laserSFX: {fileID: 8300000, guid: 7929d58135c9bb140a65af878e1bd810, type: 3}
   _laserPrefab: {fileID: 5601087836192629208, guid: 583b62e84106a324db98534c227d87ab,
     type: 3}
   swarmRotationSpeed: 0.15
   _enemyCount: 0
   _swarmEnemyPivotGameObject: {fileID: 0}
   _swarmEnemyContainer: {fileID: 0}
---- !u!82 &304116714136257820
+--- !u!82 &-1078920232082080069
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

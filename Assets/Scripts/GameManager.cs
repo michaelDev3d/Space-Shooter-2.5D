@@ -122,6 +122,15 @@ public class GameManager : MonoBehaviour
                     _spawnManager.SetStartSpawningShips(true);
                 }
             }
+            
+            if (_player.GetScore() == 200)
+            {
+                if (_spawnManager != null)
+                {
+                    _spawnManager.SetStartSpawningSwarmEnemy(true);
+                    _player.AddScore(10);
+                }
+            }
         }
     }
 
