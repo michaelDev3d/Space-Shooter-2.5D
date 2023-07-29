@@ -179,6 +179,7 @@ MonoBehaviour:
   _spawnCommonEnemy: 0
   _spawnUncommonEnemy: 0
   _spawnRareEnemy: 0
+  _raritySelector: 0
 --- !u!4 &29308854
 Transform:
   m_ObjectHideFlags: 0
@@ -1631,7 +1632,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4331277261693052, guid: 8476c3bce18cda44b9a1b2ad39999bc3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.26
+      value: 10.15
       objectReference: {fileID: 0}
     - target: {fileID: 4331277261693052, guid: 8476c3bce18cda44b9a1b2ad39999bc3, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1673,7 +1674,7 @@ PrefabInstance:
     - target: {fileID: 870486937116323291, guid: 8476c3bce18cda44b9a1b2ad39999bc3,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8476c3bce18cda44b9a1b2ad39999bc3, type: 3}
@@ -3694,7 +3695,7 @@ PrefabInstance:
     - target: {fileID: 6052571874733059492, guid: 3c30ec74f4ef4bc4e9c0d872110dd858,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.45
+      value: 0.14
       objectReference: {fileID: 0}
     - target: {fileID: 6052571874733059492, guid: 3c30ec74f4ef4bc4e9c0d872110dd858,
         type: 3}

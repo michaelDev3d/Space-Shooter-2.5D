@@ -263,6 +263,7 @@ public class SpacePlayer : MonoBehaviour
             HandleThruster();
         
         CheckOrbitalShotDeactivation();
+        HandlePickUpInput();
     }
 
     #region Movement
@@ -534,6 +535,50 @@ public class SpacePlayer : MonoBehaviour
 
     #region Power Ups
 
+        private void HandlePickUpInput()
+        {
+            PowerUp[] onScreenPowerUps = FindObjectsOfType<PowerUp>();
+
+            if (onScreenPowerUps.Length > 0)
+            {
+                
+                if (Input.GetKeyDown(KeyCode.C))
+                {
+                   
+                    foreach (PowerUp powerUp in onScreenPowerUps)
+                    {
+                        if (CheckIfPowerUpIsOnScreen(powerUp))
+                        {
+                            Debug.Log("Speed Up Power Ups");
+                            powerUp.SpeedUpPowerUp();
+                        }
+                    }
+                }
+                
+                if (Input.GetKeyUp(KeyCode.C))
+                {
+                   
+                    foreach (PowerUp powerUp in onScreenPowerUps)
+                    {
+                        if (CheckIfPowerUpIsOnScreen(powerUp))
+                        {
+                            Debug.Log("Slow down Power Ups");
+                            powerUp.SlowDownPowerUp();
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool CheckIfPowerUpIsOnScreen(PowerUp powerUp)
+        {
+            if (powerUp.gameObject.transform.position.y < 3.1)
+            {
+                return true;
+            } return false;
+        }
+    
+    
         public void ActivateTripleShot()
         {
             _isTripleShotPowerUpActive = true;

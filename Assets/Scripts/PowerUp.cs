@@ -59,4 +59,15 @@ public class PowerUp : Rarity
             Destroy(this.gameObject);
         }
     }
+
+    public void SpeedUpPowerUp()
+    {
+        _movementSpeed = _movementSpeed + 1;
+    }
+    
+    public void SlowDownPowerUp()
+    {
+        _movementSpeed = _movementSpeed - 1;
+    }
+    
 }
