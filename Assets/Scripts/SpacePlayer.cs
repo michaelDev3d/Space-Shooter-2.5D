@@ -128,6 +128,8 @@ public class SpacePlayer : MonoBehaviour
 
 
     private int _shieldCount;
+
+    private bool _changePowerUpSpeed;
     
     // Start is called before the first frame update
     void Start()
@@ -541,30 +543,22 @@ public class SpacePlayer : MonoBehaviour
 
             if (onScreenPowerUps.Length > 0)
             {
-                
-                if (Input.GetKeyDown(KeyCode.C))
+                if (Input.GetKey(KeyCode.C))
                 {
-                   
-                    foreach (PowerUp powerUp in onScreenPowerUps)
+                   foreach (PowerUp powerUp in onScreenPowerUps)
                     {
                         if (CheckIfPowerUpIsOnScreen(powerUp))
                         {
-                            Debug.Log("Speed Up Power Ups");
-                            powerUp.SpeedUpPowerUp();
+                            powerUp.ChangePowerUpSpeed(true);
                         }
                     }
                 }
                 
                 if (Input.GetKeyUp(KeyCode.C))
                 {
-                   
                     foreach (PowerUp powerUp in onScreenPowerUps)
                     {
-                        if (CheckIfPowerUpIsOnScreen(powerUp))
-                        {
-                            Debug.Log("Slow down Power Ups");
-                            powerUp.SlowDownPowerUp();
-                        }
+                            powerUp.ChangePowerUpSpeed(false);
                     }
                 }
             }
@@ -575,7 +569,9 @@ public class SpacePlayer : MonoBehaviour
             if (powerUp.gameObject.transform.position.y < 3.1)
             {
                 return true;
-            } return false;
+            }
+            
+            return false;
         }
     
     

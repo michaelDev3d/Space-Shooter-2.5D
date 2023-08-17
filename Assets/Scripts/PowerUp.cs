@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,10 +7,18 @@ public class PowerUp : Rarity
 {
     [SerializeField]
     private int _powerUpID;
+    private float _defaultSpeed;
     [SerializeField]
     private float _movementSpeed = 1.5f;
+    [SerializeField]
+    private float _movementSpeedBoost = 2.5f;
     [SerializeField] 
     private AudioClip _audioClip;
+
+    private void Awake()
+    {
+        _defaultSpeed = _movementSpeed;
+    }
 
     void Update()
     {
@@ -62,12 +71,24 @@ public class PowerUp : Rarity
 
     public void SpeedUpPowerUp()
     {
-        _movementSpeed = _movementSpeed + 1;
+        _movementSpeed = _movementSpeedBoost;
     }
     
     public void SlowDownPowerUp()
     {
-        _movementSpeed = _movementSpeed - 1;
+        _movementSpeed = _defaultSpeed;
+    }
+
+    public void ChangePowerUpSpeed(bool changeSpeed)
+    {
+        if (changeSpeed)
+        {
+            _movementSpeed = _movementSpeedBoost;
+        }
+        else
+        {
+            _movementSpeed = _defaultSpeed;
+        }
     }
     
 }
