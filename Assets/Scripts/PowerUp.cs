@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PowerUp : Rarity
@@ -15,6 +16,9 @@ public class PowerUp : Rarity
     [SerializeField] 
     private AudioClip _audioClip;
 
+    [SerializeField] 
+    private GameObject _explosionPrefab;
+    
     private void Awake()
     {
         _defaultSpeed = _movementSpeed;
@@ -59,6 +63,9 @@ public class PowerUp : Rarity
                     case 5:
                         player.ActivateOrbitalProjectiles();
                         break;
+                    case 6:
+                        player.ActivateHomingShot();
+                        break;
                     default:
                         Debug.Log("Default Power Up");
                         break;
@@ -67,6 +74,17 @@ public class PowerUp : Rarity
 
             Destroy(this.gameObject);
         }
+        
+        if (other.CompareTag("Projectile"))
+        {
+            if (other.GetComponent<Projectile>().CheckIfIsEnemyLaser())
+            {
+                Instantiate(_explosionPrefab, transform.position, quaternion.identity);
+                Destroy(this.gameObject);
+            }
+               
+        }
+
     }
 
     public void SpeedUpPowerUp()

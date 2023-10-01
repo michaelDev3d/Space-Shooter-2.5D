@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &865408441
 Transform:
   m_ObjectHideFlags: 0
@@ -231,13 +231,15 @@ MonoBehaviour:
   _playerLives: 3
   _playerStamina: 100
   _fireRate: 0.5
+  _currentAmmoCount: 15
+  _maxAmmoCount: 15
   _movementSpeed: 5
   _thrusterSpeed: 10
+  _thrusterActivated: 0
   _staminaDecayRate: 0.8
   _thrusterRegenActivated: 0
-  _thrusterActivated: 0
   _thrusterOnCooldown: 0
-  _spawnManager: {fileID: 0}
+  _thrusterEnergyBar: {fileID: 0}
   _horizontal: 0
   _vertical: 0
   _playerBoundsXMax: 5.4
@@ -249,27 +251,29 @@ MonoBehaviour:
     type: 3}
   _tripleLaserPrefab: {fileID: 8128309471363637927, guid: 3fdc76c789210a947a275cffa80ea6fb,
     type: 3}
+  _homingLaserPrefab: {fileID: 5601087836192629208, guid: 684b45fc93f76ab4b920eaa25003096f,
+    type: 3}
   _OrbitalLaserPrefab: {fileID: 8128309471363637927, guid: e775b3592b69a2a43924206f8e46bfbc,
     type: 3}
   _laserOffset: {x: 0, y: 0.8, z: 0}
   _isTripleShotPowerUpActive: 0
-  _speedBoostMultiplier: 2
   _isShieldPowerUpActive: 0
+  _speedBoostActive: 0
+  _speedBoostMultiplier: 2
+  _isHomingShotPowerUpActive: 0
   _isOrbitalShotPowerUpActive: 0
-  _ammoCount: 15
   _flickerEffectOn: 0
   _flickerShieldEffectOn: 0
   _audioSource: {fileID: 0}
   _laserSFX: {fileID: 8300000, guid: a1baf27b3c03dfd4081ca46ca0048ce4, type: 3}
   _tripleShotSFX: {fileID: 8300000, guid: b2199ad43fc443042a1e7cf54e8169fe, type: 3}
   _explosionSFX: {fileID: 8300000, guid: 24eeb2834c7059b4c83faa3a5440e2ea, type: 3}
+  _mainMenuPlayer: 0
   _score: 0
   _uiManager: {fileID: 0}
-  _mainMenuPlayer: 0
+  _spawnManager: {fileID: 0}
   _gameManager: {fileID: 0}
-  _thrusterEnergyBar: {fileID: 0}
-  _thrusterBarRenderer: {fileID: 0}
-  _thrusterBarMaterial: {fileID: 0}
+  _cameraEffects: {fileID: 0}
 --- !u!82 &4234033134181287023
 AudioSource:
   m_ObjectHideFlags: 0

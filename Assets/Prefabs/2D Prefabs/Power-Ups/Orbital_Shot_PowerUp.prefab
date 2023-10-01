@@ -99,7 +99,10 @@ MonoBehaviour:
   _rarity: 2
   _powerUpID: 5
   _movementSpeed: 1
+  _movementSpeedBoost: 2.5
   _audioClip: {fileID: 8300000, guid: facdef26ff121d54a86035b0c16da5a2, type: 3}
+  _explosionPrefab: {fileID: 8999666985311844822, guid: 6321fe96b12193549aa0e0405929701d,
+    type: 3}
 --- !u!50 &6886991530304394165
 Rigidbody2D:
   serializedVersion: 4

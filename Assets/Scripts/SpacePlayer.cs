@@ -68,6 +68,8 @@ public class SpacePlayer : MonoBehaviour
     [SerializeField]
     private GameObject _tripleLaserPrefab;
     [SerializeField]
+    private GameObject _homingLaserPrefab;
+    [SerializeField]
     private GameObject _OrbitalLaserPrefab;
     [SerializeField]
     private Vector3 _laserOffset = new Vector3(0f, 0.8f, 0f);
@@ -82,6 +84,8 @@ public class SpacePlayer : MonoBehaviour
     private bool _speedBoostActive;
     [SerializeField] 
     private float _speedBoostMultiplier = 2f;
+    [SerializeField] 
+    private bool _isHomingShotPowerUpActive;
     
     [SerializeField] 
     private bool _isOrbitalShotPowerUpActive;
@@ -148,8 +152,6 @@ public class SpacePlayer : MonoBehaviour
     //Referencing components and null checking for them
     private void CreatePlayer()
     {
-       
-        
         if (TryGetComponent(out Renderer spriteRenderer))
         {
             _renderer = spriteRenderer;
@@ -388,7 +390,7 @@ public class SpacePlayer : MonoBehaviour
 
                         _cooldownTimer = Time.time + _fireRate;
 
-                        if (_isTripleShotPowerUpActive)
+                       /* if (_isTripleShotPowerUpActive)
                         {
                             Instantiate(_tripleLaserPrefab, transform.position + _laserOffset, Quaternion.identity);
 
@@ -397,17 +399,17 @@ public class SpacePlayer : MonoBehaviour
                                 _audioSource.clip = _tripleShotSFX;
                                 _audioSource.Play();
                             }
-                        }
-                        else
-                        {
-                            Instantiate(_laserPrefab, transform.position + _laserOffset, Quaternion.identity);
+                        } else*/
+                        
+                       Instantiate(_laserPrefab, transform.position + _laserOffset, Quaternion.identity);
 
-                            if (_laserSFX != null)
-                            {
-                                _audioSource.clip = _laserSFX;
-                                _audioSource.Play();
-                            }
+                        if (_laserSFX != null)
+                        {
+                            _audioSource.clip = _laserSFX;
+                            _audioSource.Play();
                         }
+                        
+                        
 
                     #endregion
 
@@ -434,6 +436,16 @@ public class SpacePlayer : MonoBehaviour
                         if (_isTripleShotPowerUpActive)
                         {
                             Instantiate(_tripleLaserPrefab, transform.position + _laserOffset, Quaternion.identity);
+
+                            if (_tripleShotSFX != null)
+                            {
+                                _audioSource.clip = _tripleShotSFX;
+                                _audioSource.Play();
+                            }
+                        }
+                        else if (_isHomingShotPowerUpActive)
+                        {
+                            Instantiate(_homingLaserPrefab, transform.position + _laserOffset, Quaternion.identity);
 
                             if (_tripleShotSFX != null)
                             {
@@ -592,6 +604,25 @@ public class SpacePlayer : MonoBehaviour
             
             _isTripleShotPowerUpActive = false;
         }
+        
+        public void ActivateHomingShot()
+        {
+            _isHomingShotPowerUpActive = true;
+
+            AdjustMaterialAppearance(_material, _playerMaterialOutlineColor, Color.green, _playerMaterialTurnOnOutline, 1);
+            
+            StartCoroutine(HomingShotDeactivateRoutine(25));
+        }
+
+        IEnumerator HomingShotDeactivateRoutine(float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+            
+            AdjustMaterialAppearance(_material, _playerMaterialOutlineColor, Color.clear, _playerMaterialTurnOnOutline, 0);
+            
+            _isHomingShotPowerUpActive = false;
+        }
+        
         
         public void ActivateSpeedBoost()
         {

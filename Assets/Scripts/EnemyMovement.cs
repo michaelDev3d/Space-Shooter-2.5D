@@ -35,7 +35,7 @@ public class EnemyMovement :  Rarity
     private AudioSource _audioSource;
     
     private float _spinSpeed;
-    private static readonly int _explosionAnimBool = Animator.StringToHash("Explosion");
+    private static readonly int _explosionAnimBool = Animator.StringToHash("  ");
 
     [Header("Level Data")]
     [SerializeField]
@@ -160,13 +160,13 @@ public class EnemyMovement :  Rarity
 
         if (_enemyTypeID == 2)
         {
-            _enemyCount = SwarmEnemyCount();
+
+            _swarmEnemyPivotGameObject.transform.Rotate(Vector3.forward, 
+                swarmRotationSpeed/_enemyCount, Space.Self);
             
-            _swarmEnemyPivotGameObject.transform.Rotate(Vector3.forward, 0.15f/_enemyCount, Space.Self);
             transform.Rotate(Vector3.forward, -swarmRotationSpeed, Space.World);
 
             GameObject _spawnEnemyContainer = _swarmEnemyPivotGameObject.transform.parent.gameObject;
-            
             _spawnEnemyContainer.transform.Translate(Vector3.right * (-_movementSpeed * Time.deltaTime));
             
             
@@ -174,7 +174,6 @@ public class EnemyMovement :  Rarity
             {
                 Destroy(_spawnEnemyContainer);
             }
-            
         }
     }
 
@@ -190,7 +189,6 @@ public class EnemyMovement :  Rarity
         
         Debug.LogError("Swarm container not found");
         return 0;
-        
     }
     
     private void OnTriggerEnter2D(Collider2D other)
@@ -243,6 +241,19 @@ public class EnemyMovement :  Rarity
         _spinSpeed = 0;
         _spriteGameObject.transform.rotation = Quaternion.Euler(Vector3.zero);
         _collider2D.enabled = false;
+        GameObject spawnManagerGameObject= GameObject.Find("Spawn_Manager");
+        SpawnManager spawnManagerComponent = null;
+
+        if (spawnManagerGameObject != null)
+        {
+            if (spawnManagerGameObject.TryGetComponent(out SpawnManager spawnManager))
+                spawnManagerComponent = spawnManager;
+            else
+                Debug.Log("Spawn Manager is Null");
+        }
+        
+        if(!_mainMenuEnemy)
+            spawnManagerComponent.EnemiesDefeated++;
         
         yield return new WaitForSeconds(seconds);
         

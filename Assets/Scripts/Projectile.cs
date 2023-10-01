@@ -18,6 +18,14 @@ public class Projectile : MonoBehaviour
     
     [SerializeField] 
     private bool _isOrbitalLaser;
+    
+    [SerializeField] 
+    private bool _isHomingLaser;
+
+    [SerializeField] 
+    private Transform _homingLaserTarget;
+    
+    
 
     private static readonly int _enemyLaserAnimBool = Animator.StringToHash("EnemyLaser");
 
@@ -64,6 +72,44 @@ public class Projectile : MonoBehaviour
             
             orbitalContainer.transform.Rotate(Vector3.forward, 1, Space.Self);
         }
+
+        if (_isHomingLaser)
+        {
+            EnemyMovement[] onScreenEnemies = FindObjectsOfType<EnemyMovement>();
+
+            if (onScreenEnemies.Length > 0)
+            {
+                Debug.Log("Enemies are found");
+                if (_homingLaserTarget == null)
+                {
+                    foreach (EnemyMovement enemy in onScreenEnemies)
+                    {
+                        Debug.Log("Checking for enemies on screen");
+                        if (CheckIfEnemyIsOnScreen(enemy))
+                        {
+                            Debug.Log("Enemy on screen");
+                            _homingLaserTarget = enemy.gameObject.transform;
+                        }
+                    }
+                }
+
+                if (_homingLaserTarget != null)
+                {
+                    transform.position = Vector2.MoveTowards(transform.position, 
+                        _homingLaserTarget.transform.position,0.1f);
+                }
+            }
+        }
+    }
+    
+    private bool CheckIfEnemyIsOnScreen(EnemyMovement enemy)
+    {
+        if (enemy.gameObject.transform.position.y < 3.1)
+        {
+            return true;
+        }
+            
+        return false;
     }
 
     public bool CheckIfIsEnemyLaser()
@@ -74,5 +120,11 @@ public class Projectile : MonoBehaviour
     public void SetEnemyLaser(bool isEnemyLaser)
     {
         _isEnemyLaser = isEnemyLaser;
+    }
+
+    public bool IsHomingLaser
+    {
+        get => _isHomingLaser;
+        set => _isHomingLaser = value;
     }
 }

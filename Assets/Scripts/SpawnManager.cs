@@ -9,12 +9,18 @@ public class SpawnManager : MonoBehaviour
     [Header("Enemy Prefab's")]
     [SerializeField]
     private GameObject[] _commonEnemyPrefabs;
-    
     [SerializeField]
     private GameObject[] _uncommonEnemyPrefabs;
-
     [SerializeField] 
     private GameObject[] _rareEnemyPrefabs;
+    
+    [Header("PowerUp Prefab's")]
+    [SerializeField]
+    private GameObject[] _commonPowerUpPrefabs;
+    [SerializeField] 
+    private GameObject[] _uncommonPowerUpPrefabs;
+    [SerializeField] 
+    private GameObject[] _rarePowerUpPrefabs;
 
     [Header("Enemy Spawn Setting's")]
     [SerializeField]
@@ -47,11 +53,14 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] 
     private Vector3 _swarmSpawnPosition = new Vector3(5.92f, 0.5f,0);
 
-    [SerializeField] private bool _spawnCommonEnemy;
-    [SerializeField] private bool _spawnUncommonEnemy;
-    [SerializeField] private bool _spawnRareEnemy;
-
-    [SerializeField] private int _raritySelector;
+    [SerializeField] private int _enemyRaritySelector;
+    [SerializeField] private int _powerRaritySelector;
+    
+    
+    [SerializeField] private int _maxEnemiesPerWave = 20;
+    [SerializeField] private int _enemiesSpawned;
+    [SerializeField] private int _enemiesDefeated;
+   
     public void StartSpawning()
     {
         StartCoroutine(SpawnEnemyRoutine(_spawnRateInSeconds));
@@ -63,26 +72,30 @@ public class SpawnManager : MonoBehaviour
     {
         while (!_stopSpawning)
         {
-            _raritySelector = Random.Range(0, 100);
+            if (_enemiesSpawned < _maxEnemiesPerWave)
+            {
+                _enemyRaritySelector = Random.Range(0, 100);
+                //Debug.Log(_enemyRaritySelector);
 
-            //Spawn Uncommon Enemy
-            if (_raritySelector < 50)
-            {
-                _spawnRateInSeconds = 1f;
-               SpawnCommonEnemyRoutine() ;
-            }
+                //Spawn Uncommon Enemy
+                if (_enemyRaritySelector < 50)
+                {
+                    _spawnRateInSeconds = 1f;
+                    SpawnEnemyRoutine(_commonEnemyPrefabs);
+                }
 
-            if (_startSpawningShips && _raritySelector > 50 && _raritySelector < 90)
-            {
-                _spawnRateInSeconds = 0.5f;
-               SpawnUncommonEnemyRoutine();
-            }
-            
-            if (_startSpawningSwarmEnemy && _raritySelector > 90)
-            {
-                _spawnRateInSeconds = 0.5f;
-                SpawnRareEnemyRoutine();
-                _startSpawningSwarmEnemy = true;
+                if (_startSpawningShips && _enemyRaritySelector > 50 && _enemyRaritySelector < 90)
+                {
+                    _spawnRateInSeconds = 0.5f;
+                    SpawnEnemyRoutine(_uncommonEnemyPrefabs);
+                }
+
+                if (_startSpawningSwarmEnemy && _enemyRaritySelector > 90)
+                {
+                    _spawnRateInSeconds = 0.5f;
+                    SpawnRareEnemyRoutine();
+                    _startSpawningSwarmEnemy = true;
+                }
             }
 
             yield return new WaitForSeconds(seconds); 
@@ -90,26 +103,18 @@ public class SpawnManager : MonoBehaviour
     }
 
 
-    private void SpawnCommonEnemyRoutine()
+    private void SpawnEnemyRoutine(GameObject[] enemyPrefabs)
     {
         //Select a random enemy from our enemy prefab array.
-        int randomEnemy = Random.Range(0, _commonEnemyPrefabs.Length);
+        int randomEnemy = Random.Range(0, enemyPrefabs.Length);
         Vector3 spawnPosition = new Vector3(Random.Range(_spawnXRangeMin,_spawnXRangeMax), _spawnHeight, 0);
             
-        GameObject newEnemy = Instantiate(_commonEnemyPrefabs[randomEnemy],spawnPosition, Quaternion.identity, _enemyContainer.transform);
+        GameObject newEnemy = Instantiate(enemyPrefabs[randomEnemy],spawnPosition, Quaternion.identity, _enemyContainer.transform);
         newEnemy.GetComponent<EnemyMovement>().SetSpeed(Random.Range(1,6));
         newEnemy.transform.parent = _enemyContainer.transform;
+        _enemiesSpawned++;
     }
-    
-    private void SpawnUncommonEnemyRoutine()
-    {
-        int randomShipEnemy = Random.Range(0, _uncommonEnemyPrefabs.Length);
-        Vector3 spawnShipPosition = new Vector3(Random.Range(_spawnXRangeMin,_spawnXRangeMax), _spawnHeight, 0);
-                
-        GameObject newShipEnemy = Instantiate(_uncommonEnemyPrefabs[randomShipEnemy],spawnShipPosition, Quaternion.identity, _enemyContainer.transform);
-        newShipEnemy.GetComponent<EnemyMovement>().SetSpeed(Random.Range(1,5));
-        newShipEnemy.transform.parent = _enemyContainer.transform;
-    }
+
     
     private void SpawnRareEnemyRoutine()
     {
@@ -121,8 +126,7 @@ public class SpawnManager : MonoBehaviour
         float nextSpawn = Random.Range(30, 60);
             
         Debug.Log(nextSpawn);
-        
-        
+        _enemiesSpawned++;
     }
 
     IEnumerator SpawnPowerUpRoutine()
@@ -136,6 +140,17 @@ public class SpawnManager : MonoBehaviour
             yield return new WaitForSeconds(Random.Range(3f,9f)); 
         }
     }
+    
+    private void SpawnCommonPowerUpRoutine(GameObject[] powerUpPrefabs)
+    {
+        //Select a random enemy from our enemy prefab array.
+        int randomPowerUp = Random.Range(0, powerUpPrefabs.Length);
+        Vector3 spawnPosition = new Vector3(Random.Range(_spawnXRangeMin,_spawnXRangeMax), _spawnHeight, 0);
+            
+        GameObject newPowerUp = Instantiate(powerUpPrefabs[randomPowerUp],spawnPosition, Quaternion.identity);
+        newPowerUp.GetComponent<EnemyMovement>().SetSpeed(Random.Range(1,6));
+    }
+
     
     public void OnPlayerDeath()
     {
@@ -156,7 +171,16 @@ public class SpawnManager : MonoBehaviour
     {
         _startSpawningSwarmEnemy = spawnShipsBool;
     }
-    
-    
-    
+
+    public int MaxEnemiesPerWave
+    {
+        get => _maxEnemiesPerWave;
+        set => _maxEnemiesPerWave = value;
+    }
+
+    public int EnemiesDefeated
+    {
+        get => _enemiesDefeated;
+        set => _enemiesDefeated = value;
+    }
 }
