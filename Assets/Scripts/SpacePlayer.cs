@@ -417,8 +417,15 @@ public class SpacePlayer : MonoBehaviour
 
                     if (_currentAmmoCount == 0)
                     {
+                        _uiManager.BlinkAmmo = true;
                         _uiManager.BlinkAmmoCountText();
                     }
+                    
+                    if (_currentAmmoCount > 0)
+                    {
+                        _uiManager.BlinkAmmo = false;
+                    }
+                    
                 }
             }
             
@@ -470,11 +477,19 @@ public class SpacePlayer : MonoBehaviour
 
                         if (_currentAmmoCount == 0)
                         {
+                            _uiManager.BlinkAmmo = true;
                             _uiManager.BlinkAmmoCountText();
-                        }
+                        }  
+                        
                     }
 
                     _uiManager.UpdateAmmoCountUI(_currentAmmoCount, _maxAmmoCount);
+                }
+                
+                if (_currentAmmoCount > 0)
+                {
+                    //Debug.LogError("STOP BLINKING");
+                    _uiManager.BlinkAmmo = false;
                 }
             }
         }

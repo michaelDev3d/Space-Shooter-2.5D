@@ -35,7 +35,7 @@ public class EnemyMovement :  Rarity
     private AudioSource _audioSource;
     
     private float _spinSpeed;
-    private static readonly int _explosionAnimBool = Animator.StringToHash("  ");
+    private static readonly int _explosionAnimBool = Animator.StringToHash("Explosion");
 
     [Header("Level Data")]
     [SerializeField]
@@ -160,7 +160,8 @@ public class EnemyMovement :  Rarity
 
         if (_enemyTypeID == 2)
         {
-
+            _enemyCount = SwarmEnemyCount();
+            
             _swarmEnemyPivotGameObject.transform.Rotate(Vector3.forward, 
                 swarmRotationSpeed/_enemyCount, Space.Self);
             
@@ -220,6 +221,8 @@ public class EnemyMovement :  Rarity
                 if (_player != null && !_player.GetMainMenuPlayer() && !projectile.CheckIfIsEnemyLaser())
                     _player.AddScore(_scorePerKill);
 
+               
+                
                 StartCoroutine(DestroySequence(1));
                 Destroy(other.gameObject);
             }

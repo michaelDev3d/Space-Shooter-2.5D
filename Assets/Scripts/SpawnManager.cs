@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 public class SpawnManager : MonoBehaviour
 {
@@ -55,20 +57,25 @@ public class SpawnManager : MonoBehaviour
 
     [SerializeField] private int _enemyRaritySelector;
     [SerializeField] private int _powerRaritySelector;
-    
-    
-    [SerializeField] private int _maxEnemiesPerWave = 20;
+
+    [SerializeField] private int _currentWave = 1;
+    [SerializeField] private int _maxEnemiesPerWave = 10;
     [SerializeField] private int _enemiesSpawned;
     [SerializeField] private int _enemiesDefeated;
-   
+
+    private void Start()
+    {
+        
+    }
+
     public void StartSpawning()
     {
-        StartCoroutine(SpawnEnemyRoutine(_spawnRateInSeconds));
+        StartCoroutine(SpawnEnemyRoutine(_spawnRateInSeconds,4f));
         StartCoroutine(SpawnPowerUpRoutine());
     }
 
     // ReSharper disable Unity.PerformanceAnalysis
-    IEnumerator SpawnEnemyRoutine(float seconds)
+    IEnumerator SpawnEnemyRoutine(float seconds, float newWaveDelay)
     {
         while (!_stopSpawning)
         {
@@ -97,7 +104,14 @@ public class SpawnManager : MonoBehaviour
                     _startSpawningSwarmEnemy = true;
                 }
             }
-
+            else if (_enemiesDefeated == _maxEnemiesPerWave)
+            {
+                yield return new WaitForSeconds(seconds); 
+                _currentWave++;
+                _maxEnemiesPerWave = (_maxEnemiesPerWave * 2);
+                _enemiesDefeated = 0;
+                _enemiesSpawned = 0;
+            }
             yield return new WaitForSeconds(seconds); 
         }
     }
@@ -182,5 +196,11 @@ public class SpawnManager : MonoBehaviour
     {
         get => _enemiesDefeated;
         set => _enemiesDefeated = value;
+    }
+
+    public int CurrentWave
+    {
+        get => _currentWave;
+        set => _currentWave = value;
     }
 }

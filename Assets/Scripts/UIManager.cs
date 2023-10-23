@@ -20,6 +20,8 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI _pauseGameText;
     [SerializeField] 
     private TextMeshProUGUI _ShieldCountText;
+    [SerializeField]
+    private TextMeshProUGUI _waveText;
     [SerializeField] 
     private Button _QuitButton;
     private GameManager _gameManager;
@@ -47,7 +49,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] 
     private bool _isUpdatingUI;
 
-
+    [SerializeField] 
+    private bool _blinkAmmo = true;
+    
     private bool _hideShieldAfterBlinking = false;
     
     // Start is called before the first frame update
@@ -64,6 +68,9 @@ public class UIManager : MonoBehaviour
         
         if(_ShieldCountText != null)
             _ShieldCountText.gameObject.SetActive(false);
+        
+        if(_waveText != null)
+            _waveText.gameObject.SetActive(false);
         
         GameObject _gameManagerGameObject = GameObject.Find("Game_Manager");
 
@@ -172,16 +179,17 @@ public class UIManager : MonoBehaviour
         _gameOverText.gameObject.SetActive(true);
         _restartGameText.gameObject.SetActive(true);
         _ammoCountText.gameObject.SetActive(false);
-        StartCoroutine(GameOverFlicker(0.5f));
+        //StartCoroutine(GameOverFlicker(0.5f));
+        StartCoroutine( BlinkText( true,_gameOverText,0.5f));
     }
 
-    IEnumerator GameOverFlicker(float seconds)
+    IEnumerator BlinkText(bool blinking, TextMeshProUGUI text, float seconds)
     {
-        while (true)
+        while (blinking)
         {
-            _gameOverText.gameObject.SetActive(true);
+            text.gameObject.SetActive(true);
             yield return new WaitForSeconds(seconds);
-            _gameOverText.gameObject.SetActive(false);
+            text.gameObject.SetActive(false);
             yield return new WaitForSeconds(seconds);
         }
     }
@@ -288,30 +296,36 @@ public class UIManager : MonoBehaviour
 
     public void BlinkAmmoCountText()
     {
+        
         StartCoroutine(BlinkAmmoRoutine(0.5f));
     }
 
+    
     IEnumerator BlinkAmmoRoutine(float seconds)
     {
-        while (true)
+        while (_blinkAmmo)
         {
             _ammoCountText.transform.gameObject.SetActive(true);
             yield return new WaitForSeconds(seconds);
             _ammoCountText.transform.gameObject.SetActive(false);
             yield return new WaitForSeconds(seconds);
         }
+        _ammoCountText.transform.gameObject.SetActive(true);
     }
 
     private void ShowPauseUI()
     {
         _QuitButton.gameObject.SetActive(true);
     }
-    
 
     public void QuitGame()
     {
         Application.Quit();
     }
     
-    
+    public bool BlinkAmmo
+    {
+        get => _blinkAmmo;
+        set => _blinkAmmo = value;
+    }
 }
