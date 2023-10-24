@@ -77,6 +77,21 @@ public class SpawnManager : MonoBehaviour
        
         while (!_stopSpawning)
         {
+            if (_enemiesDefeated >= _enemiesToCompleteWave)
+            {
+                EnemyMovement[] inSceneEnemies = GameObject.FindObjectsOfType<EnemyMovement>();
+                foreach (EnemyMovement enemy in inSceneEnemies)
+                {
+                    //Play Fleeing enemy ship
+                    //Disable enemy movement Destroy(enemy);
+                    Destroy(enemy.gameObject);
+                }
+                
+                _currentWave++;
+                _enemiesToCompleteWave = (_enemiesToCompleteWave * 2);
+                _enemiesDefeated = 0;
+                _enemiesSpawned = 0;
+            }
 
             if (_currentWave == 1)
             {
@@ -119,22 +134,6 @@ public class SpawnManager : MonoBehaviour
                     _startSpawningRareEnemies = true;
                 }
             }
-            
-            if (_enemiesDefeated >= _enemiesToCompleteWave)
-            {
-                EnemyMovement[] inSceneEnemies = GameObject.FindObjectsOfType<EnemyMovement>();
-                foreach (EnemyMovement enemy in inSceneEnemies)
-                {
-                    //Play Fleeing enemy ship
-                    //Disable enemy movement Destroy(enemy);
-                    Destroy(enemy.gameObject);
-                }
-                
-                _currentWave++;
-                _enemiesToCompleteWave = (_enemiesToCompleteWave * 2);
-                _enemiesDefeated = 0;
-                _enemiesSpawned = 0;
-            }
             yield return new WaitForSeconds(seconds); 
         }
     }
@@ -167,7 +166,7 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnPowerUpRoutine()
     {
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(8);
         
         while (!_stopSpawning )
         {
@@ -194,7 +193,7 @@ public class SpawnManager : MonoBehaviour
         _startSpawningShips = spawnShipsBool;
     }
     
-    public void SetStartSpawningSwarmEnemy(bool spawnShipsBool)
+    public void SetStartSpawningRareEnemy(bool spawnShipsBool)
     {
         _startSpawningRareEnemies = spawnShipsBool;
     }

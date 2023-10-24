@@ -138,7 +138,7 @@ public class GameManager : MonoBehaviour
             {
                 if (_spawnManager != null)
                 {
-                    _spawnManager.SetStartSpawningSwarmEnemy(true);
+                    _spawnManager.SetStartSpawningRareEnemy(true);
                     _player.AddScore(10);
                 }
             }

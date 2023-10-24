@@ -349,6 +349,7 @@ public class UIManager : MonoBehaviour
     
     public void BlinkWaveCompleteText(float blinkRate, float blinkingDuration)
     {
+        _blinkCompleteWave = true;
         StartCoroutine(BlinkWaveCompleteRoutine(blinkRate));
         StartCoroutine(DisableWaveCompleteBlinkAfterSeconds(blinkingDuration));
         StartCoroutine(DisplayNewWaveOnWaveCompletion(3.5f));
