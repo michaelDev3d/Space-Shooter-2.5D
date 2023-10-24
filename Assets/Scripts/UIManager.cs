@@ -22,6 +22,8 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI _ShieldCountText;
     [SerializeField]
     private TextMeshProUGUI _waveText;
+    [SerializeField]
+    private TextMeshProUGUI _waveCompleteText;
     [SerializeField] 
     private Button _QuitButton;
     private GameManager _gameManager;
@@ -49,8 +51,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] 
     private bool _isUpdatingUI;
 
+    [Header("Temporary Blink Flags")]
     [SerializeField] 
     private bool _blinkAmmo = true;
+    [SerializeField] 
+    private bool _blinkWave = true;
+    [SerializeField] 
+    private bool _blinkCompleteWave = true;
     
     private bool _hideShieldAfterBlinking = false;
     
@@ -72,6 +79,10 @@ public class UIManager : MonoBehaviour
         if(_waveText != null)
             _waveText.gameObject.SetActive(false);
         
+        if(_waveCompleteText != null)
+            _waveCompleteText.gameObject.SetActive(false);
+        
+
         GameObject _gameManagerGameObject = GameObject.Find("Game_Manager");
 
         if (_gameManagerGameObject != null)
@@ -95,7 +106,6 @@ public class UIManager : MonoBehaviour
     {
         UpdateHealthUiOnlyOnChange();
     }
-
 
     IEnumerator UpdateHealthAnim(bool turnOn, float seconds)
     {
@@ -142,7 +152,7 @@ public class UIManager : MonoBehaviour
             }
         }
     }
-    
+
     private void UpdateHealthAnimBool(bool turnOn)
     {
         _isUpdatingUI = turnOn;
@@ -158,7 +168,6 @@ public class UIManager : MonoBehaviour
         StartCoroutine(UpdateHealthAnim(turnOn, _drainHealthUiSpeed));
     }
 
-    
     public void AddHealthToBar(int playerLives, float healAmount, bool turnOn)
     {
         _CurrentPlayerLives = playerLives;
@@ -173,25 +182,18 @@ public class UIManager : MonoBehaviour
         _scoreText.text = "Score: " + playerScore.ToString();
     }
 
+    public void UpdateWaveText(int wave)
+    {
+        _waveText.text = "Wave " + wave.ToString();
+    }
+
     private void GameOverSequence()
     {
         _gameManager.GameOver();
         _gameOverText.gameObject.SetActive(true);
         _restartGameText.gameObject.SetActive(true);
         _ammoCountText.gameObject.SetActive(false);
-        //StartCoroutine(GameOverFlicker(0.5f));
         StartCoroutine( BlinkText( true,_gameOverText,0.5f));
-    }
-
-    IEnumerator BlinkText(bool blinking, TextMeshProUGUI text, float seconds)
-    {
-        while (blinking)
-        {
-            text.gameObject.SetActive(true);
-            yield return new WaitForSeconds(seconds);
-            text.gameObject.SetActive(false);
-            yield return new WaitForSeconds(seconds);
-        }
     }
 
     public void TurnOffStartGameText()
@@ -239,14 +241,20 @@ public class UIManager : MonoBehaviour
         _ShieldCountText.gameObject.SetActive(true);
     }
 
-    private void HideShieldCount()
-    {
-        _ShieldCountText.gameObject.SetActive(false);
-    }
-
     public void SetShieldCount(int count)
     {
         _ShieldCountText.text = "Shield: " + count;
+    }
+    
+    IEnumerator BlinkText(bool blinking, TextMeshProUGUI text, float seconds)
+    {
+        while (blinking)
+        {
+            text.gameObject.SetActive(true);
+            yield return new WaitForSeconds(seconds);
+            text.gameObject.SetActive(false);
+            yield return new WaitForSeconds(seconds);
+        }
     }
     
     public void BlinkShieldCountText()
@@ -265,7 +273,7 @@ public class UIManager : MonoBehaviour
             //Blink while hideShieldUI is false
             _ShieldCountText.transform.gameObject.SetActive(true);
             yield return new WaitForSeconds(BlinkRateInSeconds);
-            HideShieldCount();
+            _ShieldCountText.gameObject.SetActive(false);
             yield return new WaitForSeconds(BlinkRateInSeconds);
             
             //Check if hideShieldUI is true
@@ -273,7 +281,7 @@ public class UIManager : MonoBehaviour
         }
         
         //Hide shield after blinking ends.
-        HideShieldCount();
+        _ShieldCountText.gameObject.SetActive(false);
     }
 
     IEnumerator HideBlinkingShieldText(float seconds)
@@ -287,19 +295,16 @@ public class UIManager : MonoBehaviour
     {
         return _hideShieldAfterBlinking;
     }
-
-
+    
     public void UpdateAmmoCountUI(int AmmoCount, int maxAmmoCount)
     {
         _ammoCountText.text = "Ammo: " + AmmoCount + "/" + maxAmmoCount;
     }
 
-    public void BlinkAmmoCountText()
+    public void BlinkAmmoCountText(float blinkRate)
     {
-        
-        StartCoroutine(BlinkAmmoRoutine(0.5f));
+        StartCoroutine(BlinkAmmoRoutine(blinkRate));
     }
-
     
     IEnumerator BlinkAmmoRoutine(float seconds)
     {
@@ -311,6 +316,69 @@ public class UIManager : MonoBehaviour
             yield return new WaitForSeconds(seconds);
         }
         _ammoCountText.transform.gameObject.SetActive(true);
+    }
+    
+    public void DisableAmmoBlink()
+    {
+        _blinkAmmo = false;
+    }
+    
+    public void BlinkWaveText(float blinkRate, float blinkingDuration)
+    {
+        StartCoroutine(BlinkWaveRoutine(blinkRate));
+        StartCoroutine(DisableWaveBlinkAfterSeconds(blinkingDuration));
+    }
+    
+    IEnumerator BlinkWaveRoutine(float seconds)
+    {
+        while (_blinkWave)
+        {
+            _waveText.transform.gameObject.SetActive(true);
+            yield return new WaitForSeconds(seconds);
+            _waveText.transform.gameObject.SetActive(false);
+            yield return new WaitForSeconds(seconds);
+        }
+        _waveText.transform.gameObject.SetActive(false);
+    }
+
+    IEnumerator DisableWaveBlinkAfterSeconds(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        _blinkWave = false;
+    }
+    
+    public void BlinkWaveCompleteText(float blinkRate, float blinkingDuration)
+    {
+        StartCoroutine(BlinkWaveCompleteRoutine(blinkRate));
+        StartCoroutine(DisableWaveCompleteBlinkAfterSeconds(blinkingDuration));
+        StartCoroutine(DisplayNewWaveOnWaveCompletion(3.5f));
+
+    }
+
+    IEnumerator DisplayNewWaveOnWaveCompletion(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        _waveText.transform.gameObject.SetActive(true);
+        _blinkWave = true;
+        BlinkWaveText(0.5f, 3f);
+    }
+    
+    IEnumerator BlinkWaveCompleteRoutine(float seconds)
+    {
+        while (_blinkCompleteWave)
+        {
+            _waveCompleteText.transform.gameObject.SetActive(true);
+            yield return new WaitForSeconds(seconds);
+            _waveCompleteText.transform.gameObject.SetActive(false);
+            yield return new WaitForSeconds(seconds);
+        }
+        _waveCompleteText.transform.gameObject.SetActive(false);
+    }
+
+    IEnumerator DisableWaveCompleteBlinkAfterSeconds(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        _blinkCompleteWave = false;
     }
 
     private void ShowPauseUI()

@@ -68,6 +68,17 @@ public class GameManager : MonoBehaviour
         StartSpawningShips();
         ResetLevel();
         PauseGame();
+        WaveUpdate();
+        ManageNewWaveData();
+    }
+
+    private void ManageNewWaveData()
+    {
+        if (_spawnManager.NewWave)
+        {
+            _uiManager.BlinkWaveCompleteText(0.5f, 3f);
+            _spawnManager.NewWave = false;
+        }
     }
 
     public void GameOver()
@@ -138,4 +149,10 @@ public class GameManager : MonoBehaviour
     {
         return _gameIsPaused;
     }
+
+    private void WaveUpdate()
+    {
+        _uiManager.UpdateWaveText(_spawnManager.CurrentWave);
+    }
+
 }

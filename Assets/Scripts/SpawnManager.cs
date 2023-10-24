@@ -46,8 +46,8 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] 
     private bool _startSpawningShips = false;
     
-    [SerializeField] 
-    private bool _startSpawningSwarmEnemy= false;
+    [FormerlySerializedAs("_startSpawningSwarmEnemy")] [SerializeField] 
+    private bool _startSpawningRareEnemies= false;
     
     [SerializeField]
     private GameObject[] powerUps;
@@ -59,15 +59,12 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private int _powerRaritySelector;
 
     [SerializeField] private int _currentWave = 1;
-    [SerializeField] private int _maxEnemiesPerWave = 10;
+    [FormerlySerializedAs("_EnemiesToCompleteWave")] [FormerlySerializedAs("_maxEnemiesPerWave")] [SerializeField] private int _enemiesToCompleteWave = 10;
     [SerializeField] private int _enemiesSpawned;
     [SerializeField] private int _enemiesDefeated;
 
-    private void Start()
-    {
-        
-    }
-
+    [SerializeField] private bool _newWave = false;
+    
     public void StartSpawning()
     {
         StartCoroutine(SpawnEnemyRoutine(_spawnRateInSeconds,4f));
@@ -77,9 +74,25 @@ public class SpawnManager : MonoBehaviour
     // ReSharper disable Unity.PerformanceAnalysis
     IEnumerator SpawnEnemyRoutine(float seconds, float newWaveDelay)
     {
+       
         while (!_stopSpawning)
         {
-            if (_enemiesSpawned < _maxEnemiesPerWave)
+
+            if (_currentWave == 1)
+            {
+                yield return new WaitForSeconds(4); 
+            }
+            
+            if (_currentWave > 1 && _enemiesSpawned == 0 && _enemiesDefeated == 0)
+            {
+                Debug.Log("New Wave Spawning");
+
+                _newWave = true;
+                yield return new WaitForSeconds(8); 
+                
+            }
+
+            if (_enemiesSpawned < _enemiesToCompleteWave +10)
             {
                 _enemyRaritySelector = Random.Range(0, 100);
                 //Debug.Log(_enemyRaritySelector);
@@ -91,24 +104,34 @@ public class SpawnManager : MonoBehaviour
                     SpawnEnemyRoutine(_commonEnemyPrefabs);
                 }
 
+                //Spawn common Enemy
                 if (_startSpawningShips && _enemyRaritySelector > 50 && _enemyRaritySelector < 90)
                 {
                     _spawnRateInSeconds = 0.5f;
                     SpawnEnemyRoutine(_uncommonEnemyPrefabs);
                 }
 
-                if (_startSpawningSwarmEnemy && _enemyRaritySelector > 90)
+                //Spawn rare Enemy
+                if (_startSpawningRareEnemies && _enemyRaritySelector > 90)
                 {
                     _spawnRateInSeconds = 0.5f;
                     SpawnRareEnemyRoutine();
-                    _startSpawningSwarmEnemy = true;
+                    _startSpawningRareEnemies = true;
                 }
             }
-            else if (_enemiesDefeated == _maxEnemiesPerWave)
+            
+            if (_enemiesDefeated >= _enemiesToCompleteWave)
             {
-                yield return new WaitForSeconds(seconds); 
+                EnemyMovement[] inSceneEnemies = GameObject.FindObjectsOfType<EnemyMovement>();
+                foreach (EnemyMovement enemy in inSceneEnemies)
+                {
+                    //Play Fleeing enemy ship
+                    //Disable enemy movement Destroy(enemy);
+                    Destroy(enemy.gameObject);
+                }
+                
                 _currentWave++;
-                _maxEnemiesPerWave = (_maxEnemiesPerWave * 2);
+                _enemiesToCompleteWave = (_enemiesToCompleteWave * 2);
                 _enemiesDefeated = 0;
                 _enemiesSpawned = 0;
             }
@@ -128,11 +151,10 @@ public class SpawnManager : MonoBehaviour
         newEnemy.transform.parent = _enemyContainer.transform;
         _enemiesSpawned++;
     }
-
     
     private void SpawnRareEnemyRoutine()
     {
-        _startSpawningSwarmEnemy = false;
+        _startSpawningRareEnemies = false;
         
         Vector3 spawnShipPosition =_swarmSpawnPosition;
         Instantiate(_rareEnemyPrefabs[0],spawnShipPosition, Quaternion.identity, _enemyContainer.transform);
@@ -145,6 +167,8 @@ public class SpawnManager : MonoBehaviour
 
     IEnumerator SpawnPowerUpRoutine()
     {
+        yield return new WaitForSeconds(4);
+        
         while (!_stopSpawning )
         {
             Vector3 spawnPosition = new Vector3(Random.Range(_spawnXRangeMin,_spawnXRangeMax), _spawnHeight, 0);
@@ -154,18 +178,7 @@ public class SpawnManager : MonoBehaviour
             yield return new WaitForSeconds(Random.Range(3f,9f)); 
         }
     }
-    
-    private void SpawnCommonPowerUpRoutine(GameObject[] powerUpPrefabs)
-    {
-        //Select a random enemy from our enemy prefab array.
-        int randomPowerUp = Random.Range(0, powerUpPrefabs.Length);
-        Vector3 spawnPosition = new Vector3(Random.Range(_spawnXRangeMin,_spawnXRangeMax), _spawnHeight, 0);
-            
-        GameObject newPowerUp = Instantiate(powerUpPrefabs[randomPowerUp],spawnPosition, Quaternion.identity);
-        newPowerUp.GetComponent<EnemyMovement>().SetSpeed(Random.Range(1,6));
-    }
 
-    
     public void OnPlayerDeath()
     {
         _stopSpawning = true;
@@ -183,13 +196,13 @@ public class SpawnManager : MonoBehaviour
     
     public void SetStartSpawningSwarmEnemy(bool spawnShipsBool)
     {
-        _startSpawningSwarmEnemy = spawnShipsBool;
+        _startSpawningRareEnemies = spawnShipsBool;
     }
 
-    public int MaxEnemiesPerWave
+    public int EnemiesToCompleteWave
     {
-        get => _maxEnemiesPerWave;
-        set => _maxEnemiesPerWave = value;
+        get => _enemiesToCompleteWave;
+        set => _enemiesToCompleteWave = value;
     }
 
     public int EnemiesDefeated
@@ -202,5 +215,11 @@ public class SpawnManager : MonoBehaviour
     {
         get => _currentWave;
         set => _currentWave = value;
+    }
+
+    public bool NewWave
+    {
+        get => _newWave;
+        set => _newWave = value;
     }
 }

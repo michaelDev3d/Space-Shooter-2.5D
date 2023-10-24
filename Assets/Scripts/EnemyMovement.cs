@@ -297,9 +297,12 @@ public class EnemyMovement :  Rarity
                 Debug.LogError("Spawn Manager component is n NULL in "+gameObject.name);
 
             UIManager uiManager = GameObject.Find("UI_Manager").GetComponent<UIManager>();
-            
+
             if (uiManager != null)
+            {
                 uiManager.TurnOffStartGameText();
+                uiManager.BlinkWaveText(0.5f, 3f);
+            }
             else
                 Debug.LogError("UI Manager component is NULL in "+gameObject.name);
         }
