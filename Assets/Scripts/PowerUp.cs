@@ -66,6 +66,9 @@ public class PowerUp : Rarity
                     case 6:
                         player.ActivateHomingShot();
                         break;
+                    case 7:
+                        player.ActivateSlowDebuff();
+                        break;
                     default:
                         Debug.Log("Default Power Up");
                         break;

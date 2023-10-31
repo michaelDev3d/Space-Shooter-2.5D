@@ -82,8 +82,12 @@ public class SpacePlayer : MonoBehaviour
     private bool _isShieldPowerUpActive;
     [SerializeField]
     private bool _speedBoostActive;
+    [SerializeField]
+    private bool _slowDebuffActive;
     [SerializeField] 
     private float _speedBoostMultiplier = 2f;
+    [SerializeField] 
+    private float _slowDebuffMultiplier = 0.4f;
     [SerializeField] 
     private bool _isHomingShotPowerUpActive;
     
@@ -273,7 +277,7 @@ public class SpacePlayer : MonoBehaviour
     #region Movement
         private void HandleThruster()
         {
-          
+
             if (Input.GetKey(KeyCode.LeftShift) && _playerStamina >= 0 && !_thrusterOnCooldown )
                 _thrusterActivated = true;
             else
@@ -283,23 +287,23 @@ public class SpacePlayer : MonoBehaviour
             {
                 if (_horizontal != 0 || _vertical != 0)
                 {
-                    _movementSpeed = _thrusterSpeed;
+                  
+                    _movementSpeed = CalculateThrusterSpeed();
                     _playerStamina -= _staminaDecayRate;
                 }
+                
 
                 if (_playerStamina <= 0)
                 {
-                    _movementSpeed = _defaultSpeed;
+
                     _playerStamina = 0;
                     _thrusterActivated = false;
-                    if (_speedBoostActive)
-                    {
-                        _movementSpeed *= _speedBoostMultiplier;
-                    }
+                    
                 }
             }
-            else
-                _movementSpeed = _defaultSpeed; 
+            else 
+                _movementSpeed = CalculateNormalSpeed();
+           
             
             if (_playerStamina <= 100 && !_thrusterActivated)
             {
@@ -325,11 +329,40 @@ public class SpacePlayer : MonoBehaviour
             }
             else if (_playerStamina >= 100)
             {
-                
                 _thrusterBarMaterial.SetInt("_TurnOnMask", 1);
                 _thrusterBarMaterial.SetColor("_ColorMaskColor", Color.green);
                 _thrusterOnCooldown = false;
             }
+        }
+
+        private float CalculateThrusterSpeed()
+        {
+            if(_movementSpeed == _defaultSpeed )
+                return _thrusterSpeed = _movementSpeed * 2;
+            else if(_speedBoostActive && _movementSpeed.Equals(_defaultSpeed * _speedBoostMultiplier))
+            {
+                return _thrusterSpeed = _movementSpeed * 1.5f;
+            }
+            else if (_movementSpeed.Equals(_defaultSpeed*0.4f))
+            {
+                return _thrusterSpeed = _movementSpeed * 3f;
+            }
+
+          
+
+            return _movementSpeed;
+        }
+        
+        
+        
+        private float CalculateNormalSpeed()
+        {
+            if (_speedBoostActive)
+                return _defaultSpeed * _speedBoostMultiplier;
+            if (_slowDebuffActive)
+                return _defaultSpeed * _slowDebuffMultiplier;
+            
+            return _defaultSpeed;
         }
 
         private void HandleMovement()
@@ -651,6 +684,28 @@ public class SpacePlayer : MonoBehaviour
             
             _movementSpeed /= _speedBoostMultiplier;
             _speedBoostActive = false;
+        }
+        
+           
+        public void ActivateSlowDebuff()
+        {
+            _slowDebuffActive = true;
+            Debug.Log("Slow Down Player");
+            _movementSpeed *= _slowDebuffMultiplier;
+            Debug.Log(_movementSpeed);
+            AdjustMaterialAppearance(_material, _playerMaterialOutlineColor, Color.red, _playerMaterialTurnOnOutline, 1);
+            
+            StartCoroutine( SlowDebuffDeactivateRoutine(30.5f));
+        }
+        
+        IEnumerator SlowDebuffDeactivateRoutine(float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+            
+            AdjustMaterialAppearance(_material, _playerMaterialOutlineColor, Color.clear, _playerMaterialTurnOnOutline, 0);
+            
+            _movementSpeed = _movementSpeed / _slowDebuffMultiplier;
+            _slowDebuffActive = false;
         }
         
         public void ActivateShield()

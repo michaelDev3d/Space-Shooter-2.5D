@@ -64,6 +64,20 @@ public class EnemyMovement :  Rarity
     private GameObject _swarmEnemyPivotGameObject;
     [SerializeField] 
     private GameObject _swarmEnemyContainer;
+
+    [Header(("Special Attributes"))] 
+    [SerializeField]
+    private bool _hasShield;
+    
+    [SerializeField] 
+    private bool _flickerShieldEffectOn;
+    
+    private Renderer _renderer;
+    private Material _material;
+    private static readonly int _enemyMaterialOutlineColor = Shader.PropertyToID("_OutlineColor");
+    private static readonly int _enemyMaterialTurnOnOutline = Shader.PropertyToID("TurnOnOutline");
+
+    private bool _boolSwapMovementDirection;
     
     void Start()
     {
@@ -78,6 +92,19 @@ public class EnemyMovement :  Rarity
     //Referencing components and null checking for them
     private void CreateEnemy(int enemyID)
     {
+        if (gameObject.transform.GetChild(0).gameObject.TryGetComponent(out Renderer spriteRenderer))
+        {
+            _renderer = spriteRenderer;
+        }
+        else
+            Debug.LogError("Renderer Component not found on player");
+
+        if (_renderer != null)
+        {
+            _material = _renderer.material;
+            _material.SetInt(_enemyMaterialTurnOnOutline, 0);
+        }
+
         //Finding and Null Checking main Player.
         GameObject playerObject = GameObject.Find("Player");
 
@@ -135,13 +162,23 @@ public class EnemyMovement :  Rarity
                 _enemyCount = SwarmEnemyCount();
                 StartCoroutine(EnemyShooting());
                 break;
+            case 3:
+                SetSpeed(Random.Range(0.5f,0.7f));
+                StartCoroutine(EnemyShooting());
+                ActivateShield();
+                break;
+            case 4:
+                SetSpeed(Random.Range(1.1f,1.5f));
+                StartCoroutine(EnemyShooting());
+                StartCoroutine(FleeSequence(5));
+                break;
         }
     }
 
     private void CalculateMovement()
     {
         //if the enemy is not a mainMenuEnemy or StartGameEnemy enable movement
-        if (!_mainMenuEnemy && !_startGameEnemy && _enemyTypeID == 0 || _enemyTypeID == 1)
+        if (!_mainMenuEnemy && !_startGameEnemy && _enemyTypeID == 0 || _enemyTypeID == 1 || _enemyTypeID == 3)
         {
             transform.Translate(Vector3.down * (_movementSpeed * Time.deltaTime));
 
@@ -176,6 +213,29 @@ public class EnemyMovement :  Rarity
                 Destroy(_spawnEnemyContainer);
             }
         }
+
+        if (_enemyTypeID == 4)
+        {
+            if (!_boolSwapMovementDirection)
+            {
+                transform.Translate(Vector3.right * (_movementSpeed * Time.deltaTime));
+
+                if (transform.position.x < -5)
+                {
+                    _movementSpeed = _movementSpeed * -1;
+                }
+
+                if (transform.position.x > 5)
+                {
+                    _movementSpeed = _movementSpeed * -1;
+                }
+            }
+            else
+            {
+                transform.Translate(Vector3.down * (_movementSpeed * Time.deltaTime));
+            }
+        }
+
     }
 
     private int SwarmEnemyCount()
@@ -216,15 +276,27 @@ public class EnemyMovement :  Rarity
 
             if (!projectile.CheckIfIsEnemyLaser())
             {
-                _animator.SetBool(_explosionAnimBool, true);
-                
-                if (_player != null && !_player.GetMainMenuPlayer() && !projectile.CheckIfIsEnemyLaser())
-                    _player.AddScore(_scorePerKill);
+                if (_hasShield)
+                {
+                    Destroy(projectile.gameObject);
+                    if (_material.GetColor(_enemyMaterialOutlineColor) == Color.cyan)
+                    {
+                        FlickerShieldOutlineEffect(0.15f, 2f);
+                    }
+                }
 
-               
-                
-                StartCoroutine(DestroySequence(1));
-                Destroy(other.gameObject);
+                if (!_hasShield && !_flickerShieldEffectOn)
+                {
+                    _animator.SetBool(_explosionAnimBool, true);
+
+                    if (_player != null && !_player.GetMainMenuPlayer() && !projectile.CheckIfIsEnemyLaser())
+                        _player.AddScore(_scorePerKill);
+
+
+
+                    StartCoroutine(DestroySequence(1));
+                    Destroy(other.gameObject);
+                }
             }
         }
     }
@@ -277,6 +349,19 @@ public class EnemyMovement :  Rarity
         Destroy(this.gameObject);
     }
 
+    private IEnumerator FleeSequence(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        _movementSpeed = 0;
+        yield return new WaitForSeconds(1);
+        _stopShooting = true;
+        _movementSpeed = -3;
+        _boolSwapMovementDirection = true;
+        yield return new WaitForSeconds(5);
+        Destroy(this.gameObject);
+
+    }
+
     private void InitiateGame()
     {
         //Initiating the game once this enemy is defeated.
@@ -317,9 +402,36 @@ public class EnemyMovement :  Rarity
             _audioSource.clip = _laserSFX;
             _audioSource.Play();
             
-            Projectile laser = Instantiate(_laserPrefab, transform.position, Quaternion.Euler(Vector3.down)).GetComponent<Projectile>();
-            laser.SetEnemyLaser(true);
-            yield return new WaitForSeconds(Random.Range(2, 4));
+            if (_enemyTypeID != 4)
+            {
+                Debug.Log("Testing Top screen enemy");
+                Projectile laser = Instantiate(_laserPrefab, transform.position, Quaternion.Euler(Vector3.down))
+                    .GetComponent<Projectile>();
+                laser.SetEnemyLaser(true);
+                
+                if (_enemyTypeID == 2)
+                    laser.SetSwarmEnemyLaser(true);
+            }
+
+            if (_enemyTypeID == 4)
+            {
+                Debug.Log("Testing Bottom screen enemy");
+                if (transform.position.x >= _player.transform.position.x-0.3 && transform.position.x <= _player.transform.position.x+0.3)
+                {
+                    Projectile laser = Instantiate(_laserPrefab, transform.position, Quaternion.Euler(Vector3.down))
+                        .GetComponent<Projectile>();
+                    
+                    laser.SetEnemyLaser(true);
+                    laser.ReverseDirection = true;
+                }
+              
+            }
+
+            if(_enemyTypeID == 4) 
+                yield return new WaitForSeconds(Random.Range(0.3f, 0.5f));
+           
+            if(_enemyTypeID != 4) 
+                yield return new WaitForSeconds(Random.Range(2, 4));
             
             if (gameManager != null)
             {
@@ -330,6 +442,51 @@ public class EnemyMovement :  Rarity
             }
             else
                 Debug.LogError("Game manager component is NULL in "+gameObject.name);
+            
         }
+    }
+
+    private void ActivateShield()
+    {
+        _hasShield= true;
+        AdjustMaterialAppearance(_material, _enemyMaterialOutlineColor, Color.cyan, _enemyMaterialTurnOnOutline, 1);
+           
+    }
+    
+    private void AdjustMaterialAppearance(Material gameObjectMaterial, int materialColorID, Color color,int materialVisibleID, int active)
+    {
+        if (gameObjectMaterial != null)
+        {
+            gameObjectMaterial.SetColor(materialColorID, color);
+            gameObjectMaterial.SetInt(materialVisibleID, active);
+        }
+    }
+    
+    private void FlickerShieldOutlineEffect(float flickerDelay, float seconds)
+    {
+        SetSpeed(0);
+        StartCoroutine(EnemyShieldOutlineFlicker(flickerDelay));
+        StartCoroutine(DeactivateShieldOutlineFlickerEffect(seconds));
+    }
+
+    IEnumerator EnemyShieldOutlineFlicker(float flickerDelay)
+    {
+        _flickerShieldEffectOn = true;
+
+        while (_flickerShieldEffectOn)
+        {
+            _material.SetColor(_enemyMaterialOutlineColor, Color.cyan );
+            yield return new WaitForSeconds(flickerDelay);
+            _material.SetColor(_enemyMaterialOutlineColor, Color.clear );
+            yield return new WaitForSeconds(flickerDelay);
+        }
+    }
+            
+    IEnumerator DeactivateShieldOutlineFlickerEffect(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        _flickerShieldEffectOn = false;
+        _hasShield = false;
+        SetSpeed(Random.Range(0.5f,0.7f));
     }
 }

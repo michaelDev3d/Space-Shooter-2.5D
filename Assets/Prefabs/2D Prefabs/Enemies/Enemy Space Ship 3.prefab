@@ -50,7 +50,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 3e7db021af53d4741af762fc03e12794, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -71,7 +71,7 @@ SpriteRenderer:
   m_SortingLayerID: 225693341
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: d4622e15ba6b601479a4138716f471c6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ea5d53f646df2074fb3bf0b40c6dfac7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -92,7 +92,7 @@ Animator:
   m_GameObject: {fileID: 1171893709488984537}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 79ef21fbbe2cde444b652098e658733d, type: 2}
+  m_Controller: {fileID: 9100000, guid: d1ded952ef3910043ac29e75e0a7041a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -115,7 +115,7 @@ GameObject:
   - component: {fileID: 8165881637659539271}
   - component: {fileID: -1078920232082080069}
   m_Layer: 0
-  m_Name: Enemy Space Ship 1
+  m_Name: Enemy Space Ship 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -196,8 +196,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rarity: 2
-  _enemyTypeID: 1
-  _movementSpeed: 1
+  _enemyTypeID: 4
+  _movementSpeed: 0.1
   _screenBoundsY: -6
   _screenBoundsX: 2.5
   _offScreenSpawnHeight: 8
@@ -218,7 +218,7 @@ MonoBehaviour:
   _enemyCount: 0
   _swarmEnemyPivotGameObject: {fileID: 0}
   _swarmEnemyContainer: {fileID: 0}
-  _hasShield: 0
+  _hasShield: 1
   _flickerShieldEffectOn: 0
 --- !u!82 &-1078920232082080069
 AudioSource:

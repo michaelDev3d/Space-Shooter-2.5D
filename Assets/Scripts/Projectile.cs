@@ -12,6 +12,9 @@ public class Projectile : MonoBehaviour
 
     [SerializeField] 
     private bool _isEnemyLaser;
+    
+    [SerializeField] 
+    private bool _isSwarmEnemyLaser;
 
     [SerializeField] 
     private float _enemyProjectileSpeed = 6f;
@@ -24,10 +27,13 @@ public class Projectile : MonoBehaviour
 
     [SerializeField] 
     private Transform _homingLaserTarget;
-    
+
+    [SerializeField] 
+    private bool _reverseDirection;
     
 
     private static readonly int _enemyLaserAnimBool = Animator.StringToHash("EnemyLaser");
+    private static readonly int _enemySwarmLaserAnimBool = Animator.StringToHash("SwarmLaser");
 
     void Update()
     {
@@ -51,14 +57,42 @@ public class Projectile : MonoBehaviour
             }
         }
 
-        if (_isEnemyLaser && !_isOrbitalLaser)
+        if (_isEnemyLaser && !_isOrbitalLaser && !_reverseDirection)
         {
             Animator animator = GetComponent<Animator>();
             
+            if (_isSwarmEnemyLaser)
+            {
+                if(animator != null)
+                    animator.SetBool(_enemySwarmLaserAnimBool, true);
+            }
+
             if(animator != null)
                 animator.SetBool(_enemyLaserAnimBool, true);
-            
+
             transform.Translate(Vector3.down * (Time.deltaTime * _enemyProjectileSpeed));
+            
+            if (transform.position.y < -_screenHeight )
+            {
+                Destroy(this.gameObject);
+            }
+        }
+        
+        
+        if (_isEnemyLaser && !_isOrbitalLaser && _reverseDirection)
+        {
+            Animator animator = GetComponent<Animator>();
+            
+            if (_isSwarmEnemyLaser)
+            {
+                if(animator != null)
+                    animator.SetBool(_enemySwarmLaserAnimBool, true);
+            }
+
+            if(animator != null)
+                animator.SetBool(_enemyLaserAnimBool, true);
+
+            transform.Translate(Vector3.up * (Time.deltaTime * _enemyProjectileSpeed));
             
             if (transform.position.y < -_screenHeight )
             {
@@ -121,10 +155,21 @@ public class Projectile : MonoBehaviour
     {
         _isEnemyLaser = isEnemyLaser;
     }
+    
+    public void SetSwarmEnemyLaser(bool isSwarmEnemyLaser)
+    {
+        _isSwarmEnemyLaser =  isSwarmEnemyLaser;
+    }
 
     public bool IsHomingLaser
     {
         get => _isHomingLaser;
         set => _isHomingLaser = value;
+    }
+
+    public bool ReverseDirection
+    {
+        get => _reverseDirection;
+        set => _reverseDirection = value;
     }
 }
