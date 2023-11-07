@@ -115,7 +115,7 @@ GameObject:
   - component: {fileID: 8165881637659539271}
   - component: {fileID: -1078920232082080069}
   m_Layer: 0
-  m_Name: Enemy Space Ship 2
+  m_Name: Enemy Space Ship 2 (Shield)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

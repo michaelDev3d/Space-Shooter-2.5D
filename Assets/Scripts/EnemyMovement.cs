@@ -205,7 +205,7 @@ public class EnemyMovement :  Rarity
             case 4:
                 SetSpeed(Random.Range(1.1f,1.5f));
                 StartCoroutine(EnemyShooting());
-                StartCoroutine(FleeSequence(5));
+                StartCoroutine(FleeSequence(20));
                 break;
             case 10:
                 StartCoroutine(LaserEventSequence());
@@ -285,8 +285,6 @@ public class EnemyMovement :  Rarity
         }
     }
 
-  
-    
     private void OnTriggerEnter2D(Collider2D other)
     {
         //Debug.Log("Hit "+other.transform.name);
