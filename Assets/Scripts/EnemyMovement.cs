@@ -78,6 +78,9 @@ public class EnemyMovement :  Rarity
     private static readonly int _enemyMaterialTurnOnOutline = Shader.PropertyToID("TurnOnOutline");
 
     private bool _boolSwapMovementDirection;
+    [SerializeField] 
+    private bool _isEvent;
+    
     
     void Start()
     {
@@ -92,61 +95,93 @@ public class EnemyMovement :  Rarity
     //Referencing components and null checking for them
     private void CreateEnemy(int enemyID)
     {
-        if (gameObject.transform.GetChild(0).gameObject.TryGetComponent(out Renderer spriteRenderer))
+        if (!_isEvent)
         {
-            _renderer = spriteRenderer;
-        }
-        else
-            Debug.LogError("Renderer Component not found on player");
-
-        if (_renderer != null)
-        {
-            _material = _renderer.material;
-            _material.SetInt(_enemyMaterialTurnOnOutline, 0);
-        }
-
-        //Finding and Null Checking main Player.
-        GameObject playerObject = GameObject.Find("Player");
-
-        if (playerObject != null)
-        {
-            if (playerObject.TryGetComponent(out SpacePlayer spacePlayer))
-                _player = spacePlayer;
+            if (gameObject.transform.GetChild(0).gameObject.TryGetComponent(out Renderer spriteRenderer))
+            {
+                _renderer = spriteRenderer;
+            }
             else
-                Debug.LogError("Main player component for " + gameObject.name + " is null");
-        }
-        else
-            Debug.LogError("Main Player is NULL");
+                Debug.LogError("Renderer Component not found on enemy");
 
-        
-        //Finding and Null Checking for Sprite GameObject, Renderer, and animator.
-        if (transform.childCount > 0)
-        {
-            //Rendering Gameobject
-            _spriteGameObject= transform.GetChild(0).gameObject;
+            if (_renderer != null)
+            {
+                _material = _renderer.material;
+                _material.SetInt(_enemyMaterialTurnOnOutline, 0);
+            }
 
-            //Animator
-            if (_spriteGameObject.TryGetComponent(out Animator animator))
-                _animator = animator;
+
+            //Finding and Null Checking main Player.
+            GameObject playerObject = GameObject.Find("Player");
+
+            if (playerObject != null)
+            {
+                if (playerObject.TryGetComponent(out SpacePlayer spacePlayer))
+                    _player = spacePlayer;
+                else
+                    Debug.LogError("Main player component for " + gameObject.name + " is null");
+            }
             else
-                Debug.LogError("Animator component for " + gameObject.name + " is null");
-        }
-        else
-            Debug.LogError("Enemy does not have child gameObject, therefore enemy does not have sprite or animator");
+                Debug.LogError("Main Player is NULL");
 
-    
-        //Getting BoxCollider2D and NULL checking
-        if (TryGetComponent(out BoxCollider2D boxCollider))
-            _collider2D = boxCollider;
-        else
-            Debug.LogError("Collider component for "+ gameObject.name +" is null");
-        
-        
-        //Getting AudioSource and NULL checking
-        if (TryGetComponent(out AudioSource audioSource))
-            _audioSource= audioSource;
-        else
-            Debug.LogError("Audio component for "+ gameObject.name +" is null");
+
+            //Finding and Null Checking for Sprite GameObject, Renderer, and animator.
+            if (transform.childCount > 0)
+            {
+                //Rendering Gameobject
+                _spriteGameObject = transform.GetChild(0).gameObject;
+
+                //Animator
+                if (_spriteGameObject.TryGetComponent(out Animator animator))
+                    _animator = animator;
+                else
+                    Debug.LogError("Animator component for " + gameObject.name + " is null");
+            }
+            else
+                Debug.LogError(
+                    "Enemy does not have child gameObject, therefore enemy does not have sprite or animator");
+
+
+            //Getting BoxCollider2D and NULL checking
+            if (TryGetComponent(out BoxCollider2D boxCollider))
+                _collider2D = boxCollider;
+            else
+                Debug.LogError("Collider component for " + gameObject.name + " is null");
+            
+            //Getting AudioSource and NULL checking
+            if (TryGetComponent(out AudioSource audioSource))
+                _audioSource= audioSource;
+            else
+                Debug.LogError("Audio component for "+ gameObject.name +" is null");
+        }
+
+        if (_isEvent)
+        {
+            //Finding and Null Checking main Player.
+            GameObject EventEnemy = transform.GetChild(0).gameObject;
+
+            if (EventEnemy != null)
+            {
+               
+                if (EventEnemy.TryGetComponent(out AudioSource audioSource))
+                    _audioSource= audioSource;
+                else
+                    Debug.LogError("Audio component for "+ gameObject.name +" is null");
+                
+                if (EventEnemy.TryGetComponent(out BoxCollider2D boxCollider))
+                    _collider2D = boxCollider;
+                else
+                    Debug.LogError("Collider component for " + gameObject.name + " is null");
+                
+                if (EventEnemy.TryGetComponent(out Animator animator))
+                    _animator = animator;
+                else
+                    Debug.LogError("Animator component for " + gameObject.name + " is null");
+            }
+            else
+                Debug.LogError("LaserEnemy is NULL");
+                
+        }
         
         switch (enemyID)
         {
@@ -172,23 +207,27 @@ public class EnemyMovement :  Rarity
                 StartCoroutine(EnemyShooting());
                 StartCoroutine(FleeSequence(5));
                 break;
+            case 10:
+                StartCoroutine(LaserEventSequence());
+               // Debug.Log("Boss Laser Event");
+                break;
         }
     }
 
     private void CalculateMovement()
     {
         //if the enemy is not a mainMenuEnemy or StartGameEnemy enable movement
-        if (!_mainMenuEnemy && !_startGameEnemy && _enemyTypeID == 0 || _enemyTypeID == 1 || _enemyTypeID == 3)
+        if (!_mainMenuEnemy && !_startGameEnemy && _enemyTypeID != 10 && _enemyTypeID == 0 || _enemyTypeID == 1 || _enemyTypeID == 3)
         {
             transform.Translate(Vector3.down * (_movementSpeed * Time.deltaTime));
 
-            if (transform.position.y <=  _screenBoundsY )
+            if (transform.position.y <= _screenBoundsY)
             {
                 float randomX = Random.Range(-_screenBoundsX, _screenBoundsX);
                 transform.position = new Vector3(randomX, _offScreenSpawnHeight, 0);
             }
         }
-        
+
         //Adding spinning to a meteor enemy
         if (_enemyTypeID == 0)
         {
@@ -198,16 +237,16 @@ public class EnemyMovement :  Rarity
         if (_enemyTypeID == 2)
         {
             _enemyCount = SwarmEnemyCount();
-            
-            _swarmEnemyPivotGameObject.transform.Rotate(Vector3.forward, 
-                swarmRotationSpeed/_enemyCount, Space.Self);
-            
+
+            _swarmEnemyPivotGameObject.transform.Rotate(Vector3.forward,
+                swarmRotationSpeed / _enemyCount, Space.Self);
+
             transform.Rotate(Vector3.forward, -swarmRotationSpeed, Space.World);
 
             GameObject _spawnEnemyContainer = _swarmEnemyPivotGameObject.transform.parent.gameObject;
             _spawnEnemyContainer.transform.Translate(Vector3.right * (-_movementSpeed * Time.deltaTime));
-            
-            
+
+
             if (_spawnEnemyContainer.transform.position.x < -_screenBoundsX)
             {
                 Destroy(_spawnEnemyContainer);
@@ -236,21 +275,17 @@ public class EnemyMovement :  Rarity
             }
         }
 
-    }
-
-    private int SwarmEnemyCount()
-    {
-        _swarmEnemyPivotGameObject = gameObject.transform.parent.gameObject;
-        _swarmEnemyContainer =   _swarmEnemyPivotGameObject.gameObject.transform.parent.gameObject;
-
-        if (_swarmEnemyPivotGameObject != null && _swarmEnemyContainer != null)
+        if (_enemyTypeID == 10)
         {
-            return _enemyCount = _swarmEnemyPivotGameObject.GetComponentsInChildren<EnemyMovement>().Length;
+            GameObject Laser = transform.GetChild(0).gameObject;
+            Laser.transform.Translate(Vector3.down * (_movementSpeed * Time.deltaTime));
+            
+            if (Laser.transform.position.y < -12)
+                SetSpeed(0);
         }
-        
-        Debug.LogError("Swarm container not found");
-        return 0;
     }
+
+  
     
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -488,5 +523,41 @@ public class EnemyMovement :  Rarity
         _flickerShieldEffectOn = false;
         _hasShield = false;
         SetSpeed(Random.Range(0.5f,0.7f));
+    }
+    
+    private int SwarmEnemyCount()
+    {
+        _swarmEnemyPivotGameObject = gameObject.transform.parent.gameObject;
+        _swarmEnemyContainer =   _swarmEnemyPivotGameObject.gameObject.transform.parent.gameObject;
+
+        if (_swarmEnemyPivotGameObject != null && _swarmEnemyContainer != null)
+        {
+            return _enemyCount = _swarmEnemyPivotGameObject.GetComponentsInChildren<EnemyMovement>().Length;
+        }
+        
+        Debug.LogError("Swarm container not found");
+        return 0;
+    }
+
+    private IEnumerator LaserEventSequence()
+    {
+        GameObject warningIcon = transform.GetChild(1).gameObject;
+        //Debug.Log("Warning Icon: ", warningIcon.gameObject);
+        GameObject dangerLine = transform.GetChild(2).gameObject;
+        //Debug.Log("Danger Line: ", dangerLine.gameObject);
+        
+        
+        dangerLine.SetActive(false);
+
+        yield return new WaitForSeconds(warningIcon.GetComponent<Blink>().DestroyInSeconds-2);
+        dangerLine.SetActive(true);
+        dangerLine.GetComponent<LineRenderer>().enabled = true;
+        dangerLine.GetComponent<Blink>().enabled = true;
+        dangerLine.GetComponent<Blink>().ToggleDestroy = true;
+        dangerLine.GetComponent<Blink>().ToggleBlinking = true;
+        yield return new WaitForSeconds(1);
+        SetSpeed(50);
+        Destroy(gameObject,1);
+       
     }
 }

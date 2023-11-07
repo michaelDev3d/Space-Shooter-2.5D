@@ -50,7 +50,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - CORNERS: 0
-    - TurnOnOutline: 1
+    - TurnOnOutline: 0
     - TurnOnSecondOutline: 0
     - _AlphaClip: 0
     - _Blend: 0
@@ -72,7 +72,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
-    - _TurnOnMask: 1
+    - _TurnOnMask: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:

@@ -36,23 +36,44 @@ public class Blink : MonoBehaviour
 
     IEnumerator BlinkGameObject(float seconds)
     {
-        while(_isBlinking)
+        while(true)
         {
-            if (_renderer != null)
+            if (_isBlinking)
             {
-                _renderer.enabled = false;
-                yield return new WaitForSeconds(seconds);
-                _renderer.enabled = true;
-                yield return new WaitForSeconds(seconds);
-            }
-            
-            if (_lineRenderer != null)
-            {
-                _lineRenderer.enabled = false;
-                yield return new WaitForSeconds(seconds);
-                _lineRenderer.enabled = true;
-                yield return new WaitForSeconds(seconds);
+                if (_renderer != null)
+                {
+                    _renderer.enabled = false;
+                    yield return new WaitForSeconds(seconds);
+                    _renderer.enabled = true;
+                    yield return new WaitForSeconds(seconds);
+                }
+
+                if (_lineRenderer != null)
+                {
+                    _lineRenderer.enabled = false;
+                    yield return new WaitForSeconds(seconds);
+                    _lineRenderer.enabled = true;
+                    yield return new WaitForSeconds(seconds);
+                }
             }
         }
+    }
+
+    public float DestroyInSeconds
+    {
+        get => _destroyInSeconds;
+        set => _destroyInSeconds = value;
+    }
+
+    public bool ToggleDestroy
+    {
+        get => destroy;
+        set => destroy = value;
+    }
+
+    public bool ToggleBlinking
+    {
+        get => _isBlinking;
+        set => _isBlinking = value;
     }
 }
