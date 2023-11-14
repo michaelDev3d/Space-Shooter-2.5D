@@ -137,8 +137,7 @@ public class SpawnManager : MonoBehaviour
             yield return new WaitForSeconds(seconds); 
         }
     }
-
-
+    
     private void SpawnEnemyRoutine(GameObject[] enemyPrefabs)
     {
         //Select a random enemy from our enemy prefab array.
@@ -147,6 +146,8 @@ public class SpawnManager : MonoBehaviour
             
         GameObject newEnemy = Instantiate(enemyPrefabs[randomEnemy],spawnPosition, Quaternion.identity, _enemyContainer.transform);
         newEnemy.GetComponent<EnemyMovement>().SetSpeed(Random.Range(1,6));
+        
+       
         newEnemy.transform.parent = _enemyContainer.transform;
         _enemiesSpawned++;
     }

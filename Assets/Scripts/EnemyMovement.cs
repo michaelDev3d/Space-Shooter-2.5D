@@ -203,6 +203,7 @@ public class EnemyMovement :  Rarity
                 ActivateShield();
                 break;
             case 4:
+                transform.position = new Vector3(5.35f, -2.25f, 0);
                 SetSpeed(Random.Range(1.1f,1.5f));
                 StartCoroutine(EnemyShooting());
                 StartCoroutine(FleeSequence(20));
@@ -259,12 +260,12 @@ public class EnemyMovement :  Rarity
             {
                 transform.Translate(Vector3.right * (_movementSpeed * Time.deltaTime));
 
-                if (transform.position.x < -5)
+                if (transform.position.x < -5.5)
                 {
                     _movementSpeed = _movementSpeed * -1;
                 }
 
-                if (transform.position.x > 5)
+                if (transform.position.x > 5.5)
                 {
                     _movementSpeed = _movementSpeed * -1;
                 }
@@ -557,5 +558,11 @@ public class EnemyMovement :  Rarity
         SetSpeed(50);
         Destroy(gameObject,1);
        
+    }
+
+    public int EnemyTypeID
+    {
+        get => _enemyTypeID;
+        set => _enemyTypeID = value;
     }
 }
