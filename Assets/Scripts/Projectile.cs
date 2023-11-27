@@ -24,6 +24,9 @@ public class Projectile : MonoBehaviour
     
     [SerializeField] 
     private bool _isHomingLaser;
+    
+    [SerializeField] 
+    private bool _isEventLaser;
 
     [SerializeField] 
     private Transform _homingLaserTarget;
@@ -57,7 +60,7 @@ public class Projectile : MonoBehaviour
             }
         }
 
-        if (_isEnemyLaser && !_isOrbitalLaser && !_reverseDirection)
+        if (_isEnemyLaser && !_isOrbitalLaser && !_reverseDirection && !_isEventLaser)
         {
             Animator animator = GetComponent<Animator>();
             
@@ -77,8 +80,7 @@ public class Projectile : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
-        
-        
+
         if (_isEnemyLaser && !_isOrbitalLaser && _reverseDirection)
         {
             Animator animator = GetComponent<Animator>();
@@ -134,6 +136,7 @@ public class Projectile : MonoBehaviour
                 }
             }
         }
+        
     }
     
     private bool CheckIfEnemyIsOnScreen(EnemyMovement enemy)
@@ -149,6 +152,11 @@ public class Projectile : MonoBehaviour
     public bool CheckIfIsEnemyLaser()
     {
         return _isEnemyLaser;
+    }
+    
+    public bool CheckIfIsEventLaser()
+    {
+        return _isEventLaser;
     }
 
     public void SetEnemyLaser(bool isEnemyLaser)

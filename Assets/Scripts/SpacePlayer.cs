@@ -934,7 +934,11 @@ public class SpacePlayer : MonoBehaviour
                     _audioSource.Play();
                     
                     ReceiveDamage();
-                    Destroy(other.gameObject);
+
+                    if (projectile.CheckIfIsEventLaser())
+                        Destroy(other.gameObject,2);
+                    else
+                        Destroy(other.gameObject);
                 }
             }
         }

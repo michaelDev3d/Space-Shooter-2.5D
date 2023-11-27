@@ -947,7 +947,7 @@ GameObject:
   - component: {fileID: 185614998104581335}
   - component: {fileID: 185614998104581334}
   m_Layer: 0
-  m_Name: Laser Event
+  m_Name: Laser Event Prototype
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

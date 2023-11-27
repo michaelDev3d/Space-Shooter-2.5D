@@ -18,7 +18,8 @@ public class DestroyAfterSeconds : MonoBehaviour
 
     IEnumerator DestroyInSeconds(float waitForSeconds)
     {
-        AudioSource.PlayClipAtPoint(_audioClip, transform.position);
+        if(_audioClip != null)
+            AudioSource.PlayClipAtPoint(_audioClip, transform.position);
         yield return new WaitForSeconds(waitForSeconds);
         
         Destroy(this.gameObject);

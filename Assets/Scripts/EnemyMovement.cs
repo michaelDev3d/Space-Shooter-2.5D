@@ -288,7 +288,7 @@ public class EnemyMovement :  Rarity
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        //Debug.Log("Hit "+other.transform.name);
+        Debug.Log("Hit: "+other.transform.name);
         
         if (other.CompareTag("Player"))
         {
@@ -545,7 +545,6 @@ public class EnemyMovement :  Rarity
         GameObject dangerLine = transform.GetChild(2).gameObject;
         //Debug.Log("Danger Line: ", dangerLine.gameObject);
         
-        
         dangerLine.SetActive(false);
 
         yield return new WaitForSeconds(warningIcon.GetComponent<Blink>().DestroyInSeconds-2);
@@ -557,7 +556,6 @@ public class EnemyMovement :  Rarity
         yield return new WaitForSeconds(1);
         SetSpeed(50);
         Destroy(gameObject,1);
-       
     }
 
     public int EnemyTypeID
