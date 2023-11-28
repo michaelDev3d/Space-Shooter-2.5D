@@ -180,4 +180,10 @@ public class Projectile : MonoBehaviour
         get => _reverseDirection;
         set => _reverseDirection = value;
     }
+
+    public float ProjectileSpeed
+    {
+        get => _projectileSpeed;
+        set => _projectileSpeed = value;
+    }
 }

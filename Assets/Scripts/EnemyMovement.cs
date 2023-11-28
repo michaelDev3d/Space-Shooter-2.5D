@@ -68,7 +68,6 @@ public class EnemyMovement :  Rarity
     [Header(("Special Attributes"))] 
     [SerializeField]
     private bool _hasShield;
-    
     [SerializeField] 
     private bool _flickerShieldEffectOn;
     
@@ -76,11 +75,21 @@ public class EnemyMovement :  Rarity
     private Material _material;
     private static readonly int _enemyMaterialOutlineColor = Shader.PropertyToID("_OutlineColor");
     private static readonly int _enemyMaterialTurnOnOutline = Shader.PropertyToID("TurnOnOutline");
-
     private bool _boolSwapMovementDirection;
+    
     [SerializeField] 
     private bool _isEvent;
-    
+
+    [Header(("Boss Stats"))] 
+    [SerializeField]
+    private int _bossID;
+    [SerializeField] 
+    private GameObject _leftWeapon;
+    [SerializeField] 
+    private GameObject _rightWeapon;
+    [SerializeField] 
+    private GameObject _bossAttackPrefab;
+
     
     void Start()
     {
@@ -211,6 +220,10 @@ public class EnemyMovement :  Rarity
             case 10:
                 StartCoroutine(LaserEventSequence());
                // Debug.Log("Boss Laser Event");
+                break;
+            case 100:
+                StartCoroutine(BossAttackSequence());
+                // Debug.Log("Boss Laser Event");
                 break;
         }
     }
@@ -556,6 +569,12 @@ public class EnemyMovement :  Rarity
         yield return new WaitForSeconds(1);
         SetSpeed(50);
         Destroy(gameObject,1);
+    }
+    
+    private IEnumerator BossAttackSequence()
+    {
+        yield return new WaitForSeconds(1);
+        Instantiate(_bossAttackPrefab, _rightWeapon.transform);
     }
 
     public int EnemyTypeID
