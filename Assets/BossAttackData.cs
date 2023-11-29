@@ -16,5 +16,20 @@ public class BossAttackData : MonoBehaviour
       _bossAttackContainer = gameObject.transform.GetChild(0).gameObject;
       _damageSource = GetComponentInChildren<Projectile>().gameObject;
       _attackLocationWarning = GetComponentInChildren<LineRenderer>().gameObject;
+
+      StartCoroutine(BossAttackRoutine(3));
+   }
+
+   IEnumerator BossAttackRoutine(float seconds)
+   {
+      Debug.Log("Start Laser Sequence");
+      yield return new WaitForSeconds(seconds);
+      Destroy(_attackLocationWarning);
+      Debug.Log("Shoot Laser");
+
+      Projectile attackProjectile = _damageSource.GetComponent<Projectile>();
+      attackProjectile.SetEnemyLaser(true);
+      attackProjectile.IsEventLaser = false;
+      attackProjectile.EnemyProjectileSpeed=15;
    }
 }

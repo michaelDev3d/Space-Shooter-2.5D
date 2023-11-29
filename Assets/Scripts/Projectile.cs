@@ -186,4 +186,16 @@ public class Projectile : MonoBehaviour
         get => _projectileSpeed;
         set => _projectileSpeed = value;
     }
+
+    public float EnemyProjectileSpeed
+    {
+        get => _enemyProjectileSpeed;
+        set => _enemyProjectileSpeed = value;
+    }
+
+    public bool IsEventLaser
+    {
+        get => _isEventLaser;
+        set => _isEventLaser = value;
+    }
 }
