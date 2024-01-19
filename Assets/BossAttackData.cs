@@ -30,6 +30,6 @@ public class BossAttackData : MonoBehaviour
       Projectile attackProjectile = _damageSource.GetComponent<Projectile>();
       attackProjectile.SetEnemyLaser(true);
       attackProjectile.IsEventLaser = false;
-      attackProjectile.EnemyProjectileSpeed=15;
+      attackProjectile.EnemyProjectileSpeed=20;
    }
 }

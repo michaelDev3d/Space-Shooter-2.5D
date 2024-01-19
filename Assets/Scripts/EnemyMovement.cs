@@ -5,8 +5,9 @@ using UnityEngine.Serialization;
 
 public class EnemyMovement :  Rarity
 {
-    [SerializeField] 
-    private int _enemyTypeID;
+    [SerializeField] private int _enemyTypeID;
+    [SerializeField] private bool _isEvent;
+    [SerializeField] private bool _isBossEnemy;
     
     [Header("Movement Data")]
     [SerializeField]
@@ -55,14 +56,14 @@ public class EnemyMovement :  Rarity
     [SerializeField]
     private GameObject _laserPrefab;
     
-    [Header("Swarm Enemy Data")]
-    [SerializeField] 
-    private float swarmRotationSpeed = 0.15f;
-    [SerializeField] 
+    //[Header("Swarm Enemy Data")]
+    //[SerializeField] 
+    private float _swarmRotationSpeed = 0.15f;
+    //[SerializeField] 
     private int _enemyCount;
-    [SerializeField] 
+    //[SerializeField] 
     private GameObject _swarmEnemyPivotGameObject;
-    [SerializeField] 
+    //[SerializeField] 
     private GameObject _swarmEnemyContainer;
 
     [Header(("Special Attributes"))] 
@@ -77,16 +78,16 @@ public class EnemyMovement :  Rarity
     private static readonly int _enemyMaterialTurnOnOutline = Shader.PropertyToID("TurnOnOutline");
     private bool _boolSwapMovementDirection;
     
-    [SerializeField] 
-    private bool _isEvent;
-
+    
     [Header(("Boss Stats"))] 
-    [SerializeField]
-    private int _bossID;
     [SerializeField] 
-    private GameObject _leftWeapon;
+    private GameObject _specialAttackLeftWeapon;
     [SerializeField] 
-    private GameObject _rightWeapon;
+    private GameObject _specialAttackRightWeapon;
+    [SerializeField] 
+    private GameObject _regularAttackLeftWeapon;
+    [SerializeField] 
+    private GameObject _regularAttackRightWeapon;
     [SerializeField] 
     private GameObject _bossAttackPrefab;
 
@@ -191,40 +192,49 @@ public class EnemyMovement :  Rarity
                 Debug.LogError("LaserEnemy is NULL");
                 
         }
-        
-        switch (enemyID)
+
+        if (!_isBossEnemy)
         {
-            case 0:
-                _spinSpeed = Random.Range(0.1f, 1f);
-                _spriteGameObject.transform.Rotate(Vector3.forward * _spinSpeed);
-                break;
-            case 1:
-                SetSpeed(Random.Range(1,3));
-                StartCoroutine(EnemyShooting());
-                break;
-            case 2:
-                _enemyCount = SwarmEnemyCount();
-                StartCoroutine(EnemyShooting());
-                break;
-            case 3:
-                SetSpeed(Random.Range(0.5f,0.7f));
-                StartCoroutine(EnemyShooting());
-                ActivateShield();
-                break;
-            case 4:
-                transform.position = new Vector3(5.35f, -2.25f, 0);
-                SetSpeed(Random.Range(1.1f,1.5f));
-                StartCoroutine(EnemyShooting());
-                StartCoroutine(FleeSequence(20));
-                break;
-            case 10:
-                StartCoroutine(LaserEventSequence());
-               // Debug.Log("Boss Laser Event");
-                break;
-            case 100:
-                StartCoroutine(BossAttackSequence());
-                // Debug.Log("Boss Laser Event");
-                break;
+            switch (enemyID)
+            {
+                case 0:
+                    _spinSpeed = Random.Range(0.1f, 1f);
+                    _spriteGameObject.transform.Rotate(Vector3.forward * _spinSpeed);
+                    break;
+                case 1:
+                    SetSpeed(Random.Range(1, 3));
+                    StartCoroutine(EnemyShooting());
+                    break;
+                case 2:
+                    _enemyCount = SwarmEnemyCount();
+                    StartCoroutine(EnemyShooting());
+                    break;
+                case 3:
+                    SetSpeed(Random.Range(0.5f, 0.7f));
+                    StartCoroutine(EnemyShooting());
+                    ActivateShield();
+                    break;
+                case 4:
+                    transform.position = new Vector3(5.35f, -2.25f, 0);
+                    SetSpeed(Random.Range(1.1f, 1.5f));
+                    StartCoroutine(EnemyShooting());
+                    StartCoroutine(FleeSequence(20));
+                    break;
+                case 10:
+                    StartCoroutine(LaserEventSequence());
+                    // Debug.Log("Boss Laser Event");
+                    break;
+            }
+        }
+
+        if (_isBossEnemy)
+        {
+            switch (enemyID)
+            {
+                case 0:
+                    StartCoroutine(BossAttackSequence());
+                    break;
+            }
         }
     }
 
@@ -253,9 +263,9 @@ public class EnemyMovement :  Rarity
             _enemyCount = SwarmEnemyCount();
 
             _swarmEnemyPivotGameObject.transform.Rotate(Vector3.forward,
-                swarmRotationSpeed / _enemyCount, Space.Self);
+                _swarmRotationSpeed / _enemyCount, Space.Self);
 
-            transform.Rotate(Vector3.forward, -swarmRotationSpeed, Space.World);
+            transform.Rotate(Vector3.forward, -_swarmRotationSpeed, Space.World);
 
             GameObject _spawnEnemyContainer = _swarmEnemyPivotGameObject.transform.parent.gameObject;
             _spawnEnemyContainer.transform.Translate(Vector3.right * (-_movementSpeed * Time.deltaTime));
@@ -574,7 +584,8 @@ public class EnemyMovement :  Rarity
     private IEnumerator BossAttackSequence()
     {
         yield return new WaitForSeconds(1);
-        Instantiate(_bossAttackPrefab, _rightWeapon.transform);
+        Instantiate(_bossAttackPrefab, _specialAttackRightWeapon.transform);
+        Instantiate(_bossAttackPrefab, _specialAttackLeftWeapon.transform);
     }
 
     public int EnemyTypeID

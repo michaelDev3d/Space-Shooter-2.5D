@@ -211,6 +211,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &32160843
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 32160844}
+  m_Layer: 0
+  m_Name: Right Weapon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &32160844
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 32160843}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.42, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2037497800}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &59362435
 GameObject:
   m_ObjectHideFlags: 0
@@ -1435,7 +1465,7 @@ GameObject:
   m_Component:
   - component: {fileID: 659513014}
   m_Layer: 0
-  m_Name: Laser Position
+  m_Name: Special Laser Position
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3746,7 +3776,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rarity: 0
-  _enemyTypeID: 100
+  _enemyTypeID: 1
+  _isEvent: 0
+  _isBossEnemy: 1
   _movementSpeed: 0
   _screenBoundsY: -6
   _screenBoundsX: 2.5
@@ -3763,16 +3795,12 @@ MonoBehaviour:
   _explosionSFX: {fileID: 0}
   _laserSFX: {fileID: 0}
   _laserPrefab: {fileID: 0}
-  swarmRotationSpeed: 0.15
-  _enemyCount: 0
-  _swarmEnemyPivotGameObject: {fileID: 0}
-  _swarmEnemyContainer: {fileID: 0}
   _hasShield: 0
   _flickerShieldEffectOn: 0
-  _isEvent: 0
-  _bossID: 1
-  _leftWeapon: {fileID: 1683888597}
-  _rightWeapon: {fileID: 970912446}
+  _specialAttackLeftWeapon: {fileID: 0}
+  _specialAttackRightWeapon: {fileID: 0}
+  _regularAttackLeftWeapon: {fileID: 0}
+  _regularAttackRightWeapon: {fileID: 0}
   _bossAttackPrefab: {fileID: 7514255046701516114, guid: 0f6926072d6f7eb48b5c62a858a81e71,
     type: 3}
 --- !u!50 &1577086575
@@ -3835,6 +3863,7 @@ Transform:
   m_Children:
   - {fileID: 232919375}
   - {fileID: 659513014}
+  - {fileID: 2037497800}
   m_Father: {fileID: 0}
   m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4581,6 +4610,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: edc7120e3fdca8f488ba78c9db89d1c6, type: 3}
+--- !u!1 &1912450404
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1912450405}
+  m_Layer: 0
+  m_Name: Left Weapon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1912450405
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1912450404}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.33, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2037497800}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1935477563
 GameObject:
   m_ObjectHideFlags: 0
@@ -4884,6 +4943,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8476c3bce18cda44b9a1b2ad39999bc3, type: 3}
+--- !u!1 &2037497799
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2037497800}
+  m_Layer: 0
+  m_Name: Laser Position
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2037497800
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2037497799}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1912450405}
+  - {fileID: 32160844}
+  m_Father: {fileID: 1577086577}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2038440394
 GameObject:
   m_ObjectHideFlags: 0
@@ -5108,7 +5199,7 @@ PrefabInstance:
     - target: {fileID: 2781147306103605540, guid: 7240e5a0d4ef1684c97ae7df98312379,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3434232863158943681, guid: 7240e5a0d4ef1684c97ae7df98312379,
         type: 3}
