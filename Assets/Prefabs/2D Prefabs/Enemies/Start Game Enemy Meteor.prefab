@@ -195,23 +195,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d6401c11817500429f1c21aa67f6e29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rarity: 0
+  _enemyTypeID: 0
+  _isDestroyable: 1
+  _isEvent: 0
+  _isBossEnemy: 0
   _movementSpeed: 0
   _screenBoundsY: -6
   _screenBoundsX: 2.5
   _offScreenSpawnHeight: 8
+  _stopShooting: 0
   _spriteGameObject: {fileID: 0}
-  _sprite: {fileID: 0}
+  _collider2D: {fileID: 0}
   _animator: {fileID: 0}
   _audioSource: {fileID: 0}
   _player: {fileID: 0}
   _scorePerKill: 10
   _mainMenuEnemy: 0
   _startGameEnemy: 1
-  _EnemyTypeID: 0
   _explosionSFX: {fileID: 8300000, guid: 24eeb2834c7059b4c83faa3a5440e2ea, type: 3}
   _laserSFX: {fileID: 0}
   _laserPrefab: {fileID: 5601087836192629208, guid: 583b62e84106a324db98534c227d87ab,
     type: 3}
+  _hasShield: 0
+  _flickerShieldEffectOn: 0
+  _specialAttackLeftWeapon: {fileID: 0}
+  _specialAttackRightWeapon: {fileID: 0}
+  _regularAttackLeftWeapon: {fileID: 0}
+  _regularAttackRightWeapon: {fileID: 0}
+  _bossAttackPrefab: {fileID: 0}
+  _lastAttackUsed: 
 --- !u!82 &-1078920232082080069
 AudioSource:
   m_ObjectHideFlags: 0

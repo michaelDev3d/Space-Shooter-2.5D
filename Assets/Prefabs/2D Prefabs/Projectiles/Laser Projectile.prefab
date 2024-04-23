@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5374523888746778116}
   - component: {fileID: 6905973040372129330}
   m_Layer: 0
-  m_Name: Laser
+  m_Name: Laser Projectile
   m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -147,7 +147,13 @@ MonoBehaviour:
   _projectileSpeed: 8
   _screenHeight: 4
   _isEnemyLaser: 0
+  _isSwarmEnemyLaser: 0
   _enemyProjectileSpeed: 5
+  _isOrbitalLaser: 0
+  _isHomingLaser: 0
+  _isEventLaser: 0
+  _homingLaserTarget: {fileID: 0}
+  _reverseDirection: 0
 --- !u!95 &6905973040372129330
 Animator:
   serializedVersion: 3

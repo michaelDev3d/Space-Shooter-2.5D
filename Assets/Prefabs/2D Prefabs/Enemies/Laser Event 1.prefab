@@ -917,7 +917,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 544146489588796580}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -940,7 +940,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rarity: 3
-  _enemyTypeID: 10
+  _enemyTypeID: 0
+  _isDestroyable: 0
+  _isEvent: 1
+  _isBossEnemy: 0
   _movementSpeed: 0
   _screenBoundsY: -6
   _screenBoundsX: 2.5
@@ -957,13 +960,14 @@ MonoBehaviour:
   _explosionSFX: {fileID: 0}
   _laserSFX: {fileID: 0}
   _laserPrefab: {fileID: 0}
-  swarmRotationSpeed: 0
-  _enemyCount: 0
-  _swarmEnemyPivotGameObject: {fileID: 0}
-  _swarmEnemyContainer: {fileID: 0}
   _hasShield: 0
   _flickerShieldEffectOn: 0
-  _isEvent: 1
+  _specialAttackLeftWeapon: {fileID: 0}
+  _specialAttackRightWeapon: {fileID: 0}
+  _regularAttackLeftWeapon: {fileID: 0}
+  _regularAttackRightWeapon: {fileID: 0}
+  _bossAttackPrefab: {fileID: 0}
+  _lastAttackUsed: 
 --- !u!1 &544146489832494023
 GameObject:
   m_ObjectHideFlags: 0

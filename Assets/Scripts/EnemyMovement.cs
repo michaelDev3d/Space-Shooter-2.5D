@@ -1,11 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public class EnemyMovement :  Rarity
 {
     [SerializeField] private int _enemyTypeID;
+    
+    [SerializeField] private bool _isDestroyable;
     [SerializeField] private bool _isEvent;
     [SerializeField] private bool _isBossEnemy;
     
@@ -88,8 +92,10 @@ public class EnemyMovement :  Rarity
     private GameObject _regularAttackLeftWeapon;
     [SerializeField] 
     private GameObject _regularAttackRightWeapon;
+    [FormerlySerializedAs("_bossAttackPrefab")] [SerializeField] 
+    private GameObject[] _bossAttackPrefabs;
     [SerializeField] 
-    private GameObject _bossAttackPrefab;
+    private String _lastAttackUsed;
 
     
     void Start()
@@ -105,7 +111,8 @@ public class EnemyMovement :  Rarity
     //Referencing components and null checking for them
     private void CreateEnemy(int enemyID)
     {
-        if (!_isEvent)
+        //If it is a regular "destroyable" enemy.
+        if (!_isEvent && _isDestroyable)
         {
             if (gameObject.transform.GetChild(0).gameObject.TryGetComponent(out Renderer spriteRenderer))
             {
@@ -165,9 +172,10 @@ public class EnemyMovement :  Rarity
                 Debug.LogError("Audio component for "+ gameObject.name +" is null");
         }
 
+        //if it is NOT a destroyable enemy.
         if (_isEvent)
         {
-            //Finding and Null Checking main Player.
+            //Finding and Null checking event enemy.
             GameObject EventEnemy = transform.GetChild(0).gameObject;
 
             if (EventEnemy != null)
@@ -193,36 +201,44 @@ public class EnemyMovement :  Rarity
                 
         }
 
-        if (!_isBossEnemy)
+        //Setting default values for regular destroyable enemies.
+        if (_isDestroyable && !_isBossEnemy && !_isEvent)
         {
             switch (enemyID)
             {
-                case 0:
+                case 0: //Reserved for meteor's
                     _spinSpeed = Random.Range(0.1f, 1f);
                     _spriteGameObject.transform.Rotate(Vector3.forward * _spinSpeed);
                     break;
-                case 1:
+                case 1: //Reserved for space ships
                     SetSpeed(Random.Range(1, 3));
-                    StartCoroutine(EnemyShooting());
+                    StartCoroutine(EnemySpaceShipShooting());
                     break;
-                case 2:
+                case 2: //Reserved for special "swarm" enemy ships.
                     _enemyCount = SwarmEnemyCount();
-                    StartCoroutine(EnemyShooting());
+                    StartCoroutine(EnemySpaceShipShooting());
                     break;
-                case 3:
+                case 3: //Reserved for ships with buffs (shield);
                     SetSpeed(Random.Range(0.5f, 0.7f));
-                    StartCoroutine(EnemyShooting());
+                    StartCoroutine(EnemySpaceShipShooting());
                     ActivateShield();
                     break;
-                case 4:
+                case 4: //Reserved for ships behind the player.
                     transform.position = new Vector3(5.35f, -2.25f, 0);
                     SetSpeed(Random.Range(1.1f, 1.5f));
-                    StartCoroutine(EnemyShooting());
+                    StartCoroutine(EnemySpaceShipShooting());
                     StartCoroutine(FleeSequence(20));
                     break;
-                case 10:
+               
+            }
+        }
+
+        if (!_isDestroyable && !_isBossEnemy && _isEvent)
+        {
+            switch (enemyID)
+            {
+                case 0: //Reserved for 
                     StartCoroutine(LaserEventSequence());
-                    // Debug.Log("Boss Laser Event");
                     break;
             }
         }
@@ -232,7 +248,8 @@ public class EnemyMovement :  Rarity
             switch (enemyID)
             {
                 case 0:
-                    StartCoroutine(BossAttackSequence());
+                    StartCoroutine(BossLaserRayAttackSequence());
+                    StartCoroutine(EnemyBossSpecialShooting());
                     break;
             }
         }
@@ -240,8 +257,8 @@ public class EnemyMovement :  Rarity
 
     private void CalculateMovement()
     {
-        //if the enemy is not a mainMenuEnemy or StartGameEnemy enable movement
-        if (!_mainMenuEnemy && !_startGameEnemy && _enemyTypeID != 10 && _enemyTypeID == 0 || _enemyTypeID == 1 || _enemyTypeID == 3)
+        //Set enemy movement if they are able to move toward the player
+        if (!_mainMenuEnemy && !_startGameEnemy && !_isEvent && !_isBossEnemy && _isDestroyable && _enemyTypeID == 0 || _enemyTypeID == 1 || _enemyTypeID == 3)
         {
             transform.Translate(Vector3.down * (_movementSpeed * Time.deltaTime));
 
@@ -252,60 +269,90 @@ public class EnemyMovement :  Rarity
             }
         }
 
-        //Adding spinning to a meteor enemy
-        if (_enemyTypeID == 0)
+        //This is for special enemies that has a movement additional or different to moving toward the player.
+        if (_isDestroyable && !_isBossEnemy)
         {
-            _spriteGameObject.transform.Rotate(Vector3.forward * _spinSpeed);
-        }
-
-        if (_enemyTypeID == 2)
-        {
-            _enemyCount = SwarmEnemyCount();
-
-            _swarmEnemyPivotGameObject.transform.Rotate(Vector3.forward,
-                _swarmRotationSpeed / _enemyCount, Space.Self);
-
-            transform.Rotate(Vector3.forward, -_swarmRotationSpeed, Space.World);
-
-            GameObject _spawnEnemyContainer = _swarmEnemyPivotGameObject.transform.parent.gameObject;
-            _spawnEnemyContainer.transform.Translate(Vector3.right * (-_movementSpeed * Time.deltaTime));
-
-
-            if (_spawnEnemyContainer.transform.position.x < -_screenBoundsX)
+            //Rotate the meteor while it moves toward the player.
+            if (_enemyTypeID == 0)
             {
-                Destroy(_spawnEnemyContainer);
+                _spriteGameObject.transform.Rotate(Vector3.forward * _spinSpeed);
+            }
+
+            //Pivot swarm ships around a center point while moving horizonally.
+            //The spin speed is in relation to the amount of small ships.
+            if (_enemyTypeID == 2)
+            {
+                _enemyCount = SwarmEnemyCount();
+
+                _swarmEnemyPivotGameObject.transform.Rotate(Vector3.forward,
+                    _swarmRotationSpeed / _enemyCount, Space.Self);
+
+                transform.Rotate(Vector3.forward, -_swarmRotationSpeed, Space.World);
+
+                GameObject _spawnEnemyContainer = _swarmEnemyPivotGameObject.transform.parent.gameObject;
+                _spawnEnemyContainer.transform.Translate(Vector3.right * (-_movementSpeed * Time.deltaTime));
+
+
+                if (_spawnEnemyContainer.transform.position.x < -_screenBoundsX)
+                {
+                    Destroy(_spawnEnemyContainer);
+                }
+            }
+
+            //This enemy moves horizonally underneath the players range of fire.
+            if (_enemyTypeID == 4)
+            {
+                if (!_boolSwapMovementDirection)
+                {
+                    transform.Translate(Vector3.right * (_movementSpeed * Time.deltaTime));
+
+                    if (transform.position.x < -5.5)
+                    {
+                        _movementSpeed = _movementSpeed * -1;
+                    }
+
+                    if (transform.position.x > 5.5)
+                    {
+                        _movementSpeed = _movementSpeed * -1;
+                    }
+                }
+                else
+                {
+                    transform.Translate(Vector3.down * (_movementSpeed * Time.deltaTime));
+                }
             }
         }
 
-        if (_enemyTypeID == 4)
+        //For special attacks that damage the player but are no destroyable. Can occur randomly in a stage. 
+        if (_isEvent && !_isDestroyable && !_isBossEnemy)
+        { 
+            if (_enemyTypeID == 0)
+            {
+                GameObject Laser = transform.GetChild(0).gameObject;
+                Laser.transform.Translate(Vector3.down * (_movementSpeed * Time.deltaTime));
+
+                if (Laser.transform.position.y < -12)
+                    SetSpeed(0);
+            }
+        }
+
+        //For special boss movement.
+        if (_isBossEnemy)
         {
-            if (!_boolSwapMovementDirection)
+            if (_enemyTypeID == 0)
             {
                 transform.Translate(Vector3.right * (_movementSpeed * Time.deltaTime));
 
-                if (transform.position.x < -5.5)
+                if (transform.position.x < -3.5)
                 {
                     _movementSpeed = _movementSpeed * -1;
                 }
 
-                if (transform.position.x > 5.5)
+                if (transform.position.x > 3.5)
                 {
                     _movementSpeed = _movementSpeed * -1;
                 }
             }
-            else
-            {
-                transform.Translate(Vector3.down * (_movementSpeed * Time.deltaTime));
-            }
-        }
-
-        if (_enemyTypeID == 10)
-        {
-            GameObject Laser = transform.GetChild(0).gameObject;
-            Laser.transform.Translate(Vector3.down * (_movementSpeed * Time.deltaTime));
-            
-            if (Laser.transform.position.y < -12)
-                SetSpeed(0);
         }
     }
 
@@ -330,9 +377,12 @@ public class EnemyMovement :  Rarity
         if (other.CompareTag("Projectile"))
         {
             Projectile projectile = other.GetComponent<Projectile>();
-
+            Debug.Log("Projectile hit itself.");
+            //If the projectile is a players
+            
             if (!projectile.CheckIfIsEnemyLaser())
-            {
+            { 
+                Debug.Log("Projectile hit itself.");
                 if (_hasShield)
                 {
                     Destroy(projectile.gameObject);
@@ -348,8 +398,6 @@ public class EnemyMovement :  Rarity
 
                     if (_player != null && !_player.GetMainMenuPlayer() && !projectile.CheckIfIsEnemyLaser())
                         _player.AddScore(_scorePerKill);
-
-
 
                     StartCoroutine(DestroySequence(1));
                     Destroy(other.gameObject);
@@ -450,7 +498,7 @@ public class EnemyMovement :  Rarity
         }
     }
 
-    private IEnumerator EnemyShooting()
+    private IEnumerator EnemySpaceShipShooting()
     {
         GameManager gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
         
@@ -462,8 +510,7 @@ public class EnemyMovement :  Rarity
             if (_enemyTypeID != 4)
             {
                 Debug.Log("Testing Top screen enemy");
-                Projectile laser = Instantiate(_laserPrefab, transform.position, Quaternion.Euler(Vector3.down))
-                    .GetComponent<Projectile>();
+                Projectile laser = Instantiate(_laserPrefab, transform.position, Quaternion.Euler(Vector3.down)).GetComponent<Projectile>();
                 laser.SetEnemyLaser(true);
                 
                 if (_enemyTypeID == 2)
@@ -499,6 +546,53 @@ public class EnemyMovement :  Rarity
             }
             else
                 Debug.LogError("Game manager component is NULL in "+gameObject.name);
+            
+        }
+    }
+
+    private IEnumerator EnemyBossSpecialShooting()
+    {
+        GameManager gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
+
+        if (gameManager != null)
+        {
+            if (gameManager.GetGameOver())
+            {
+                _stopShooting = true;
+            }
+        }
+        else
+            Debug.LogError("Game manager component is NULL in " + gameObject.name);
+        
+        while (!_stopShooting)
+        {
+            //_audioSource.clip = _laserSFX;
+            //_audioSource.Play();
+
+            if (_enemyTypeID == 0)
+            {
+                Debug.Log("Testing boss enemy");
+                int cannon = Random.Range(1,3);
+                Debug.Log(cannon);
+                if (cannon == 1)
+                {
+                    Projectile laser = Instantiate(_laserPrefab, _regularAttackRightWeapon.transform.position, Quaternion.Euler(Vector3.down))
+                        .GetComponent<Projectile>();
+                    Debug.Log("Boss special attack created");
+                    laser.SetEnemyLaser(true);
+                }
+                if (cannon == 2)
+                {
+                    Projectile laser = Instantiate(_laserPrefab, _regularAttackLeftWeapon.transform.position, Quaternion.Euler(Vector3.down))
+                        .GetComponent<Projectile>();
+                    Debug.Log("Boss special attack created");
+                    laser.SetEnemyLaser(true);
+                }
+            }
+            
+
+            if (_enemyTypeID == 0)
+                yield return new WaitForSeconds(Random.Range(.1f,.3f));
             
         }
     }
@@ -581,11 +675,23 @@ public class EnemyMovement :  Rarity
         Destroy(gameObject,1);
     }
     
-    private IEnumerator BossAttackSequence()
+    private IEnumerator BossLaserRayAttackSequence()
     {
-        yield return new WaitForSeconds(1);
-        Instantiate(_bossAttackPrefab, _specialAttackRightWeapon.transform);
-        Instantiate(_bossAttackPrefab, _specialAttackLeftWeapon.transform);
+        while (!_stopShooting)
+        {
+            yield return new WaitForSeconds(Random.Range(5f,10f));
+
+            if (_bossAttackPrefabs != null)
+            {
+                Instantiate(_bossAttackPrefabs[0], _specialAttackRightWeapon.transform);
+                Instantiate(_bossAttackPrefabs[0], _specialAttackLeftWeapon.transform);
+                _lastAttackUsed = _bossAttackPrefabs[0].GetComponent<BossAttackData>().bossAttackName;
+            }
+            else
+            {
+                Debug.Log("There is no boss attack");
+            }
+        }
     }
 
     public int EnemyTypeID
