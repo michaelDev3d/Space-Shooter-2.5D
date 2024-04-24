@@ -112,7 +112,7 @@ public class EnemyMovement :  Rarity
     private void CreateEnemy(int enemyID)
     {
         //If it is a regular "destroyable" enemy.
-        if (!_isEvent && _isDestroyable)
+        if (!_isEvent && _isDestroyable || _isBossEnemy)
         {
             if (gameObject.transform.GetChild(0).gameObject.TryGetComponent(out Renderer spriteRenderer))
             {
@@ -147,6 +147,7 @@ public class EnemyMovement :  Rarity
             {
                 //Rendering Gameobject
                 _spriteGameObject = transform.GetChild(0).gameObject;
+                Debug.Log("Sprite gameobject found");
 
                 //Animator
                 if (_spriteGameObject.TryGetComponent(out Animator animator))
