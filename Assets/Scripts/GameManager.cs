@@ -21,6 +21,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private bool _gameIsPaused;
     
+    [SerializeField]
+    private bool _IsBossStage;
+    
     private void Start()
     {
         
@@ -70,6 +73,7 @@ public class GameManager : MonoBehaviour
         PauseGame();
         WaveUpdate();
         ManageNewWaveData();
+        ManageBossStageData();
     }
 
     private void ManageNewWaveData()
@@ -78,6 +82,21 @@ public class GameManager : MonoBehaviour
         {
             _uiManager.BlinkWaveCompleteText(0.5f, 3f);
             _spawnManager.NewWave = false;
+            if (_spawnManager.CurrentWave == 5)
+            {
+                _IsBossStage = true;
+            }
+        }
+    }
+    private void ManageBossStageData()
+    {
+        
+        if (_spawnManager.StartBossStageBool)
+        {
+            //Debug.Log("Boss Stage Bool should true: "+_spawnManager.StartBossStageBool);
+            _uiManager.BlinkBossWaveText(true,4, 0.5f, 3f);
+            _spawnManager.StartBossStageBool = false;
+
         }
     }
 
@@ -126,20 +145,12 @@ public class GameManager : MonoBehaviour
     {
         if (_player != null)
         {
-            if (_player.GetScore() > 100)
+            //Change condition to wave
+            if (_player.GetScore() > 50)
             {
                 if (_spawnManager != null)
                 {
-                    _spawnManager.SetStartSpawningShips(true);
-                }
-            }
-            
-            if (_player.GetScore() == 200)
-            {
-                if (_spawnManager != null)
-                {
-                    _spawnManager.SetStartSpawningRareEnemy(true);
-                    _player.AddScore(10);
+                    _spawnManager.SetStartSpawningShips(!_IsBossStage);
                 }
             }
         }

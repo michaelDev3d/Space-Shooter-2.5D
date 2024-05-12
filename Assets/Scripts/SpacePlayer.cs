@@ -96,8 +96,7 @@ public class SpacePlayer : MonoBehaviour
     
     private Renderer _renderer;
     private Material _material;
-    
-    
+
     [Header("Effects")]
     [SerializeField] 
     private bool _flickerEffectOn;
@@ -134,10 +133,12 @@ public class SpacePlayer : MonoBehaviour
     [SerializeField]
     private CameraEffects _cameraEffects;
 
-
     private int _shieldCount;
-
     private bool _changePowerUpSpeed;
+    [SerializeField]
+    private bool _weaponsDisabled;
+    [SerializeField] 
+    private bool _movementDisabled;
     
     // Start is called before the first frame update
     void Start()
@@ -347,14 +348,9 @@ public class SpacePlayer : MonoBehaviour
             {
                 return _thrusterSpeed = _movementSpeed * 3f;
             }
-
-          
-
             return _movementSpeed;
         }
-        
-        
-        
+
         private float CalculateNormalSpeed()
         {
             if (_speedBoostActive)
@@ -395,18 +391,16 @@ public class SpacePlayer : MonoBehaviour
                 Mathf.Clamp(transform.position.y, _playerBoundsYMin, _playerBoundsYMax), 0);
             
             //Screen wrapping on left
-            if (transform.position.x < _playerBoundsXMin)
+            if (transform.position.x < _playerBoundsXMin && !_movementDisabled)
             {
                 transform.position = new Vector3(_playerBoundsXMax,transform.position.y, 0);
             }
             
             //Screen wrapping on Right
-            if (transform.position.x > _playerBoundsXMax)
+            if (transform.position.x > _playerBoundsXMax && !_movementDisabled)
             {
                 transform.position = new Vector3(_playerBoundsXMin,transform.position.y, 0);
             }
-
-            
         }
         
     #endregion
@@ -428,7 +422,7 @@ public class SpacePlayer : MonoBehaviour
                             Instantiate(_tripleLaserPrefab, transform.position + _laserOffset, Quaternion.identity);
 
                             if (_tripleShotSFX != null)
-                            {
+                            {vvvvvvvvvvvvvvvvvvvvvv
                                 _audioSource.clip = _tripleShotSFX;
                                 _audioSource.Play();
                             }
@@ -465,7 +459,7 @@ public class SpacePlayer : MonoBehaviour
                 if (_currentAmmoCount > 0)
                 {
                     //Shooting Input and logic.
-                    if (Input.GetKeyDown(KeyCode.Space) && Time.time > _cooldownTimer)
+                    if (Input.GetKeyDown(KeyCode.Space) && Time.time > _cooldownTimer && !_weaponsDisabled)
                     {
                         #region Shooting Logic
 
@@ -526,7 +520,7 @@ public class SpacePlayer : MonoBehaviour
         {
             _cameraEffects.ShakeCamera();
             
-            if (_flickerShieldEffectOn || _flickerEffectOn)
+            if (_flickerShieldEffectOn || _flickerEffectOn)  
             {
                 return;
             }
@@ -918,7 +912,19 @@ public class SpacePlayer : MonoBehaviour
             _uiManager.UpdateScore(_score);
         }
 
-    #endregion
+        public bool weaponsDisabled
+        {
+            get => _weaponsDisabled;
+            set => _weaponsDisabled = value;
+        }
+
+        public bool movementDisabled
+        {
+            get => _movementDisabled;
+            set => _movementDisabled = value;
+        }
+
+        #endregion
     
     private void OnTriggerEnter2D(Collider2D other)
     {

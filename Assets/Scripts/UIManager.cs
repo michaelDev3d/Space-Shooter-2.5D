@@ -23,13 +23,21 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _waveText;
     [SerializeField]
+    private TextMeshProUGUI _waveCountText;
+    [SerializeField]
+    private TextMeshProUGUI _waveBossText;
+    [SerializeField]
     private TextMeshProUGUI _waveCompleteText;
+    [SerializeField]
+    private TextMeshProUGUI _bossStageText;
     [SerializeField] 
     private Button _QuitButton;
     private GameManager _gameManager;
     
     [SerializeField] 
     private TextMeshProUGUI _ammoCountText;
+    [SerializeField] 
+    private TextMeshProUGUI _ammoCountTextREDEffect;
 
     
     [Header("Health Bar Management")] 
@@ -47,9 +55,27 @@ public class UIManager : MonoBehaviour
     private Image frontHealthBar;
     [SerializeField]
     private Image backHealthBar;
+    
+    [Header("Health Bar Management")] 
+    [SerializeField] 
+    private GameObject _bossHealthBarGameObject;
+    [SerializeField] 
+    private float _bossTimer;
+    [SerializeField] 
+    private float _CurrentBossHealth;
+    [SerializeField] 
+    private float _maxBossHealth = 3f;
+    [SerializeField] 
+    private float _drainBossHealthUiSpeed = 2f;
+    [SerializeField]
+    private Image frontBossHealthBar;
+    [SerializeField]
+    private Image backBossHealthBar;
 
     [SerializeField] 
     private bool _isUpdatingUI;
+    [SerializeField] 
+    private bool _isUpdatingBossUI;
 
     [Header("Temporary Blink Flags")]
     [SerializeField] 
@@ -58,8 +84,14 @@ public class UIManager : MonoBehaviour
     private bool _blinkWave = true;
     [SerializeField] 
     private bool _blinkCompleteWave = true;
+    [SerializeField] 
+    private bool _blinkBossStage = true;
     
     private bool _hideShieldAfterBlinking = false;
+
+    private bool _showBossHealthBoss = false;
+    
+    
     
     // Start is called before the first frame update
     void Start()
@@ -82,6 +114,17 @@ public class UIManager : MonoBehaviour
         if(_waveCompleteText != null)
             _waveCompleteText.gameObject.SetActive(false);
         
+        if(_bossStageText != null)
+            _bossStageText.gameObject.SetActive(false);
+
+        if(_waveCountText != null)
+            _waveCountText.text = "Wave " + 0;
+        
+        if(_waveBossText != null)
+            _waveBossText.gameObject.SetActive(false);
+        
+        if(_ammoCountTextREDEffect != null)
+            _ammoCountTextREDEffect.gameObject.SetActive(false);
 
         GameObject _gameManagerGameObject = GameObject.Find("Game_Manager");
 
@@ -100,11 +143,25 @@ public class UIManager : MonoBehaviour
 
         _CurrentPlayerLives = _maxPlayerLives;
         
+         
+        _bossHealthBarGameObject =  GameObject.Find("Boss Health Bar");
+
+        if (_bossHealthBarGameObject == null)
+        {
+            Debug.LogError("Boss Health Bar is null");
+            
+        }
+
+        _CurrentBossHealth = _maxBossHealth;
+        _bossHealthBarGameObject.SetActive(false);
+        _bossHealthBarGameObject.SetActive(true);
     }
 
     private void Update()
     {
         UpdateHealthUiOnlyOnChange();
+        UpdateBossHealthUiOnlyOnChange();
+        ShowBossHealthUI(_showBossHealthBoss);
     }
 
     IEnumerator UpdateHealthAnim(bool turnOn, float seconds)
@@ -127,11 +184,10 @@ public class UIManager : MonoBehaviour
             if (backHealthBarFillAmount > healthPercentage)
             {
                 frontHealthBar.fillAmount = healthPercentage;
-                Color loseHealthColor = new Vector4(0.882353f, 0.7529413f, 0.6039216f, 1);
-                backHealthBar.color = loseHealthColor;
+                Color loseHealthColor = Color.gray;                backHealthBar.color = loseHealthColor;
                 _timer += Time.deltaTime;
 
-
+                Debug.Log("Player timer: "+_timer);
                 float loseHealthEffectPercentageToComplete = _timer / _drainHealthUiSpeed;
                 loseHealthEffectPercentageToComplete *= loseHealthEffectPercentageToComplete;
                 backHealthBar.fillAmount = Mathf.Lerp(backHealthBarFillAmount, healthPercentage,
@@ -177,14 +233,90 @@ public class UIManager : MonoBehaviour
         StartCoroutine(UpdateHealthAnim(turnOn, _drainHealthUiSpeed));
     }
     
+     IEnumerator UpdateBossHealthAnim(bool turnOn, float seconds)
+    {
+        UpdateBossHealthAnimBool(turnOn);
+        UpdateBossHealthUiOnlyOnChange();
+        yield return new WaitForSeconds(seconds);
+        _isUpdatingBossUI = false;
+    }
+    
+    private void UpdateBossHealthUiOnlyOnChange()
+    {
+        if (_isUpdatingBossUI)
+        {
+           _CurrentBossHealth = Mathf.Clamp(_CurrentBossHealth, 0, _maxBossHealth);
+            float frontBossHealthBarFillAmount = frontBossHealthBar.fillAmount;
+            float backBossHealthBarFillAmount = backBossHealthBar.fillAmount;
+            float healthPercentage = _CurrentBossHealth / _maxBossHealth;
+
+            if (backBossHealthBarFillAmount > healthPercentage)
+            {
+                frontBossHealthBar.fillAmount = healthPercentage;
+                Color loseHealthColor = Color.gray;
+                backBossHealthBar.color = loseHealthColor;       
+                _bossTimer += Time.deltaTime;
+                
+                float effectCatchUpPoint =  _bossTimer / _drainBossHealthUiSpeed;
+                effectCatchUpPoint *= effectCatchUpPoint;
+                backBossHealthBar.fillAmount = Mathf.Lerp(backBossHealthBarFillAmount, healthPercentage, effectCatchUpPoint);
+                
+            }
+
+            if (frontBossHealthBarFillAmount < healthPercentage)
+            {
+                backBossHealthBar.color = Color.green;
+                backBossHealthBar.fillAmount = healthPercentage;
+                _bossTimer += Time.deltaTime;
+
+
+                float loseHealthEffectPercentageToComplete =  _bossTimer / _drainBossHealthUiSpeed;
+                loseHealthEffectPercentageToComplete *= loseHealthEffectPercentageToComplete;
+                frontBossHealthBar.fillAmount = Mathf.Lerp(frontBossHealthBarFillAmount, backBossHealthBar.fillAmount,
+                    loseHealthEffectPercentageToComplete);
+            }
+        }
+    }
+
+    private void UpdateBossHealthAnimBool(bool turnOn)
+    {
+        _isUpdatingBossUI = turnOn;
+    }
+
+    public void RemoveHealthFromBossBar(int playerLives, float damage, bool turnOn)
+    {
+        _CurrentBossHealth = playerLives;
+        _CurrentBossHealth-= damage;
+        //Debug.Log("Boss timer: "+_bossTimer);
+        _bossTimer = 0f;
+        
+        
+        StartCoroutine(UpdateBossHealthAnim(turnOn, _drainBossHealthUiSpeed));
+    }
+
+    public void AddHealthToBossBar(int bossHealth, float healAmount, bool turnOn)
+    {
+        _CurrentBossHealth = bossHealth;
+        _CurrentBossHealth += healAmount;
+        _bossTimer = 0f;
+        
+        StartCoroutine(UpdateBossHealthAnim(turnOn, _drainBossHealthUiSpeed));
+    }
+    
     public void UpdateScore(int playerScore)
     {
         _scoreText.text = "Score: " + playerScore.ToString();
     }
-
+    
     public void UpdateWaveText(int wave)
     {
         _waveText.text = "Wave " + wave.ToString();
+        _waveCountText.text = "Wave: " + wave.ToString();
+        if (wave == 5)
+        {
+            _waveCountText.text = "Wave: ";
+            _waveBossText.gameObject.SetActive(true);
+        }
     }
 
     private void GameOverSequence()
@@ -193,6 +325,7 @@ public class UIManager : MonoBehaviour
         _gameOverText.gameObject.SetActive(true);
         _restartGameText.gameObject.SetActive(true);
         _ammoCountText.gameObject.SetActive(false);
+        _ammoCountTextREDEffect.gameObject.SetActive(false);
         StartCoroutine( BlinkText( true,_gameOverText,0.5f));
     }
 
@@ -221,9 +354,13 @@ public class UIManager : MonoBehaviour
             
             _QuitButton.gameObject.SetActive(false);
             _scoreText.gameObject.SetActive(displayUI);
+            _waveCountText.gameObject.SetActive(displayUI);
             _startGameText.gameObject.SetActive(displayUI); 
             _ammoCountText.gameObject.SetActive(displayUI);
+            _ammoCountTextREDEffect.gameObject.SetActive(displayUI);
             frontHealthBar.transform.parent.gameObject.SetActive(displayUI);
+            frontBossHealthBar.transform.parent.gameObject.SetActive(displayUI);
+          
 
             if (!displayUI)
                 ShowPauseUI();
@@ -295,10 +432,22 @@ public class UIManager : MonoBehaviour
     {
         return _hideShieldAfterBlinking;
     }
-    
+
     public void UpdateAmmoCountUI(int AmmoCount, int maxAmmoCount)
     {
         _ammoCountText.text = "Ammo: " + AmmoCount + "/" + maxAmmoCount;
+        if (AmmoCount <= maxAmmoCount * 0.25f)
+        {
+            _ammoCountText.text = "Ammo: ";
+            _ammoCountTextREDEffect.gameObject.SetActive(true);
+            _ammoCountTextREDEffect.text = AmmoCount + "/" + maxAmmoCount;
+        }
+        if (AmmoCount > maxAmmoCount * 0.25f)
+        {
+            
+            _ammoCountTextREDEffect.text = "";
+            _ammoCountTextREDEffect.gameObject.SetActive(false);
+        }
     }
 
     public void BlinkAmmoCountText(float blinkRate)
@@ -311,11 +460,14 @@ public class UIManager : MonoBehaviour
         while (_blinkAmmo)
         {
             _ammoCountText.transform.gameObject.SetActive(true);
+            _ammoCountTextREDEffect.transform.gameObject.SetActive(true);
             yield return new WaitForSeconds(seconds);
             _ammoCountText.transform.gameObject.SetActive(false);
+            _ammoCountTextREDEffect.transform.gameObject.SetActive(false);
             yield return new WaitForSeconds(seconds);
         }
         _ammoCountText.transform.gameObject.SetActive(true);
+        _ammoCountTextREDEffect.transform.gameObject.SetActive(true);
     }
     
     public void DisableAmmoBlink()
@@ -355,6 +507,15 @@ public class UIManager : MonoBehaviour
         StartCoroutine(DisplayNewWaveOnWaveCompletion(3.5f));
 
     }
+    
+    public void BlinkBossWaveText(bool blink, float delay, float blinkRate, float blinkingDuration)
+    {
+        if (blink)
+        {
+            StartCoroutine(BlinkBossWaveRoutine(delay,blinkRate,blinkingDuration));
+            blink = false;
+        }
+    }
 
     IEnumerator DisplayNewWaveOnWaveCompletion(float seconds)
     {
@@ -363,7 +524,6 @@ public class UIManager : MonoBehaviour
         _blinkWave = true;
         BlinkWaveText(0.5f, 3f);
     }
-    
     IEnumerator BlinkWaveCompleteRoutine(float seconds)
     {
         while (_blinkCompleteWave)
@@ -375,11 +535,40 @@ public class UIManager : MonoBehaviour
         }
         _waveCompleteText.transform.gameObject.SetActive(false);
     }
+    
+    IEnumerator BlinkBossWaveRoutine(float delay, float seconds, float blinkDuration)
+    {
+        StartCoroutine(DisableBossWaveBlinkAfterSeconds(delay, blinkDuration));
+        yield return new WaitForSeconds(delay);
+        while (_blinkBossStage)
+        {
+            _bossStageText.transform.gameObject.SetActive(true);
+            yield return new WaitForSeconds(seconds);
+            _bossStageText.transform.gameObject.SetActive(false);
+            yield return new WaitForSeconds(seconds);
+        }
+        _bossStageText.transform.gameObject.SetActive(false);
+    }
 
     IEnumerator DisableWaveCompleteBlinkAfterSeconds(float seconds)
     {
         yield return new WaitForSeconds(seconds);
         _blinkCompleteWave = false;
+    }
+    
+    IEnumerator DisableBossWaveBlinkAfterSeconds(float delay, float seconds)
+    {
+        yield return new WaitForSeconds(delay+seconds);
+        _bossStageText.text = "";
+        yield return new WaitForSeconds(seconds+seconds);
+        _bossStageText.text = "Fight!";
+        _blinkBossStage = false;
+        
+    }
+
+    private void ShowBossHealthUI(bool setActiveBool)
+    {
+        _bossHealthBarGameObject.SetActive(setActiveBool);
     }
 
     private void ShowPauseUI()
@@ -396,5 +585,23 @@ public class UIManager : MonoBehaviour
     {
         get => _blinkAmmo;
         set => _blinkAmmo = value;
+    }
+
+    public bool ShowBossHealthBool
+    {
+        get => _showBossHealthBoss;
+        set => _showBossHealthBoss = value;
+    }
+
+    public float currentBossHealth
+    {
+        get => _CurrentBossHealth;
+        set => _CurrentBossHealth = value;
+    }
+
+    public float maxBossHealth
+    {
+        get => _maxBossHealth;
+        set => _maxBossHealth = value;
     }
 }

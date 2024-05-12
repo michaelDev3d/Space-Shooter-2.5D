@@ -49,6 +49,9 @@ TagManager:
   - name: Foreground
     uniqueID: 225693341
     locked: 0
+  - name: Scene VFX
+    uniqueID: 3657522631
+    locked: 0
   - name: UI
     uniqueID: 674041501
     locked: 0

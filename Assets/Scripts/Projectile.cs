@@ -34,7 +34,9 @@ public class Projectile : MonoBehaviour
     [SerializeField] 
     private bool _reverseDirection;
     
-
+    [SerializeField] 
+    private bool _delayStart;
+    
     private static readonly int _enemyLaserAnimBool = Animator.StringToHash("EnemyLaser");
     private static readonly int _enemySwarmLaserAnimBool = Animator.StringToHash("SwarmLaser");
 
@@ -46,97 +48,96 @@ public class Projectile : MonoBehaviour
     private void MoveProjectile()
     {
         if (!_isEnemyLaser && !_isOrbitalLaser)
-        {
-            transform.Translate(Vector3.up * (Time.deltaTime * _projectileSpeed));
-
-            if (transform.position.y > _screenHeight )
             {
-                if (transform.parent != null)
-                {
-                    Destroy(transform.parent.gameObject);
-                }
+                transform.Translate(Vector3.up * (Time.deltaTime * _projectileSpeed));
 
-                Destroy(this.gameObject);
+                if (transform.position.y > _screenHeight)
+                {
+                    if (transform.parent != null)
+                    {
+                        Destroy(transform.parent.gameObject);
+                    }
+
+                    Destroy(this.gameObject);
+                }
             }
-        }
 
         if (_isEnemyLaser && !_isOrbitalLaser && !_reverseDirection && !_isEventLaser)
-        {
-            Animator animator = GetComponent<Animator>();
-            
-            if (_isSwarmEnemyLaser)
             {
-                if(animator != null)
-                    animator.SetBool(_enemySwarmLaserAnimBool, true);
-            }
+                Animator animator = GetComponent<Animator>();
 
-            if(animator != null)
-                animator.SetBool(_enemyLaserAnimBool, true);
+                if (_isSwarmEnemyLaser)
+                {
+                    if (animator != null)
+                        animator.SetBool(_enemySwarmLaserAnimBool, true);
+                }
 
-            transform.Translate(Vector3.down * (Time.deltaTime * _enemyProjectileSpeed));
-            
-            if (transform.position.y < -_screenHeight )
-            {
-                Destroy(this.gameObject);
+                if (animator != null)
+                    animator.SetBool(_enemyLaserAnimBool, true);
+
+                transform.Translate(Vector3.down * (Time.deltaTime * _enemyProjectileSpeed));
+
+                if (transform.position.y < -_screenHeight)
+                {
+                    Destroy(this.gameObject);
+                }
             }
-        }
 
         if (_isEnemyLaser && !_isOrbitalLaser && _reverseDirection)
-        {
-            Animator animator = GetComponent<Animator>();
-            
-            if (_isSwarmEnemyLaser)
             {
-                if(animator != null)
-                    animator.SetBool(_enemySwarmLaserAnimBool, true);
-            }
+                Animator animator = GetComponent<Animator>();
 
-            if(animator != null)
-                animator.SetBool(_enemyLaserAnimBool, true);
+                if (_isSwarmEnemyLaser)
+                {
+                    if (animator != null)
+                        animator.SetBool(_enemySwarmLaserAnimBool, true);
+                }
 
-            transform.Translate(Vector3.up * (Time.deltaTime * _enemyProjectileSpeed));
-            
-            if (transform.position.y < -_screenHeight )
-            {
-                Destroy(this.gameObject);
+                if (animator != null)
+                    animator.SetBool(_enemyLaserAnimBool, true);
+
+                transform.Translate(Vector3.up * (Time.deltaTime * _enemyProjectileSpeed));
+
+                if (transform.position.y < -_screenHeight)
+                {
+                    Destroy(this.gameObject);
+                }
             }
-        }
 
         if (_isOrbitalLaser)
-        {
-            Transform orbitalContainer = gameObject.transform.parent;
-            
-            orbitalContainer.transform.Rotate(Vector3.forward, 1, Space.Self);
-        }
+            {
+                Transform orbitalContainer = gameObject.transform.parent;
+
+                orbitalContainer.transform.Rotate(Vector3.forward, 1, Space.Self);
+            }
 
         if (_isHomingLaser)
-        {
-            EnemyMovement[] onScreenEnemies = FindObjectsOfType<EnemyMovement>();
-
-            if (onScreenEnemies.Length > 0)
             {
-                Debug.Log("Enemies are found");
-                if (_homingLaserTarget == null)
+                EnemyMovement[] onScreenEnemies = FindObjectsOfType<EnemyMovement>();
+
+                if (onScreenEnemies.Length > 0)
                 {
-                    foreach (EnemyMovement enemy in onScreenEnemies)
+                    Debug.Log("Enemies are found");
+                    if (_homingLaserTarget == null)
                     {
-                        Debug.Log("Checking for enemies on screen");
-                        if (CheckIfEnemyIsOnScreen(enemy))
+                        foreach (EnemyMovement enemy in onScreenEnemies)
                         {
-                            Debug.Log("Enemy on screen");
-                            _homingLaserTarget = enemy.gameObject.transform;
+                            Debug.Log("Checking for enemies on screen");
+                            if (CheckIfEnemyIsOnScreen(enemy))
+                            {
+                                Debug.Log("Enemy on screen");
+                                _homingLaserTarget = enemy.gameObject.transform;
+                            }
                         }
                     }
-                }
 
-                if (_homingLaserTarget != null)
-                {
-                    transform.position = Vector2.MoveTowards(transform.position, 
-                        _homingLaserTarget.transform.position,0.1f);
+                    if (_homingLaserTarget != null)
+                    {
+                        transform.position = Vector2.MoveTowards(transform.position,
+                            _homingLaserTarget.transform.position, 0.1f);
+                    }
                 }
             }
-        }
-        
     }
     
     private bool CheckIfEnemyIsOnScreen(EnemyMovement enemy)
