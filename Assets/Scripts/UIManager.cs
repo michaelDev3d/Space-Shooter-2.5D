@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -31,8 +32,15 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _bossStageText;
     [SerializeField] 
+    private TextMeshProUGUI _levelCompleteText;
+    
+    [SerializeField]
     private Button _QuitButton;
+    [SerializeField]
+    private Button _MainMenuButton;
     private GameManager _gameManager;
+    [SerializeField]
+    private Button _restartButton;
     
     [SerializeField] 
     private TextMeshProUGUI _ammoCountText;
@@ -56,7 +64,7 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Image backHealthBar;
     
-    [Header("Health Bar Management")] 
+    [Header("Boss Health Bar Management")] 
     [SerializeField] 
     private GameObject _bossHealthBarGameObject;
     [SerializeField] 
@@ -76,6 +84,8 @@ public class UIManager : MonoBehaviour
     private bool _isUpdatingUI;
     [SerializeField] 
     private bool _isUpdatingBossUI;
+    [SerializeField] 
+    private bool _bossHasBeenDefeated;
 
     [Header("Temporary Blink Flags")]
     [SerializeField] 
@@ -90,8 +100,6 @@ public class UIManager : MonoBehaviour
     private bool _hideShieldAfterBlinking = false;
 
     private bool _showBossHealthBoss = false;
-    
-    
     
     // Start is called before the first frame update
     void Start()
@@ -110,6 +118,9 @@ public class UIManager : MonoBehaviour
         
         if(_waveText != null)
             _waveText.gameObject.SetActive(false);
+        
+        if(_levelCompleteText != null)
+            _levelCompleteText.gameObject.SetActive(false);
         
         if(_waveCompleteText != null)
             _waveCompleteText.gameObject.SetActive(false);
@@ -162,6 +173,8 @@ public class UIManager : MonoBehaviour
         UpdateHealthUiOnlyOnChange();
         UpdateBossHealthUiOnlyOnChange();
         ShowBossHealthUI(_showBossHealthBoss);
+        _gameManager.isBossStageComplete = _bossHasBeenDefeated;
+        ShowLevelCompleteScreen(_bossHasBeenDefeated);
     }
 
     IEnumerator UpdateHealthAnim(bool turnOn, float seconds)
@@ -315,7 +328,8 @@ public class UIManager : MonoBehaviour
         if (wave == 5)
         {
             _waveCountText.text = "Wave: ";
-            _waveBossText.gameObject.SetActive(true);
+            if(!_QuitButton.IsActive())
+                _waveBossText.gameObject.SetActive(true);
         }
     }
 
@@ -353,6 +367,9 @@ public class UIManager : MonoBehaviour
             _pauseGameText.text = displayUI ? "Press 'ESC' to pause the game" : "Press 'ESC' to unpause the game";
             
             _QuitButton.gameObject.SetActive(false);
+            _MainMenuButton.gameObject.SetActive(false);
+            _restartButton.gameObject.SetActive(false);
+
             _scoreText.gameObject.SetActive(displayUI);
             _waveCountText.gameObject.SetActive(displayUI);
             _startGameText.gameObject.SetActive(displayUI); 
@@ -360,7 +377,12 @@ public class UIManager : MonoBehaviour
             _ammoCountTextREDEffect.gameObject.SetActive(displayUI);
             frontHealthBar.transform.parent.gameObject.SetActive(displayUI);
             frontBossHealthBar.transform.parent.gameObject.SetActive(displayUI);
-          
+            
+            _waveBossText.gameObject.SetActive(false);
+            _waveCompleteText.gameObject.SetActive(false);
+            _waveText.gameObject.SetActive(false);
+            _bossStageText.gameObject.SetActive(false);
+            
 
             if (!displayUI)
                 ShowPauseUI();
@@ -505,7 +527,6 @@ public class UIManager : MonoBehaviour
         StartCoroutine(BlinkWaveCompleteRoutine(blinkRate));
         StartCoroutine(DisableWaveCompleteBlinkAfterSeconds(blinkingDuration));
         StartCoroutine(DisplayNewWaveOnWaveCompletion(3.5f));
-
     }
     
     public void BlinkBossWaveText(bool blink, float delay, float blinkRate, float blinkingDuration)
@@ -547,6 +568,9 @@ public class UIManager : MonoBehaviour
             _bossStageText.transform.gameObject.SetActive(false);
             yield return new WaitForSeconds(seconds);
         }
+        _bossStageText.transform.gameObject.SetActive(true);
+        _bossStageText.text = "FIGHT!";
+        yield return new WaitForSeconds(2);
         _bossStageText.transform.gameObject.SetActive(false);
     }
 
@@ -559,9 +583,6 @@ public class UIManager : MonoBehaviour
     IEnumerator DisableBossWaveBlinkAfterSeconds(float delay, float seconds)
     {
         yield return new WaitForSeconds(delay+seconds);
-        _bossStageText.text = "";
-        yield return new WaitForSeconds(seconds+seconds);
-        _bossStageText.text = "Fight!";
         _blinkBossStage = false;
         
     }
@@ -574,11 +595,26 @@ public class UIManager : MonoBehaviour
     private void ShowPauseUI()
     {
         _QuitButton.gameObject.SetActive(true);
+        _MainMenuButton.gameObject.SetActive(true);
     }
 
     public void QuitGame()
     {
         Application.Quit();
+    }
+    
+    public void GoToMainMenu()
+    {
+        SceneManager.LoadScene("Main Menu");
+    }
+
+    private void ShowLevelCompleteScreen(bool bossEnemyDefeat)
+    {
+        if (bossEnemyDefeat)
+        {
+            _restartButton.gameObject.SetActive(true);
+            _levelCompleteText.gameObject.SetActive(true);
+        }
     }
     
     public bool BlinkAmmo
@@ -603,5 +639,11 @@ public class UIManager : MonoBehaviour
     {
         get => _maxBossHealth;
         set => _maxBossHealth = value;
+    }
+
+    public bool BossHasBeenDefeated
+    {
+        get => _bossHasBeenDefeated;
+        set => _bossHasBeenDefeated = value;
     }
 }

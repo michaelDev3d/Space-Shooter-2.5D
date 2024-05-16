@@ -123,7 +123,7 @@ public class EnemyMovement :  Rarity
 
     private bool _bossDeathFlag;
     private bool _disableWeapons;
-    
+    private bool _bossHasBeenDefeated;    
     void Start()
     {
         CreateEnemy(_enemyTypeID);
@@ -168,7 +168,7 @@ public class EnemyMovement :  Rarity
                     Debug.LogError("Main player component for " + gameObject.name + " is null");
             }
             else
-                Debug.LogError("Main Player is NULL");
+                Debug.Log("Main Player is NULL");
 
 
             //Finding and Null Checking for Sprite GameObject, Renderer, and animator.
@@ -203,7 +203,7 @@ public class EnemyMovement :  Rarity
             
             GameObject uiManagerGameObject = GameObject.Find("UI_Manager");
 
-            if (uiManagerGameObject != null)
+            if (uiManagerGameObject != null && !_mainMenuEnemy)
             {
                 if (uiManagerGameObject.TryGetComponent(out UIManager uiManager))
                     _uiManager = uiManager;
@@ -247,7 +247,7 @@ public class EnemyMovement :  Rarity
             switch (enemyID)
             {
                 case 0: //Reserved for meteor's
-                    _spinSpeed = Random.Range(0.1f, 1f);
+                    _spinSpeed = Random.Range(0.1f, 0.7f);
                     _spriteGameObject.transform.Rotate(Vector3.forward * _spinSpeed);
                     break;
                 case 1: //Reserved for space ships
@@ -457,8 +457,6 @@ public class EnemyMovement :  Rarity
                         if (_bossCurrentHealth == 0)
                         {
                             ColorMaskFlickerEffect(0, 20f, 0.2f, Color.white, Color.clear);
-                            //_material.SetInt(_enemyMaterialTurnOnColorMask, 1);
-                            //_material.SetColor(_enemyMaterialColorMaskColor, Color.white);
                         }
                     }
                 }
@@ -513,6 +511,9 @@ public class EnemyMovement :  Rarity
         {
             InitiateGame();
         }
+       
+        if(_isBossEnemy)
+            _uiManager.BossHasBeenDefeated = true;
 
         Destroy(this.gameObject);
     }
@@ -664,6 +665,8 @@ public class EnemyMovement :  Rarity
                                 Quaternion.Euler(Vector3.down))
                             .GetComponent<Projectile>();
                         // Debug.Log("Boss special attack created");
+                        _audioSource.clip = _laserSFX;
+                        _audioSource.Play();
                     }
 
                     if (cannon == 2)
@@ -672,6 +675,8 @@ public class EnemyMovement :  Rarity
                                 Quaternion.Euler(Vector3.down))
                             .GetComponent<Projectile>();
                         //Debug.Log("Boss special attack created");
+                        _audioSource.clip = _laserSFX;
+                        _audioSource.Play();
                     }
 
                     if (cannon == 3)
@@ -679,13 +684,15 @@ public class EnemyMovement :  Rarity
                         Projectile laser = Instantiate(_laserPrefab, _regularAttackRightWeapon.transform.position,
                                 Quaternion.Euler(Vector3.down))
                             .GetComponent<Projectile>();
+                        
                         //Debug.Log("Boss special attack created");
 
                         Projectile laser2 = Instantiate(_laserPrefab, _regularAttackLeftWeapon.transform.position,
                                 Quaternion.Euler(Vector3.down))
                             .GetComponent<Projectile>();
                         //Debug.Log("Boss special attack created");
-
+                        _audioSource.clip = _laserSFX;
+                        _audioSource.Play();
                     }
                 }
             }
@@ -798,7 +805,10 @@ public class EnemyMovement :  Rarity
         dangerLine.GetComponent<Blink>().ToggleDestroy = true;
         dangerLine.GetComponent<Blink>().ToggleBlinking = true;
         yield return new WaitForSeconds(1);
+        _audioSource.clip = _laserSFX;
+        _audioSource.Play();
         SetSpeed(50);
+        
         Destroy(gameObject,1);
     }
     
@@ -817,6 +827,7 @@ public class EnemyMovement :  Rarity
                         Instantiate(_bossAttackPrefabs[0], _specialAttackRightWeapon.transform);
                         Instantiate(_bossAttackPrefabs[0], _specialAttackLeftWeapon.transform);
                         _lastAttackUsed = _bossAttackPrefabs[0].GetComponent<BossAttackData>().bossAttackName;
+                       
                     }
                 }
                 else
@@ -837,6 +848,8 @@ public class EnemyMovement :  Rarity
     {
         _uiManager.RemoveHealthFromBossBar(_bossCurrentHealth, 1f, true);
         _bossCurrentHealth--;
+        _audioSource.clip = _explosionSFX;
+        _audioSource.Play();
     }
 
     private void HandleBossDeath()
@@ -852,10 +865,24 @@ public class EnemyMovement :  Rarity
                 Instantiate(_bossExplosionEffect,gameObject.transform.position, Quaternion.identity, this.transform);
                 _bossDeathFlag = true;
                 _stopShooting = true;
+                _bossHasBeenDefeated = true;
+                StartCoroutine(DestroySequence(4f));
+                
             }
             
         }
     }
 
-   
+    IEnumerator DeathDelaySequence(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        Destroy(this.gameObject);
+        _bossHasBeenDefeated = true;
+    }
+
+    public bool BossHasBeenDefeatedBool
+    {
+        get => _bossHasBeenDefeated;
+        set => _bossHasBeenDefeated = value;
+    }
 }

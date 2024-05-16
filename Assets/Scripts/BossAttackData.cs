@@ -11,9 +11,15 @@ public class BossAttackData : MonoBehaviour
    [SerializeField] private GameObject _damageSource;
    [SerializeField] private GameObject _warningIcon;
    [SerializeField] private GameObject _attackLocationWarning;
+   [SerializeField] private AudioClip _laserSFX;
+   [SerializeField] private AudioSource _audioSource;
 
    private void Start()
    {
+      if (TryGetComponent(out AudioSource audioSource))
+         _audioSource= audioSource;
+      else
+         Debug.LogError("Audio component for "+ gameObject.name +" is null");
       _bossAttackContainer = gameObject.transform.GetChild(0).gameObject;
       _damageSource = GetComponentInChildren<Projectile>().gameObject;
       _attackLocationWarning = GetComponentInChildren<LineRenderer>().gameObject;
@@ -33,6 +39,9 @@ public class BossAttackData : MonoBehaviour
       attackProjectile.SetEnemyLaser(true);
       attackProjectile.IsEventLaser = false;
       attackProjectile.EnemyProjectileSpeed=20;
+      _audioSource.clip = _laserSFX;
+      _audioSource.Play();
+      
    }
 
    public string bossAttackName => _bossAttackName;

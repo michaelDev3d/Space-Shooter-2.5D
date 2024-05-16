@@ -219,12 +219,23 @@ MonoBehaviour:
     type: 3}
   _hasShield: 1
   _flickerShieldEffectOn: 0
+  _flickerShipEffectOn: 0
+  _renderer: {fileID: 0}
+  _material: {fileID: 0}
   _specialAttackLeftWeapon: {fileID: 0}
   _specialAttackRightWeapon: {fileID: 0}
   _regularAttackLeftWeapon: {fileID: 0}
   _regularAttackRightWeapon: {fileID: 0}
-  _bossAttackPrefab: {fileID: 0}
+  _bossAttackPrefabs:
+  - {fileID: 0}
+  _eventLaserForBossSpawn: {fileID: 0}
   _lastAttackUsed: 
+  _attackMinCooldown: 0
+  _attackMaxCooldown: 0
+  _bossMaxHealth: 0
+  _bossCurrentHealth: 0
+  _uiManager: {fileID: 0}
+  _bossExplosionEffect: {fileID: 0}
 --- !u!82 &-1078920232082080069
 AudioSource:
   m_ObjectHideFlags: 0
@@ -237,13 +248,13 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.1
+  m_Volume: 0.002
   m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 0
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500

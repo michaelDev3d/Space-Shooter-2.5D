@@ -257,6 +257,7 @@ public class SpacePlayer : MonoBehaviour
         if (_mainMenuPlayer)
         {
             ShootInput();
+            HandleMovement();
         }
 
         if (_gameManager != null)
@@ -448,7 +449,7 @@ public class SpacePlayer : MonoBehaviour
                         _uiManager.BlinkAmmoCountText(0.5f);
                     }
                     
-                    if (_currentAmmoCount > 0)
+                    if (_currentAmmoCount > 0 && !mainMenuPlayer)
                         _uiManager.DisableAmmoBlink();
 
                 }
@@ -720,9 +721,9 @@ public class SpacePlayer : MonoBehaviour
                 _currentAmmoCount++;
         }
         
-        public void HealthPickup()
+        public void HealthPickup(int maxCurrentHealth)
         {
-            if(_playerLives < 3)
+            _playerLives++;
                 _uiManager.AddHealthToBar(_playerLives,1f, true);
         }
 
@@ -948,5 +949,11 @@ public class SpacePlayer : MonoBehaviour
                 }
             }
         }
+    }
+
+    public bool mainMenuPlayer
+    {
+        get => _mainMenuPlayer;
+        set => _mainMenuPlayer = value;
     }
 }

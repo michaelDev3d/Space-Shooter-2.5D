@@ -55,7 +55,7 @@ public class PowerUp : Rarity
                         player.ActivateShield();
                         break;
                     case 3:
-                        player.HealthPickup();
+                        player.HealthPickup(25);
                         break;
                     case 4:
                         player.AmmoPickUp();

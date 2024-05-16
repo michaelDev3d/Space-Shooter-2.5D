@@ -136,7 +136,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 14.48}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -147,7 +147,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 12.81}
   m_EdgeRadius: 0
 --- !u!50 &2477040081408697735
 Rigidbody2D:
@@ -1072,13 +1072,14 @@ MonoBehaviour:
   _regularAttackRightWeapon: {fileID: 0}
   _bossAttackPrefabs:
   - {fileID: 0}
-  eventLaserForBossSpawn: {fileID: 0}
+  _eventLaserForBossSpawn: {fileID: 0}
   _lastAttackUsed: 
   _attackMinCooldown: 0
   _attackMaxCooldown: 0
   _bossMaxHealth: 0
   _bossCurrentHealth: 0
   _uiManager: {fileID: 0}
+  _bossExplosionEffect: {fileID: 0}
 --- !u!1 &2477040081664567476
 GameObject:
   m_ObjectHideFlags: 0
@@ -1134,7 +1135,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 14.48}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -1145,7 +1146,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 12.81}
   m_EdgeRadius: 0
 --- !u!50 &2477040081664567473
 Rigidbody2D:
@@ -1384,13 +1385,14 @@ MonoBehaviour:
   _regularAttackRightWeapon: {fileID: 0}
   _bossAttackPrefabs:
   - {fileID: 0}
-  eventLaserForBossSpawn: {fileID: 0}
+  _eventLaserForBossSpawn: {fileID: 0}
   _lastAttackUsed: 
   _attackMinCooldown: 0
   _attackMaxCooldown: 0
   _bossMaxHealth: 0
   _bossCurrentHealth: 0
   _uiManager: {fileID: 0}
+  _bossExplosionEffect: {fileID: 0}
 --- !u!1 &2477040081690264935
 GameObject:
   m_ObjectHideFlags: 0
@@ -1550,13 +1552,14 @@ MonoBehaviour:
   _regularAttackRightWeapon: {fileID: 0}
   _bossAttackPrefabs:
   - {fileID: 0}
-  eventLaserForBossSpawn: {fileID: 0}
+  _eventLaserForBossSpawn: {fileID: 0}
   _lastAttackUsed: 
   _attackMinCooldown: 0
   _attackMaxCooldown: 0
   _bossMaxHealth: 0
   _bossCurrentHealth: 0
   _uiManager: {fileID: 0}
+  _bossExplosionEffect: {fileID: 0}
 --- !u!1 &2477040081735454546
 GameObject:
   m_ObjectHideFlags: 0
@@ -1635,13 +1638,14 @@ MonoBehaviour:
   _regularAttackRightWeapon: {fileID: 0}
   _bossAttackPrefabs:
   - {fileID: 0}
-  eventLaserForBossSpawn: {fileID: 0}
+  _eventLaserForBossSpawn: {fileID: 0}
   _lastAttackUsed: 
   _attackMinCooldown: 0
   _attackMaxCooldown: 0
   _bossMaxHealth: 0
   _bossCurrentHealth: 0
   _uiManager: {fileID: 0}
+  _bossExplosionEffect: {fileID: 0}
 --- !u!1 &2477040081766555223
 GameObject:
   m_ObjectHideFlags: 0
@@ -2144,13 +2148,14 @@ MonoBehaviour:
   _regularAttackRightWeapon: {fileID: 0}
   _bossAttackPrefabs:
   - {fileID: 0}
-  eventLaserForBossSpawn: {fileID: 0}
+  _eventLaserForBossSpawn: {fileID: 0}
   _lastAttackUsed: 
   _attackMinCooldown: 0
   _attackMaxCooldown: 0
   _bossMaxHealth: 0
   _bossCurrentHealth: 0
   _uiManager: {fileID: 0}
+  _bossExplosionEffect: {fileID: 0}
 --- !u!1 &2477040081863184934
 GameObject:
   m_ObjectHideFlags: 0
@@ -2310,13 +2315,14 @@ MonoBehaviour:
   _regularAttackRightWeapon: {fileID: 0}
   _bossAttackPrefabs:
   - {fileID: 0}
-  eventLaserForBossSpawn: {fileID: 0}
+  _eventLaserForBossSpawn: {fileID: 0}
   _lastAttackUsed: 
   _attackMinCooldown: 0
   _attackMaxCooldown: 0
   _bossMaxHealth: 0
   _bossCurrentHealth: 0
   _uiManager: {fileID: 0}
+  _bossExplosionEffect: {fileID: 0}
 --- !u!1 &2477040081896088914
 GameObject:
   m_ObjectHideFlags: 0
@@ -2553,7 +2559,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 14.48}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2564,7 +2570,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 12.81}
   m_EdgeRadius: 0
 --- !u!50 &2477040081909350838
 Rigidbody2D:
@@ -3980,7 +3986,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 14.48}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -3991,7 +3997,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 12.81}
   m_EdgeRadius: 0
 --- !u!50 &2477040082162062553
 Rigidbody2D:
@@ -5006,7 +5012,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 14.48}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -5017,7 +5023,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 12.81}
   m_EdgeRadius: 0
 --- !u!50 &2477040082383738705
 Rigidbody2D:
@@ -5274,7 +5280,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 14.48}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -5285,7 +5291,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 12.81}
   m_EdgeRadius: 0
 --- !u!50 &2477040082406097593
 Rigidbody2D:
@@ -6025,7 +6031,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 14.48}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -6036,7 +6042,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 12.81}
   m_EdgeRadius: 0
 --- !u!50 &2477040082549798808
 Rigidbody2D:
@@ -6414,7 +6420,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 14.48}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -6425,7 +6431,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 12.81}
   m_EdgeRadius: 0
 --- !u!50 &2477040082589069195
 Rigidbody2D:
@@ -7768,13 +7774,14 @@ MonoBehaviour:
   _regularAttackRightWeapon: {fileID: 0}
   _bossAttackPrefabs:
   - {fileID: 0}
-  eventLaserForBossSpawn: {fileID: 0}
+  _eventLaserForBossSpawn: {fileID: 0}
   _lastAttackUsed: 
   _attackMinCooldown: 0
   _attackMaxCooldown: 0
   _bossMaxHealth: 0
   _bossCurrentHealth: 0
   _uiManager: {fileID: 0}
+  _bossExplosionEffect: {fileID: 0}
 --- !u!1 &2477040082886874424
 GameObject:
   m_ObjectHideFlags: 0
@@ -8744,13 +8751,14 @@ MonoBehaviour:
   _regularAttackRightWeapon: {fileID: 0}
   _bossAttackPrefabs:
   - {fileID: 0}
-  eventLaserForBossSpawn: {fileID: 0}
+  _eventLaserForBossSpawn: {fileID: 0}
   _lastAttackUsed: 
   _attackMinCooldown: 0
   _attackMaxCooldown: 0
   _bossMaxHealth: 0
   _bossCurrentHealth: 0
   _uiManager: {fileID: 0}
+  _bossExplosionEffect: {fileID: 0}
 --- !u!1 &2477040083161137473
 GameObject:
   m_ObjectHideFlags: 0
@@ -10022,13 +10030,14 @@ MonoBehaviour:
   _regularAttackRightWeapon: {fileID: 0}
   _bossAttackPrefabs:
   - {fileID: 0}
-  eventLaserForBossSpawn: {fileID: 0}
+  _eventLaserForBossSpawn: {fileID: 0}
   _lastAttackUsed: 
   _attackMinCooldown: 0
   _attackMaxCooldown: 0
   _bossMaxHealth: 0
   _bossCurrentHealth: 0
   _uiManager: {fileID: 0}
+  _bossExplosionEffect: {fileID: 0}
 --- !u!1 &2477040083365692711
 GameObject:
   m_ObjectHideFlags: 0
@@ -10489,7 +10498,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 14.48}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -10500,7 +10509,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 12.81}
   m_EdgeRadius: 0
 --- !u!50 &2477040083426879142
 Rigidbody2D:
@@ -10839,13 +10848,14 @@ MonoBehaviour:
   _regularAttackRightWeapon: {fileID: 0}
   _bossAttackPrefabs:
   - {fileID: 0}
-  eventLaserForBossSpawn: {fileID: 0}
+  _eventLaserForBossSpawn: {fileID: 0}
   _lastAttackUsed: 
   _attackMinCooldown: 0
   _attackMaxCooldown: 0
   _bossMaxHealth: 0
   _bossCurrentHealth: 0
   _uiManager: {fileID: 0}
+  _bossExplosionEffect: {fileID: 0}
 --- !u!1 &2477040083465283889
 GameObject:
   m_ObjectHideFlags: 0
@@ -10901,7 +10911,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 14.48}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -10912,7 +10922,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 12.81}
   m_EdgeRadius: 0
 --- !u!50 &2477040083465283882
 Rigidbody2D:
@@ -11761,7 +11771,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 14.48}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -11772,7 +11782,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 12.81}
   m_EdgeRadius: 0
 --- !u!50 &2732845555453653537
 Rigidbody2D:
@@ -11998,7 +12008,7 @@ MonoBehaviour:
   _mainMenuEnemy: 0
   _startGameEnemy: 0
   _explosionSFX: {fileID: 0}
-  _laserSFX: {fileID: 0}
+  _laserSFX: {fileID: 8300000, guid: a1baf27b3c03dfd4081ca46ca0048ce4, type: 3}
   _laserPrefab: {fileID: 0}
   _hasShield: 0
   _flickerShieldEffectOn: 0
@@ -12011,13 +12021,14 @@ MonoBehaviour:
   _regularAttackRightWeapon: {fileID: 0}
   _bossAttackPrefabs:
   - {fileID: 0}
-  eventLaserForBossSpawn: {fileID: 0}
+  _eventLaserForBossSpawn: {fileID: 0}
   _lastAttackUsed: 
   _attackMinCooldown: 0
   _attackMaxCooldown: 0
   _bossMaxHealth: 0
   _bossCurrentHealth: 0
   _uiManager: {fileID: 0}
+  _bossExplosionEffect: {fileID: 0}
 --- !u!1 &2732845555719996869
 GameObject:
   m_ObjectHideFlags: 0

@@ -71,12 +71,14 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] private GameObject _bossPrefab; 
     [SerializeField]
     private UIManager _uiManager;
-    
-    
+    [SerializeField]
+    private bool _bossHasBeenDefeated;
+
+    [SerializeField] private GameObject _boss;
     public void StartSpawning()
     {
         StartCoroutine(SpawnEnemyRoutine(_spawnRateInSeconds));
-        StartCoroutine(SpawnPowerUpRoutine(_commonPowerUpPrefabs,_uncommonPowerUpPrefabs, _uncommonPowerUpPrefabs));
+        StartCoroutine(SpawnPowerUpRoutine(_commonPowerUpPrefabs,_uncommonPowerUpPrefabs, _rarePowerUpPrefabs));
     }
 
     // ReSharper disable Unity.PerformanceAnalysis
@@ -125,15 +127,15 @@ public class SpawnManager : MonoBehaviour
             {
                 case 1:
                     _enemyRaritySelector = Random.Range(0, 50);
-                    _spawnRateInSeconds = 0.5f;
+                    _spawnRateInSeconds = 0.25f;
                     break;
                 case 2:
-                    _spawnRateInSeconds = 1f;
+                    _spawnRateInSeconds = 1.5f;
                     _startSpawningShips = true;
                     _enemyRaritySelector = Random.Range(0, 90);
                     break;
                 case 3:
-                    _spawnRateInSeconds = 4f;
+                    _spawnRateInSeconds = 1.5f;
                     _startSpawningShips = true;
                     _startSpawningRareEnemies = true;
                     _enemyRaritySelector = Random.Range(0, 100);
@@ -172,7 +174,7 @@ public class SpawnManager : MonoBehaviour
 
             if (_startBossStage || _stopSpawningEnemies)
             {
-                Instantiate(_bossPrefab);
+                _boss = Instantiate(_bossPrefab);
             }
             
             yield return new WaitForSeconds(_spawnRateInSeconds); 
@@ -184,6 +186,11 @@ public class SpawnManager : MonoBehaviour
         //Select a random enemy from our enemy prefab array.
         int randomEnemy = Random.Range(0, enemyPrefabs.Length);
         Vector3 spawnPosition = new Vector3(Random.Range(_spawnXRangeMin,_spawnXRangeMax), _spawnHeight, 0);
+
+        if (randomEnemy == 0)
+        {
+            spawnPosition = new Vector3(Random.Range(_spawnXRangeMin,_spawnXRangeMax), _spawnHeight-1.7f, 0);
+        }
             
         GameObject newEnemy = Instantiate(enemyPrefabs[randomEnemy],spawnPosition, Quaternion.identity, _enemyContainer.transform);
         if(newEnemy.GetComponent<EnemyMovement>() != null)
@@ -194,8 +201,6 @@ public class SpawnManager : MonoBehaviour
         _enemiesSpawned++;
     }
     
-   
-
     IEnumerator SpawnPowerUpRoutine(GameObject[] commonPowerupPrefabs,GameObject[] uncommonPowerupPrefabs,GameObject[] rarePowerupPrefabs)
     {
         yield return new WaitForSeconds(8);
@@ -214,7 +219,30 @@ public class SpawnManager : MonoBehaviour
 
                 Instantiate(uncommonPowerupPrefabs[Random.Range(0, uncommonPowerupPrefabs.Length)], spawnPosition, Quaternion.identity);
             }
-            if (_currentWave>3 && _currentWave<=5)
+            if (_currentWave>2 && _currentWave<=5)
+            {
+                Vector3 spawnPosition = new Vector3(Random.Range(_spawnXRangeMin, _spawnXRangeMax), _spawnHeight, 0);
+
+                Instantiate(rarePowerupPrefabs[Random.Range(0, rarePowerupPrefabs.Length)], spawnPosition, Quaternion.identity);
+            }
+            yield return new WaitForSeconds(Random.Range(3f, 9f));
+        }
+        
+        while(_stopSpawningEnemies && !_bossHasBeenDefeated)
+        {
+            if (_currentWave <= 5)
+            {
+                Vector3 spawnPosition = new Vector3(Random.Range(_spawnXRangeMin, _spawnXRangeMax), _spawnHeight, 0);
+
+                Instantiate(commonPowerupPrefabs[Random.Range(0, commonPowerupPrefabs.Length)], spawnPosition, Quaternion.identity);
+            }
+            if (_currentWave>2 && _currentWave<=5)
+            {
+                Vector3 spawnPosition = new Vector3(Random.Range(_spawnXRangeMin, _spawnXRangeMax), _spawnHeight, 0);
+
+                Instantiate(uncommonPowerupPrefabs[Random.Range(0, uncommonPowerupPrefabs.Length)], spawnPosition, Quaternion.identity);
+            }
+            if (_currentWave>2 && _currentWave<=5)
             {
                 Vector3 spawnPosition = new Vector3(Random.Range(_spawnXRangeMin, _spawnXRangeMax), _spawnHeight, 0);
 
@@ -272,5 +300,10 @@ public class SpawnManager : MonoBehaviour
     {
         get => _startBossStage;
         set => _startBossStage = value;
+    }
+
+    public void BossDefeated()
+    {
+        _bossHasBeenDefeated = true;
     }
 }

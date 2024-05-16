@@ -24,6 +24,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private bool _IsBossStage;
     
+    [SerializeField]
+    private bool _IsBossStageComplete;
+    
     private void Start()
     {
         
@@ -74,6 +77,10 @@ public class GameManager : MonoBehaviour
         WaveUpdate();
         ManageNewWaveData();
         ManageBossStageData();
+        if (isBossStageComplete)
+        {
+            _spawnManager.BossDefeated();
+        }
     }
 
     private void ManageNewWaveData()
@@ -94,7 +101,7 @@ public class GameManager : MonoBehaviour
         if (_spawnManager.StartBossStageBool)
         {
             //Debug.Log("Boss Stage Bool should true: "+_spawnManager.StartBossStageBool);
-            _uiManager.BlinkBossWaveText(true,4, 0.5f, 3f);
+            _uiManager.BlinkBossWaveText(true,3.5f, 0.5f, 12f);
             _spawnManager.StartBossStageBool = false;
 
         }
@@ -120,11 +127,11 @@ public class GameManager : MonoBehaviour
 
     private void PauseGame()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && !_gameIsPaused)
+        if (Input.GetKeyDown(KeyCode.Escape) && !_gameIsPaused && !isBossStageComplete)
         {
             _gameIsPaused = _uiManager.DisplayUI(false);
         }
-        else if (Input.GetKeyDown(KeyCode.Escape) && _gameIsPaused)
+        else if (Input.GetKeyDown(KeyCode.Escape) && _gameIsPaused && !isBossStageComplete)
         {
             _gameIsPaused = _uiManager.DisplayUI(true);
         }
@@ -166,4 +173,9 @@ public class GameManager : MonoBehaviour
         _uiManager.UpdateWaveText(_spawnManager.CurrentWave);
     }
 
+    public bool isBossStageComplete
+    {
+        get => _IsBossStageComplete;
+        set => _IsBossStageComplete = value;
+    }
 }

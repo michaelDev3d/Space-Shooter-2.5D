@@ -28,13 +28,13 @@ public class DestroyAfterSeconds : MonoBehaviour
         {
             float scaleFactor = Random.Range(0.6f, 3.0f);
             gameObject.transform.localScale = new Vector3(scaleFactor,scaleFactor,1);
-            Debug.Log(scaleFactor);
+            //Debug.Log(scaleFactor);
             this.gameObject.GetComponent<SpriteRenderer>().enabled = false;
             yield return new WaitForSeconds(showAfterSeconds);
             this.gameObject.GetComponent<SpriteRenderer>().enabled = true;
         
             if(_audioClip != null)
-                AudioSource.PlayClipAtPoint(_audioClip, transform.position);
+                AudioSource.PlayClipAtPoint(_audioClip, transform.position, 0.25f);
            
             yield return new WaitForSeconds(waitForSeconds);
             this.gameObject.GetComponent<SpriteRenderer>().enabled = false;
@@ -44,6 +44,11 @@ public class DestroyAfterSeconds : MonoBehaviour
                 yield return new WaitForSeconds(waitForSeconds);
                 Destroy(this.gameObject);
             }
+        }
+        if (_destroy)
+        {
+            yield return new WaitForSeconds(waitForSeconds);
+            Destroy(this.gameObject);
         }
     }
 }

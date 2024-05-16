@@ -114,5 +114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0759967061353b34d9809c1d24b547eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _destroy: 1
+  _repeatEffect: 0
   _destroyInSeconds: 0.75
   _audioClip: {fileID: 8300000, guid: 24eeb2834c7059b4c83faa3a5440e2ea, type: 3}
